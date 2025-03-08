@@ -295,7 +295,7 @@ buildNumber.properties
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
 nbbuild/
-dist/
+#dist/
 nbdist/
 .nb-gradle/
 
