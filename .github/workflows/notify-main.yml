@@ -1,0 +1,28 @@
+name: Notify Main Repo
+
+on:
+  push:
+    branches:
+      - master  # React 레포의 master 브랜치가 푸시될 때 실행
+
+jobs:
+  notify-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Webhook to Main Repo
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+          -d '{"event_type": "update_submodule", "client_payload": {"submodule": "React"}}' \
+          https://api.github.com/repos/Nea4321/YCS_Certificate/dispatches
+
+      - name: Send Discord Notification
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "username": "GitHub Actions",
+            "content": "**📢 주인님, `React` 서브모듈이 업데이트되었어요**"
+          }' \
+          "$REACT_WEBHOOK_URL"
