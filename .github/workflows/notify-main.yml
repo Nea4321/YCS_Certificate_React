@@ -23,6 +23,6 @@ jobs:
           -X POST \
           -d '{
             "username": "GitHub Actions",
-            "content": "**📢 주인님, `React` 서브모듈이 업데이트되었어요**"
+            "content": "**📢 주인님, `React` 서브모듈이 업데이트되었어요!!**"
           }' \
           "${{ secrets.REACT_WEBHOOK_URL }}"
