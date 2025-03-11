@@ -19,7 +19,7 @@ jobs:
 
       - name: Update submodules
         run: |
-          git submodule update --remote --merge --allow-unrelated-histories
+          git submodule update --remote --recursive
 
       - name: Commit and push changes
         run: |
