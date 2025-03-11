@@ -3,7 +3,7 @@ name: Notify Main Repo
 on:
   push:
     branches:
-      - master  # React 레포의 master 브랜치가 푸시될 때 실행
+      - master  # React 의 master 브랜치가 푸시될 때 실행
 
 jobs:
   notify-main:
