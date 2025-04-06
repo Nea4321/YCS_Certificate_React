@@ -6,4 +6,4 @@ eslint.config.js text eol=lf
 index.html text eol=lf
 src/App.jsx text eol=lf
 src/main.jsx text eol=lf
-vite.config.js text eol=lf
+vite.config.ts text eol=lf

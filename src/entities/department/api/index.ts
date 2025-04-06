@@ -1,0 +1,1 @@
+export { getDepartmentList } from './departmentApi'
