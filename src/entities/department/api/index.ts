@@ -1,1 +1,1 @@
-export { getDepartmentList } from './departmentApi'
+export { departmentApi } from './department-api'

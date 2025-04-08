@@ -1,17 +1,17 @@
 import { memo } from "react"
-import type { Department } from "../model/types"
+import type { DeptList } from "@/entities/department/model"
 
 interface DepartmentCardProps {
-    department: Department
+    department: DeptList
 }
 
 export const DepartmentCard = memo(({ department }: DepartmentCardProps) => {
     return (
-        <li className="faculty-item">
+        <ul className="faculty-item">
             <div className="faculty-name">
                 {department.parent_name} ({department.parent_type})
             </div>
-            <ul className="department-list">
+            <div className="department-list">
                 {department.child.map((child) => (
                     <li key={`${child.child_type}-${child.child_id}`} className="department-item">
                         <a href="#" className="department-link" data-id={child.child_id}>
@@ -19,8 +19,8 @@ export const DepartmentCard = memo(({ department }: DepartmentCardProps) => {
                         </a>
                     </li>
                 ))}
-            </ul>
-        </li>
+            </div>
+        </ul>
     )
 })
 

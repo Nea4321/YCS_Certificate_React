@@ -1,1 +1,1 @@
-export type { Department, DepartmentChild } from './types'
+export type { DeptList, DeptChildList } from './types'

@@ -1,1 +1,0 @@
-export { DepartmentCard } from './DepartmentCard'

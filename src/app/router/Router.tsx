@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { DepartmentListPage } from "@/pages/department-list"
-// 추가 페이지 import
 
 export const Router = () => {
     return (

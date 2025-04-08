@@ -1,4 +1,4 @@
-import { DepartmentList } from "@/widgets/department-list"
+import { DepartmentList } from "./ui"
 
 export const DepartmentListPage = () => {
     return (

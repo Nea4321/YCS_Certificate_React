@@ -1,1 +1,0 @@
-export { DepartmentList } from './DepartmentList'
