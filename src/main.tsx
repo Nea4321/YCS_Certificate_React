@@ -1,6 +1,6 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import "@/app/styles/index.css" // 올바른 경로로 수정
+import "@/app/styles/index.css"
 import { bootstrap, AppProvider, Router } from "@/app"
 
 // 앱 초기화

@@ -5,7 +5,7 @@ interface DepartmentCardProps {
     department: DeptList
 }
 
-export const DepartmentCard = memo(({ department }: DepartmentCardProps) => {
+export const DepartmentSection = memo(({ department }: DepartmentCardProps) => {
     return (
         <ul className="faculty-item">
             <div className="faculty-name">
@@ -25,5 +25,5 @@ export const DepartmentCard = memo(({ department }: DepartmentCardProps) => {
 })
 
 // 디버깅을 위한 displayName 추가
-DepartmentCard.displayName = "DepartmentCard"
+DepartmentSection.displayName = "DepartmentSection"
 

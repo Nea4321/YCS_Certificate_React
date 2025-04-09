@@ -1,1 +1,1 @@
-export { DepartmentCard } from './DepartmentCard.tsx'
+export { DepartmentSection } from './DepartmentSection.tsx'
