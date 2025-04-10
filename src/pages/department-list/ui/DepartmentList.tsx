@@ -1,6 +1,7 @@
 import { departmentApi } from "@/entities/department/api"
 import { DepartmentSection } from "@/features/department/ui"
 import { useDataFetching } from "@/shared/hooks";
+import { deptListStyles } from "../styles";
 
 export const DepartmentList = () => {
 
@@ -12,8 +13,8 @@ export const DepartmentList = () => {
     const renderContent = () => {
         if (loading) {
             return (
-                <div className="loading">
-                    <div className="loading-spinner"></div>
+                <div className={deptListStyles.loading}>
+                    <div className={deptListStyles.loadingSpinner}></div>
                     <p>데이터를 불러오는 중입니다...</p>
                 </div>
             )
@@ -21,9 +22,9 @@ export const DepartmentList = () => {
 
         if (error) {
             return (
-                <div className="error">
+                <div className={deptListStyles.error}>
                     <p>오류: {error}</p>
-                    <button className="retry-button" onClick={() => void refetch()}>
+                    <button className={deptListStyles.retryButton} onClick={() => void refetch()}>
                         다시 시도
                     </button>
                 </div>
@@ -32,14 +33,14 @@ export const DepartmentList = () => {
 
         if (data.length === 0) {
             return (
-                <div className="empty-state">
+                <div className={deptListStyles.emptyState}>
                     <p>표시할 학과 정보가 없습니다.</p>
                 </div>
             )
         }
 
         return (
-            <div className="faculty-list">
+            <div className={deptListStyles.facultyList}>
                 {data.map((dept) => (
                     <DepartmentSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
                 ))}
