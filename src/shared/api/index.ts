@@ -1,2 +1,2 @@
 export { handleApiError } from './utils'
-export { axiosApi } from './axios-api.ts'
+export { axiosApi, isRequestCanceled } from './axios-api.ts'

@@ -8,6 +8,8 @@ export const axiosApi = axios.create({
     },
 })
 
+export const isRequestCanceled = axios.isCancel
+
 // 인터셉터 설정을 모듈 초기화 시 바로 수행
 // 응답 인터셉터
 axiosApi.interceptors.response.use(
@@ -16,6 +18,12 @@ axiosApi.interceptors.response.use(
         return response
     },
     (error) => {
+
+        if (isRequestCanceled(error)) {
+            console.log("Request canceled:", error.message)
+            return Promise.reject(error)
+        }
+
         console.error("API Error:", error)
         // 여기서 401, 403 등 특정 에러에 대한 처리를 할 수 있음
         // 예: 401 에러 시 로그인 페이지로 리다이렉트

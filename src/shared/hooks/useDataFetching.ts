@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { handleApiError } from '@/shared/api';
+import { handleApiError, isRequestCanceled } from '../api';
 
 type DependencyList = ReadonlyArray<unknown>;
 
@@ -59,7 +59,7 @@ export function useDataFetching<T>({
             // 값을 반환하지 않음 (void 반환)
         } catch (error) {
             // AbortError는 정상적인 취소이므로 에러로 처리하지 않음
-            if (error instanceof Error && error.name === 'AbortError') {
+            if (isRequestCanceled(error) || (error instanceof Error && error.name === 'AbortError')) {
                 console.log('Fetch request was cancelled');
                 return;
             }
@@ -101,7 +101,7 @@ export function useDataFetching<T>({
                 }
             } catch (error) {
                 // AbortError는 정상적인 취소이므로 에러로 처리하지 않음
-                if (error instanceof Error && error.name === 'AbortError') {
+                if (isRequestCanceled(error) || (error instanceof Error && error.name === 'AbortError')) {
                     console.log('Fetch request was cancelled');
                     return;
                 }
