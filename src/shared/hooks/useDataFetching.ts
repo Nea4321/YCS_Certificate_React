@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { handleApiError, isRequestCanceled } from '../api';
+import { executeFetch } from '../api';
 
 type DependencyList = ReadonlyArray<unknown>;
 
@@ -43,43 +43,17 @@ export function useDataFetching<T>({
         const abortController = new AbortController();
         abortControllerRef.current = abortController;
 
-        try {
-            setLoading(true);
-            setError(null);
+        await executeFetch({
+            fetchFn,
+            abortController,
+            setLoading,
+            setError,
+            setData,
+            clearError: true, // 수동 리페치에서는 에러를 지움
+            onSuccess,
+            onError,
+        })
 
-            // fetchFn에 signal 전달
-            const result = await fetchFn(abortController.signal);
-
-            // 요청이 취소되지 않았다면 상태 업데이트
-            if (!abortController.signal.aborted) {
-                setData(result);
-                onSuccess?.(result);
-            }
-
-            // 값을 반환하지 않음 (void 반환)
-        } catch (error) {
-            // AbortError는 정상적인 취소이므로 에러로 처리하지 않음
-            if (isRequestCanceled(error) || (error instanceof Error && error.name === 'AbortError')) {
-                console.log('Fetch request was cancelled');
-                return;
-            }
-
-            console.error("Error fetching data:", error);
-            const errorMessage = handleApiError(error);
-
-            // 요청이 취소되지 않았다면 에러 상태 업데이트
-            if (!abortController.signal.aborted) {
-                setError(errorMessage);
-                onError?.(errorMessage);
-            }
-
-            // throw error; - 이 줄 제거
-        } finally {
-            // 요청이 취소되지 않았다면 로딩 상태 업데이트
-            if (!abortController.signal.aborted) {
-                setLoading(false);
-            }
-        }
     }, [fetchFn, onSuccess, onError]);
 
     useEffect(() => {
@@ -87,42 +61,16 @@ export function useDataFetching<T>({
         const abortController = new AbortController();
         abortControllerRef.current = abortController;
 
-        const execute = async () => {
-            try {
-                setLoading(true);
-
-                // fetchFn에 signal 전달
-                const result = await fetchFn(abortController.signal);
-
-                // 요청이 취소되지 않았다면 상태 업데이트
-                if (!abortController.signal.aborted) {
-                    setData(result);
-                    onSuccess?.(result);
-                }
-            } catch (error) {
-                // AbortError는 정상적인 취소이므로 에러로 처리하지 않음
-                if (isRequestCanceled(error) || (error instanceof Error && error.name === 'AbortError')) {
-                    console.log('Fetch request was cancelled');
-                    return;
-                }
-
-                console.error("Error fetching data:", error);
-
-                // 요청이 취소되지 않았다면 에러 상태 업데이트
-                if (!abortController.signal.aborted) {
-                    const errorMessage = handleApiError(error);
-                    setError(errorMessage);
-                    onError?.(errorMessage);
-                }
-            } finally {
-                // 요청이 취소되지 않았다면 로딩 상태 업데이트
-                if (!abortController.signal.aborted) {
-                    setLoading(false);
-                }
-            }
-        };
-
-        void execute();
+        void executeFetch({
+            fetchFn,
+            abortController,
+            setLoading,
+            setError,
+            setData,
+            clearError: false,
+            onSuccess,
+            onError,
+        })
 
         // 클린업 함수에서 요청 취소
         return () => {
