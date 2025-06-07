@@ -41,7 +41,8 @@ export const DepartmentList = () => {
 
         return (
             <div className={deptListStyles.facultyList}>
-                {data.map((dept) => (
+                {
+                data.map((dept) => (
                     <DepartmentSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
                 ))}
             </div>

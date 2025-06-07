@@ -24,6 +24,7 @@ export interface DeptChildList {
   child_type: string
   child_id: number
   child_name: string
+  map_id: number
 }
 
 export interface DeptList {
@@ -31,5 +32,10 @@ export interface DeptList {
   parent_id: number
   parent_name: string
   child: DeptChildList[]
+}
+
+export interface DeptData{
+  dept_map_id: number
+  asdf: string
 }
 

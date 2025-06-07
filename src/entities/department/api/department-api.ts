@@ -1,5 +1,5 @@
 import { axiosApi } from "@/shared/api/axios-api.ts";
-import { Department, DeptList, DeptMap, Faculty, Major } from '../model/types';
+import { Department, DeptData, DeptList, DeptMap, Faculty, Major } from '../model/types';
 
 export const departmentApi = {
 
@@ -25,6 +25,11 @@ export const departmentApi = {
 
   getDeptList: async (signal?: AbortSignal): Promise<DeptList[]> => {
     const response = await axiosApi.get<DeptList[]>("/api/dept/list", { signal })
+    return response.data
+  },
+
+  getDeptData: async (id: number, signal?: AbortSignal): Promise<DeptData> => {
+    const response = await axiosApi.get<DeptData>(`/api/dept/data/${id}`, { signal })
     return response.data
   }
 
