@@ -24,7 +24,7 @@ export interface DeptChildList {
   child_type: string
   child_id: number
   child_name: string
-  map_id: number
+  dept_map_id: number
 }
 
 export interface DeptList {

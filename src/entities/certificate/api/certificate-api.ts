@@ -11,6 +11,12 @@ export const certificateApi = {
     getCertData: async (id: number, signal?: AbortSignal): Promise<CertData> => {
         const response = await axiosApi.get<CertData>(`/api/cert/data/${id}`, { signal })
         return response.data
+    },
+
+    ///
+    getCertDept: async (signal?: AbortSignal): Promise<CertData> => {
+        const response = await axiosApi.get<CertData>("/api/cert/dept", { signal })
+        return response.data
     }
 
 }
