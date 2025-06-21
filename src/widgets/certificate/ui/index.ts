@@ -1,0 +1,1 @@
+export { CertificateDetail } from "./CertificateDetail"

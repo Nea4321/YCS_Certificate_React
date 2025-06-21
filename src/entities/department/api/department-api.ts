@@ -1,5 +1,5 @@
 import { axiosApi } from "@/shared/api/axios-api.ts";
-import { Department, DeptData, DeptList, DeptMap, Faculty, Major } from '../model/types';
+import { Department, DeptMapData, DeptList, DeptMap, Faculty, Major } from '@/entities';
 
 export const departmentApi = {
 
@@ -13,13 +13,13 @@ export const departmentApi = {
     return response.data
   },
 
-  getManager: async (signal?: AbortSignal): Promise<Major> => {
+  getMajor: async (signal?: AbortSignal): Promise<Major> => {
     const response = await axiosApi.get<Major>("/api/dept/major", { signal })
     return response.data
   },
 
-  getDeptMap: async (signal?: AbortSignal): Promise<DeptMap> => {
-    const response = await axiosApi.get<DeptMap>("/api/dept/map", { signal })
+  getDeptMap: async (signal?: AbortSignal): Promise<DeptMap[]> => {
+    const response = await axiosApi.get<DeptMap[]>("/api/dept/map", { signal })
     return response.data
   },
 
@@ -28,8 +28,8 @@ export const departmentApi = {
     return response.data
   },
 
-  getDeptData: async (id: number, signal?: AbortSignal): Promise<DeptData> => {
-    const response = await axiosApi.get<DeptData>(`/api/dept/data/${id}`, { signal })
+  getDeptMapData: async (signal?: AbortSignal): Promise<DeptMapData[]> => {
+    const response = await axiosApi.get<DeptMapData[]>("/api/dept/data", { signal })
     return response.data
   }
 

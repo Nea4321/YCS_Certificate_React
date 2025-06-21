@@ -1,12 +1,13 @@
 import { memo } from "react"
 import type { DeptList } from "@/entities/department/model"
 import { deptListStyles } from "@/pages/department-list/styles";
+import {Link} from "react-router-dom";
 
 interface DepartmentCardProps {
     department: DeptList
 }
 
-export const DepartmentSection = memo(({ department }: DepartmentCardProps) => {
+export const DepartmentListSection = memo(({ department }: DepartmentCardProps) => {
     return (
         <ul className={deptListStyles.facultyItem}>
             <div className={deptListStyles.facultyName}>
@@ -15,9 +16,9 @@ export const DepartmentSection = memo(({ department }: DepartmentCardProps) => {
             <div className={deptListStyles.departmentList}>
                 {department.child.map((child) => (
                     <li key={`${child.child_type}-${child.child_id}`} className={deptListStyles.departmentItem}>
-                        <a href="#" className={deptListStyles.departmentLink} data-id={child.child_id}>
+                        <Link to={`/departments/${child.dept_map_id}`} className={deptListStyles.departmentLink} data-id={child.child_id}>
                             {child.child_name} ({child.child_type})
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </div>
@@ -26,5 +27,5 @@ export const DepartmentSection = memo(({ department }: DepartmentCardProps) => {
 })
 
 // 디버깅을 위한 displayName 추가
-DepartmentSection.displayName = "DepartmentSection"
+DepartmentListSection.displayName = "DepartmentListSection"
 

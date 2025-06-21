@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { DepartmentListPage } from "@/pages/department-list"
+import { DepartmentPage } from "@/pages/department/DepartmentPage.tsx";
+import { CertificatePage } from "@/pages";
 
 export const Router = () => {
     return (
@@ -7,6 +9,8 @@ export const Router = () => {
             <Routes>
                 <Route path="/" element={<Navigate to="/departments" replace />} />
                 <Route path="/departments" element={<DepartmentListPage />} />
+                <Route path="/departments/:id" element={<DepartmentPage />} />
+                <Route path="/certificate/:id" element={<CertificatePage />} />
                 {/* 추가 라우트 정의 */}
                 {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                 {/* <Route path="/certificates" element={<CertificateListPage />} /> */}

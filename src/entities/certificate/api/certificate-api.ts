@@ -1,10 +1,10 @@
 import { axiosApi } from "@/shared/api/axios-api.ts";
-import { Certificate, CertData } from '../model/types';
+import { Certificate, CertData } from '@/entities';
 
 export const certificateApi = {
     
-    getCertificate: async (signal?: AbortSignal): Promise<Certificate> => {
-        const response = await axiosApi.get<Certificate>("/api/cert/cert", { signal })
+    getCertificate: async (signal?: AbortSignal): Promise<Certificate[]> => {
+        const response = await axiosApi.get<Certificate[]>("/api/cert/list", { signal })
         return response.data
     },
 
@@ -12,11 +12,5 @@ export const certificateApi = {
         const response = await axiosApi.get<CertData>(`/api/cert/data/${id}`, { signal })
         return response.data
     },
-
-    ///
-    getCertDept: async (signal?: AbortSignal): Promise<CertData> => {
-        const response = await axiosApi.get<CertData>("/api/cert/dept", { signal })
-        return response.data
-    }
 
 }

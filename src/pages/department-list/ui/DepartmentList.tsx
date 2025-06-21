@@ -1,5 +1,5 @@
 import { departmentApi } from "@/entities/department/api"
-import { DepartmentSection } from "@/features/department/ui"
+import { DepartmentListSection } from "@/features/department/ui"
 import { useDataFetching } from "@/shared/hooks";
 import { deptListStyles } from "../styles";
 
@@ -43,7 +43,7 @@ export const DepartmentList = () => {
             <div className={deptListStyles.facultyList}>
                 {
                 data.map((dept) => (
-                    <DepartmentSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
+                    <DepartmentListSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
                 ))}
             </div>
         )
