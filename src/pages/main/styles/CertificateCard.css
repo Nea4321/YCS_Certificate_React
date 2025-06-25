@@ -1,0 +1,62 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개씩 */
+    gap: 20px;
+    padding: 30px;
+    justify-items: center;
+}
+
+.certificate-card {
+    width: 170px;
+    height: 185px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.certificate-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+
+.certificate-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-image-box {
+    width: 100%;
+    height: 120px;
+    background-color: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.card-image-placeholder {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.card-text-box {
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}

@@ -1,0 +1,20 @@
+export const imageKeywordMap: Record<string, string> = {
+    '정보처리': 'https://www.gklibrarykor.com/wp-content/uploads/2023/10/프로그래밍_코딩-설명.jpg',
+    '건축': '//i.namu.wiki/i/t2io7chOq8-ABLPdKcrT_E33XLdYbLqkbyZHpjss8lDmNmQ2SGTsGCWvNW8pd4yuR2fqbnPDWx6nSLcVuq7DKdwrCOv3Ha38W-ydPv3kQAY8QEjKv2Ihluel5IY43JTvd1L0JBtvQc1CP7YMisJMzQ.webp',
+    '건설': '//i.namu.wiki/i/t2io7chOq8-ABLPdKcrT_E33XLdYbLqkbyZHpjss8lDmNmQ2SGTsGCWvNW8pd4yuR2fqbnPDWx6nSLcVuq7DKdwrCOv3Ha38W-ydPv3kQAY8QEjKv2Ihluel5IY43JTvd1L0JBtvQc1CP7YMisJMzQ.webp',
+    '기계': 'https://pimg.mk.co.kr/meet/neds/2018/07/image_readtop_2018_463585_15323796613398026.jpg',
+    '전기': 'https://www.lgcns.com/wp-content/uploads/2021/11/99DFC14C5B0BDD8D16.png',
+    '토목': 'https://gangsan21.com/wp-content/uploads/2022/04/construction-site-1-scaled.jpg',
+    '식품': 'https://cdn.kormedi.com/wp-content/uploads/2023/03/gettyimages-1437713519-700x487.jpg.webp',
+    '항공': 'https://img0.yna.co.kr/etc/inner/KR/2024/07/22/AKR20240722143700003_01_i_P4.jpg',
+    '가스': 'https://cdn.sanupin-news.kr/news/photo/202108/2010_3151_5650.jpg',
+    '화약': 'https://ext.fmkorea.com/files/attach/new/20200812/486263/974847873/3033666160/3941e5b3bcd42c2f8d1ac7853437cb45.png',
+    '해양': 'https://seesbk.snu.ac.kr/webdata/research/ed0z495zdeaz17fz774z46dz33bz280z450z07azbf.jpg',
+    '공장': 'https://img.seoul.co.kr/img/upload/2023/01/15/SSC_20230115100604.jpg',
+    '철도': 'https://c.pxhere.com/photos/8d/8d/train_track_train_tracks_railway_rails_transport-945907.jpg!d',
+    '금속': 'https://cdn.class101.net/images/479d74e8-c021-4e48-899a-302d56812e47/original',
+    '자동차': '//www.goodmorningvietnam.co.kr/data/photos/20220208/art_16458354244682_c95af1.jpg',
+    '기상': 'https://flexible.img.hani.co.kr/flexible/normal/800/552/imgdb/original/2022/1106/20221106501601.jpg',
+    '미용': 'https://blog.kakaocdn.net/dn/W7dVJ/btqzJFt2PAJ/NgTChG1LmkWHlnmgCYM721/img.jpg',
+    '수질': 'https://cdn.edujin.co.kr/news/photo/202402/45144_88560_4013.png'
+};
