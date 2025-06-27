@@ -1,1 +1,1 @@
-export { CertificateCard } from './CertificateCard.tsx'
+export { Main } from './Main.tsx'

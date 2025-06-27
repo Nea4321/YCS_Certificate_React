@@ -1,0 +1,107 @@
+.container {
+    min-height: 100vh;
+    background-color: var(--background-color);
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 170px); /* 카드 고정 너비 */
+    gap: 30px;
+    padding: 30px;
+    justify-content: center; /* 가운데 정렬 */
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.certificateCard {
+    width: 170px;
+    height: 185px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.certificateLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.certificateCard:hover {
+    transform: translateY(-5px);
+}
+
+.cardImageBox {
+    width: 100%;
+    height: 120px;
+    background-color: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.cardImagePlaceholder {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.cardTextBox {
+    text-align: center;
+    padding: 10px;
+}
+
+.cardTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1000px) {
+    .gridContainer {
+        max-width: 800px; /* 4개 들어갈 수 있는 너비 */
+    }
+}
+
+@media (max-width: 800px) {
+    .gridContainer {
+        max-width: 600px; /* 3개 들어갈 수 있는 너비 */
+        gap: 15px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .gridContainer {
+        max-width: 380px; /* 2개 들어갈 수 있는 너비 */
+        gap: 15px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 400px) {
+    .gridContainer {
+        grid-template-columns: 1fr;
+        max-width: 200px; /* 1개만 들어갈 수 있는 너비 */
+        gap: 15px;
+    }
+
+    .certificateCard {
+        width: 100%;
+        max-width: 170px;
+        margin: 0 auto;
+    }
+}

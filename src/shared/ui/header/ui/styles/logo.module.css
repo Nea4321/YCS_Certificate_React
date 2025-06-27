@@ -1,0 +1,38 @@
+/* 로고 */
+.logo {
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.logoLink {
+  display: block;
+  text-decoration: none;
+}
+
+.logoImage {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  max-width: 120px;
+}
+
+/* 로고 대체 텍스트 스타일 */
+.logo .logo-fallback {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .logo {
+    min-width: 80px;
+  }
+
+  .logoImage {
+    height: 32px;
+    max-width: 80px;
+  }
+}

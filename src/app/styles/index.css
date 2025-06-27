@@ -57,3 +57,29 @@ h1 {
   text-align: center;
 }
 
+/* 레이아웃 전용 스타일 */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 70px; /* 헤더 높이만큼 여백 */
+  transition: padding-top 0.3s ease;
+}
+
+/* 반응형 - 모바일에서는 헤더가 더 작음 */
+@media (max-width: 768px) {
+  .main-content {
+    padding-top: 60px;
+  }
+}
+
+/* 헤더가 숨겨졌을 때 (나중에 구현할 수 있는 기능) */
+.main-content.header-hidden {
+  padding-top: 0;
+}
+
+

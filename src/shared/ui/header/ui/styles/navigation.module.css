@@ -1,0 +1,46 @@
+/* 데스크톱 네비게이션 */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.navLink:hover {
+  color: var(--primary-color);
+  background-color: var(--hover-color);
+}
+
+.activeLink {
+  color: var(--primary-color);
+  background-color: rgba(32, 146, 170, 0.1);
+}
+
+.activeLink::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .desktopNav {
+    display: none;
+  }
+}

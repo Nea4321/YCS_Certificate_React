@@ -1,3 +1,4 @@
 export * from './department-list'
 export * from './department'
 export * from './certificate'
+export * from './main'

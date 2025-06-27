@@ -1,0 +1,1 @@
+export { default as mainStyles } from "./main.module.css"

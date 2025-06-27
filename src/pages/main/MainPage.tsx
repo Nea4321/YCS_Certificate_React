@@ -1,14 +1,10 @@
-import React from 'react';
-import InfiniteCertificateList from '../../features/certificate/ui/InfiniteCertificateList.tsx';
-import Slider from '@/features/certificate/ui/CertificateCategorySlider.tsx';
+import { Main } from "./ui"
+import { mainStyles } from "./styles"
 
-export const MainPage: React.FC = () => {
+export const MainPage = () => {
     return (
-        <React.StrictMode>
-            <Slider />
-            <InfiniteCertificateList />
-        </React.StrictMode>
-    );
-};
-
-export default MainPage;
+        <div className={mainStyles.container}>
+            <Main />
+        </div>
+    )
+}
