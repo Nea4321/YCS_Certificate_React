@@ -24,6 +24,13 @@ export const Navigation = () => {
       >
         학과별 자격증
       </Link>
+        <Link
+            to="/auth"
+            className={`${navigationStyles.navLink} ${
+                isActivePage("/auth") ? navigationStyles.activeLink : ""}`}
+        >
+            로그인
+        </Link>
     </nav>
   )
 }
