@@ -1,0 +1,1 @@
+export { default as CBTExamStyles } from './CBTExamPage.module.css';

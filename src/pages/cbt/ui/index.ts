@@ -1,0 +1,1 @@
+export { CBTExamPage } from './CBTExamPage.tsx'

@@ -1,0 +1,185 @@
+/* 기존 CSS */
+.pageBackground {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    padding: 2rem 4rem;
+}
+
+.contentCard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cbtCategoryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 20px 0 24px;
+}
+
+.categoryCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.categoryCard:hover {
+    background-color: #eef7fb;
+    border-color: #2a8ca3;
+}
+
+.selected {
+    background-color: #e5f3f8;
+    border-color: #2a8ca3;
+    color: #2a8ca3;
+    font-weight: 600;
+}
+
+.categoryName {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.cbtTitle {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    color: #2a8ca3;
+    margin-bottom: 8px;
+}
+
+.cbtSubtitle {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+.cbtExamCard {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+    min-height: 180px;
+}
+
+.cbtStartButton {
+    background-color: #111;
+    color: #fff;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.cbtStartButton:hover {
+    background-color: #333;
+}
+
+.cbtCountInfo {
+    margin-top: 30px;
+    font-size: 15px;
+}
+
+.cbtCountInfo strong {
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: dodgerblue;
+}
+
+.cbtExamGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.examTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.examCategory {
+    font-size: 14px;
+    color: dodgerblue;
+    font-weight: 600;
+    margin-bottom: 36px;
+    min-height: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+.pageButton {
+    padding: 8px 14px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 40px;
+    text-align: center;
+}
+
+.pageButton:hover {
+    background-color: #f1f1f1;
+    color:black;
+}
+
+.pageButton:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.activePage {
+    background-color: #111;
+    color: white;
+    border-color: #111;
+}
+
+@media (max-width: 1200px) {
+    .cbtExamGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .cbtExamGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .cbtExamGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .pageButton {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}

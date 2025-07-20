@@ -4,6 +4,7 @@ import { DepartmentPage } from "@/pages/department/DepartmentPage.tsx";
 import { CertificatePage } from "@/pages";
 import { Header } from "@/shared/ui/header";
 import { MainPage } from "@/pages/main";
+import { CBTExamPage } from "@/pages/cbt/ui";
 import { ScrollToTop } from "@/shared";
 
 export const Router = () => {
@@ -19,6 +20,7 @@ export const Router = () => {
                             <Route path="/departments" element={<DepartmentListPage />} />
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
+                            <Route path="/cbt" element={<CBTExamPage/>} />
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
