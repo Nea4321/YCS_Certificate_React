@@ -4,6 +4,9 @@ import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { authStyles } from "../styles"
+import {GoogleLogin} from "@/features/login";
+
+
 
 interface LoginProps {
     onSwitchToSignup: () => void
@@ -56,25 +59,11 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
 
         try {
             console.log(`${provider} 로그인 시도`)
-            // env쪽 오류는 타입 지정 안 해서 생기는 경고
-            const url = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-                'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-                '&redirect_uri=' + import.meta.env.VITE_GOOGLE_REDIRECT_URI +
-                '&response_type=code' +
-                '&scope=email profile';
-
-            const popupHeight = '500'
-            const popupWidth = '500'
-            let popupOptions = 'height=--popupHeight--,width=--popupWidth--,left=--popupX--,top=--popupY--,scrollbars=yes,resizable=yes'
-
-            popupOptions = popupOptions.replace('--popupHeight--', popupHeight)
-            popupOptions = popupOptions.replace('--popupWidth--', popupWidth)
-
-            window.open(url,'_blank',popupOptions)
-
+            if (provider === "google") GoogleLogin()
+            if (provider === "kakao") GoogleLogin()
+            if (provider === "~~~") GoogleLogin()
 
             console.log(`${provider} 로그인 성공`)
-
         } catch (error) {
             setError(`${provider} 로그인에 실패했습니다.`)
         } finally {
