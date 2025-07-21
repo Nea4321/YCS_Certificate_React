@@ -163,21 +163,23 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
 
                 <section className={departmentDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
-                    <Calendar onClickDay={setSelectedDate} tileContent={tileContent} />
+                    <Calendar className={departmentDetailStyles.calendar} onClickDay={setSelectedDate} tileContent={tileContent}/>
                     {selectedDate && (
-                        <div style={{ marginTop: 20 }}>
-                            <strong>{formatDate(selectedDate)} 일정</strong>
-                            <ul>
+                        <div className={departmentDetailStyles.eventContainer}>
+                            <strong className={departmentDetailStyles.eventTitle}>
+                                {formatDate(selectedDate)} 일정
+                            </strong>
+                            <ul className={departmentDetailStyles.eventList}>
                                 {getEventsForDate(selectedDate).length > 0 ? (
                                     getEventsForDate(selectedDate).map((ev, idx) => (
-                                        <li key={idx}>
+                                        <li key={idx} className={departmentDetailStyles.eventItem}>
                                             <span style={{ color: getCertificateColor(ev.certificate) }}>
                                                 {ev.label} ({ev.certificate})
                                             </span>
                                         </li>
                                     ))
                                 ) : (
-                                    <li>해당 날짜에 자격증 일정이 없습니다.</li>
+                                    <li className={departmentDetailStyles.noEvent}>해당 날짜에 자격증 일정이 없습니다.</li>
                                 )}
                             </ul>
                         </div>
