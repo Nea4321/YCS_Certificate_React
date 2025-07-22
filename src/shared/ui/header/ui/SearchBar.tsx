@@ -2,17 +2,18 @@ import type React from "react"
 import { useState } from "react"
 import { Search } from "lucide-react"
 import { searchBarStyles } from "./styles"
+import { useNavigate } from "react-router-dom"
 
 export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearchFocused, setIsSearchFocused] = useState(false)
-  //const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
       console.log("검색:", searchQuery)
-      // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`/search?keyword=${encodeURIComponent(searchQuery)}`);
     }
   }
 

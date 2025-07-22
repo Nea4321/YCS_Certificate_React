@@ -5,6 +5,8 @@ import { CertificatePage } from "@/pages";
 import { Header } from "@/shared/ui/header";
 import { MainPage } from "@/pages/main";
 import { ScrollToTop } from "@/shared";
+import SearchResult from "@/pages/search/SearchResult"
+
 
 export const Router = () => {
     return (
@@ -22,6 +24,8 @@ export const Router = () => {
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
+                            {/* 검색 기능 */}
+                            <Route path="/search" element={<SearchResult />} />
                             {/* 404 페이지 */}
                             <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>} />
                         </Routes>
