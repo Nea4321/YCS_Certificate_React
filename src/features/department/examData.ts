@@ -1,5 +1,5 @@
 
-// 캘린더 데이터 (하드코딩) 및 캘린더 이벤트 글씨 색상 설정
+// 캘린더 데이터 (하드코딩) 및 캘린더 이벤트 글씨 색상 설정 학과 전용
 
 // startdate : 시작일, enddate : 마감일, label : 캘린더에 뜰 텍스트, type : 지정 이름, certificate : 자격증 명
 export type ExamEvent = {
@@ -66,12 +66,11 @@ export const deptCertMap: Record<number, string[]> = {
 }
 
 // 랜덤 색상 맵핑
-const colorMap: Record<string, string> = {}
+const departmentColorMap: Record<string, string> = {}
 
-export function getCertificateColor(certificate: string): string {
-    if (!colorMap[certificate]) {
-        const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
-        colorMap[certificate] = randomColor
+export function getDepartmentColor(department: string): string {
+    if (!departmentColorMap[department]) {
+        departmentColorMap[department] = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
     }
-    return colorMap[certificate]
+    return departmentColorMap[department]
 }

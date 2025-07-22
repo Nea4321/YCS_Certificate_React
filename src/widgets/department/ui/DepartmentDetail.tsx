@@ -2,7 +2,7 @@ import { memo } from "react"
 import type { DeptMapData } from "@/entities/department/model"
 import { departmentDetailStyles } from "../styles"
 import { Link } from "react-router-dom"
-import { CertificateCalendar } from "@/features/CertificateCalendar"
+import { DepartmentCalendar } from "@/features/department/DepartmentCalendar.tsx"
 
 interface DepartmentDetailProps {
     department: DeptMapData
@@ -44,7 +44,7 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                 <section className={departmentDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
                     {/* dept_map_id를 통해서 해당 학과 자격증 구분 */}
-                    <CertificateCalendar dept_map_id={department.dept_map_id} />
+                    <DepartmentCalendar dept_map_id={department.dept_map_id} />
                 </section>
             </div>
         </div>

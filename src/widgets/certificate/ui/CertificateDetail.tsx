@@ -1,17 +1,17 @@
 import { memo } from "react"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
+import { departmentDetailStyles } from "@/widgets"
+import { CertificateCalendar } from "@/features/certificate/CertificateCalendar.tsx"
 
 interface CertificateDetailProps {
     certificate: CertData
 }
 
 export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) => {
-    // CSS와 HTML 콘텐츠를 분리하고 처리하는 함수
     const processContent = (rawContent: string) => {
         if (!rawContent) return { css: "", html: "자격증 상세 정보가 없습니다." }
 
-        // HTML 엔티티 디코딩
         const content = rawContent
             .replace(/&lt;/g, "<")
             .replace(/&gt;/g, ">")
@@ -19,9 +19,7 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
             .replace(/&quot;/g, '"')
             .replace(/&#39;/g, "'")
 
-        // CSS 부분과 HTML 부분 분리
         const cssEndIndex = content.lastIndexOf("}")
-
         let css = ""
         let html = content
 
@@ -30,16 +28,9 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
             html = content.substring(cssEndIndex + 1).trim()
         }
 
-        // HTML 태그로 감싸기 (제목 부분 처리)
         html = html.replace(/<([^>]+)>/g, "<h3>$1</h3>")
-
-        // 줄바꿈을 <br>로 변환하되, 연속된 공백 처리
         html = html.replace(/\s+/g, " ").trim()
-
-        // 문단 구분 (- 로 시작하는 부분을 리스트로)
         html = html.replace(/- /g, "<br><br>• ")
-
-        // 긴 텍스트를 문단으로 나누기
         html = html.replace(/([.]) ([가-힣A-Z])/g, "$1<br><br>$2")
 
         return { css, html }
@@ -49,7 +40,6 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
 
     return (
         <div className={certificateDetailStyles.container}>
-            {/* CSS 스타일을 동적으로 추가 */}
             {css && (
                 <style
                     dangerouslySetInnerHTML={{
@@ -95,6 +85,12 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
                         className={`${certificateDetailStyles.contents} certificate-content`}
                         dangerouslySetInnerHTML={{ __html: html }}
                     />
+                </section>
+
+                <section className={departmentDetailStyles.calendarSection}>
+                    <h2>자격증 시험 일정</h2>
+                    {/* certificate_name를 통해서 해당 학과 자격증 구분 */}
+                    <CertificateCalendar certificateName={certificate.certificate_name} />
                 </section>
             </div>
         </div>

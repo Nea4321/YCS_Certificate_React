@@ -3,14 +3,14 @@
 
 import { useState } from "react"
 import Calendar from "react-calendar"
-import { ExamEvent, allEvents, deptCertMap, getCertificateColor } from "./examData"
-import { departmentDetailStyles } from "../widgets/department/styles"
+import { ExamEvent, allEvents, deptCertMap, getDepartmentColor } from "./examData.ts"
+import { departmentDetailStyles } from "../../widgets/department/styles"
 
 interface CertificateCalendarProps {
     dept_map_id: number
 }
 
-export function CertificateCalendar({ dept_map_id }: CertificateCalendarProps) {
+export function DepartmentCalendar({ dept_map_id }: CertificateCalendarProps) {
 
     // 클릭한 날짜를 저장 및 상태 관리
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -38,6 +38,7 @@ export function CertificateCalendar({ dept_map_id }: CertificateCalendarProps) {
     }
 
     // 주어진 날짜에 해당하는 자격증 시험 일정만 나타냄
+    // 같은 날짜인 자격증 확인
     const getEventsForDate = (date: Date): ExamEvent[] => {
         return getFilteredEvents().filter((ev) => isDateInRange(date, ev.startdate, ev.enddate))
     }
@@ -49,7 +50,7 @@ export function CertificateCalendar({ dept_map_id }: CertificateCalendarProps) {
             return (
                 <div>
                     {events.map((ev, idx) => (
-                        <div key={idx} style={{ fontSize: "0.7rem", color: getCertificateColor(ev.certificate) }}>
+                        <div key={idx} style={{ fontSize: "0.7rem", color: getDepartmentColor(ev.certificate) }}>
                             {ev.label}
                         </div>
                     ))}
@@ -71,7 +72,7 @@ export function CertificateCalendar({ dept_map_id }: CertificateCalendarProps) {
                         {getEventsForDate(selectedDate).length > 0 ? (
                             getEventsForDate(selectedDate).map((ev, idx) => (
                                 <li key={idx} className={departmentDetailStyles.eventItem}>
-                                    <span style={{ color: getCertificateColor(ev.certificate) }}>
+                                    <span style={{ color: getDepartmentColor(ev.certificate) }}>
                                         {ev.label} ({ev.certificate})
                                     </span>
                                 </li>

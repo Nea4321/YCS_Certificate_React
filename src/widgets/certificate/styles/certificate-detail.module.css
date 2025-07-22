@@ -126,3 +126,128 @@
         font-size: 1em;
     }
 }
+
+/*캘린더 디자인 추가*/
+.calendar {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* react-calendar 내부 조정 */
+.calendar .react-calendar {
+    border: none;
+    font-size: 1.05rem;
+}
+
+.calendar .react-calendar__navigation {
+    margin-bottom: 16px;
+}
+
+.calendar .react-calendar__navigation button {
+    background: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.calendar .react-calendar__navigation button:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.calendar .react-calendar__month-view__weekdays {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: #666;
+    padding-bottom: 8px;
+}
+
+.calendar .react-calendar__tile {
+    height: 64px;
+    max-width: 64px;
+    background-color: #f9f9f9;
+    margin: 4px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    color: #333;
+    font-weight: 500;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.calendar .react-calendar__tile--now {
+    background-color: #e3f1ff;
+    border: 2px solid var(--primary-color);
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.calendar .react-calendar__tile--active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);
+}
+
+.calendar .react-calendar__tile:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.eventContainer {
+    margin-top: 30px;
+    padding: 24px;
+    background-color: #fdfdff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(74, 144, 226, 0.1);
+}
+
+.eventTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 18px;
+    border-left: 5px solid var(--primary-color);
+    padding-left: 12px;
+}
+
+.eventList {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eventItem {
+    background-color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.eventItem:hover {
+    background-color: #f0f8ff;
+}
+
+.noEvent {
+    color: #999999;
+    font-style: italic;
+    text-align: center;
+    padding: 20px 0;
+}
