@@ -1,12 +1,13 @@
-import {BrowserRouter, Routes, Route, useParams} from "react-router-dom"
+import {BrowserRouter, Routes, Route} from "react-router-dom"
 import { DepartmentListPage } from "@/pages/department-list"
 import { DepartmentPage } from "@/pages/department/DepartmentPage.tsx";
 import { CertificatePage } from "@/pages";
-import { AuthPage } from "@/pages/Auth/AuthPage.tsx";
+import { Auth } from "@/pages/Auth/Auth.tsx";
+import { SocialLogin } from "@/pages/sociallogin";
 import { Header } from "@/shared/ui/header";
 import { MainPage } from "@/pages/main";
 import { ScrollToTop } from "@/shared";
-import {SocialLoginHandler} from "@/features/login";
+
 
 
 export const Router = () => {
@@ -22,8 +23,8 @@ export const Router = () => {
                             <Route path="/departments" element={<DepartmentListPage />} />
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
-                            <Route path="/auth" element={<AuthPage />} />    /// 로그인
-                            <Route path="/google_login" element={<SocialLoginHandler socialType={'google'} />} />    ///구글 로그인 확인
+                            <Route path="/auth" element={<Auth />} />    /// 로그인
+                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
@@ -34,12 +35,5 @@ export const Router = () => {
                 </div>
         </BrowserRouter>
     )
-
-    /// 구글 로그인 확인
-    // function SocialLoginHandlerWrapper() {
-    //     const { type } = useParams()
-    //     if (!type) return null
-    //     return <SocialLoginHandler socialType={type} />
-    // }
 }
 

@@ -1,3 +1,3 @@
 export * from "./ui"
 export * from "./styles"
-export { AuthPage } from "./AuthPage"
+export { Auth } from "./Auth.tsx"

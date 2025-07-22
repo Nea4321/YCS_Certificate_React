@@ -1,8 +1,7 @@
-"use client"
 import { useState } from "react"
-import { Login } from "./Login"
-import { Signup } from "./Signup"
-import { authStyles } from "../styles"
+import { Login } from "./ui/Login"
+import { Signup } from "./ui/Signup"
+import { authStyles } from "./styles"
 
 export const Auth = () => {
     const [currentView, setCurrentView] = useState<"login" | "signup">("login")

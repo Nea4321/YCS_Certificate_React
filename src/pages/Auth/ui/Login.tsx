@@ -47,6 +47,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
             console.log("로그인 성공:", { email: formData.email })
             navigate("/dashboard")
         } catch (error) {
+            console.error(error)
             setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.")
         } finally {
             setLoading(false)
@@ -65,6 +66,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
 
             console.log(`${provider} 로그인 성공`)
         } catch (error) {
+            console.error(error)
             setError(`${provider} 로그인에 실패했습니다.`)
         } finally {
             setLoading(false)

@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
 import { authStyles } from "../styles"
@@ -79,6 +77,7 @@ export const Signup = ({ onSwitchToLogin }: SignupProps) => {
                 onSwitchToLogin()
             }, 3000)
         } catch (err) {
+            console.log("auth err : " + err)
             setError("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.")
         } finally {
             setLoading(false)
