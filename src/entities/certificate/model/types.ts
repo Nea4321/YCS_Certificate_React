@@ -1,7 +1,8 @@
 export interface Certificate {
     certificate_id: number,
     certificate_name: string,
-    jmcd: string
+    jmcd: string,
+    category?: string
 }
 
 export interface CertData {
