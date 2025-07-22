@@ -13,7 +13,7 @@ export const Navigation = () => {
       <Link
         to="/"
         className={`${navigationStyles.navLink} ${
-          isActivePage("/") && !isActivePage("/departments") ? navigationStyles.activeLink : ""
+          isActivePage("/") && !isActivePage("/departments") && !isActivePage("/cbt") ? navigationStyles.activeLink : ""
         }`}
       >
         홈
@@ -24,6 +24,12 @@ export const Navigation = () => {
       >
         학과별 자격증
       </Link>
+        <Link
+            to="/cbt"
+            className={`${navigationStyles.navLink} ${isActivePage("/cbt") ? navigationStyles.activeLink : ""}`}
+        >
+            CBT
+        </Link>
     </nav>
   )
 }
