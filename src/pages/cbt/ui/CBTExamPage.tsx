@@ -121,6 +121,14 @@ export const CBTExamPage: React.FC = () => {
                     ) {
                         return { ...cert, category: '환경' };
                     }
+                    if (
+                        cert.certificate_name.includes('사회조사') ||
+                        cert.certificate_name.includes('소비자') ||
+                        cert.certificate_name.includes('컨벤션') ||
+                        cert.certificate_name.includes('폐기물')
+                    ) {
+                        return { ...cert, category: '경영' };
+                    }
 
                     return cert;
                 });

@@ -23,6 +23,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ selectedCategory
         { name: '안전' },
         { name: '항공' },
         { name: '환경' },
+        {name: '경영'}
     ];
 
     return (
