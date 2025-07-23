@@ -66,7 +66,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease;
     min-height: 180px;
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -156,3 +155,58 @@
     border-color: #111;
 }
 
+@media (min-width: 1750px) {
+    .cbtCategoryGrid {
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 16px;
+    }
+    .categoryName {
+        font-size: 22px;
+    }
+    .cbtTitle {
+        font-size: 44px;
+    }
+    .examTitle {
+        font-size: 24px;
+    }
+    .examCategory {
+        font-size: 22px;
+    }
+    .cbtCountInfo{
+        font-size: 28px;
+    }
+    .cbtCountInfo strong {
+        font-size: 28px;
+    }
+    .cbtExamGrid {
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    }
+}
+
+@media (max-width: 1280px) {
+    .cbtCategoryGrid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+    }
+    .categoryName {
+        font-size: 14px;
+    }
+    .cbtTitle {
+        font-size: 28px;
+    }
+    .examTitle {
+        font-size: 16px;
+    }
+    .examCategory {
+        font-size: 14px;
+    }
+   .cbtCountInfo{
+       font-size: 14px;
+   }
+    .cbtCountInfo strong {
+        font-size: 14px;
+    }
+    .cbtExamGrid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
