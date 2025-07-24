@@ -2,7 +2,7 @@ import { memo } from "react"
 import type { DeptMapData } from "@/entities/department/model"
 import { departmentDetailStyles } from "../styles"
 import { Link } from "react-router-dom"
-import { DepartmentCalendar } from "@/features/department/DepartmentCalendar.tsx"
+import { DepartmentCalendar } from "@/features/department/DepartmentCalendar/DepartmentCalendar.tsx"
 
 interface DepartmentDetailProps {
     department: DeptMapData

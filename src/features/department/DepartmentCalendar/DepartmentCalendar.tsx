@@ -4,7 +4,7 @@
 import { useState } from "react"
 import Calendar from "react-calendar"
 import { ExamEvent, allEvents, deptCertMap, getDepartmentColor } from "./examData.ts"
-import { departmentDetailStyles } from "../../widgets/department/styles"
+import { departmentDetailStyles } from "../../../widgets/department/styles"
 
 interface CertificateCalendarProps {
     dept_map_id: number

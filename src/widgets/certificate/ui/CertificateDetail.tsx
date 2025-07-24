@@ -2,7 +2,7 @@ import { memo } from "react"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
-import { CertificateCalendar } from "@/features/certificate/CertificateCalendar.tsx"
+import { CertificateCalendar } from "@/features/certificate/CertificateCalendar/CertificateCalendar.tsx"
 
 interface CertificateDetailProps {
     certificate: CertData
