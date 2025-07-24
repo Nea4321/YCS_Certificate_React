@@ -2,13 +2,15 @@ import { Link, useLocation } from "react-router-dom"
 import { navigationStyles } from "./styles"
 
 export const Navigation = () => {
+
   const location = useLocation()
     // 메인페이지에 이메일을 이런식으로 표시 하기위해 가져오는 임시 코드 -> 지울 예정
     const email = location.state?.email;
 
-  const isActivePage = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path)
-  }
+
+    const isActivePage = (path: string) => {
+        return location.pathname === path || location.pathname.startsWith(path)
+    }
 
   return (
     <nav className={navigationStyles.desktopNav}>
