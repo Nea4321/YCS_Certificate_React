@@ -9,6 +9,7 @@
   z-index: 1000;
   transition: all 0.3s ease;
   transform: translateY(0);
+  overflow: visible;
 }
 
 .header.scrolled {

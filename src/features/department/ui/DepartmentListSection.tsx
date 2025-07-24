@@ -15,8 +15,10 @@ export const DepartmentListSection = memo(({ department }: DepartmentCardProps) 
             </div>
             <div className={deptListStyles.departmentList}>
                 {department.child.map((child) => (
-                    <li key={`${child.child_type}-${child.child_id}`} className={deptListStyles.departmentItem}>
-                        <Link to={`/departments/${child.dept_map_id}`} className={deptListStyles.departmentLink} data-id={child.child_id}>
+                    <li key={`${child.child_type}-${child.child_id}`}
+                        className={deptListStyles.departmentItem}>
+                        <Link to={`/departments/${child.dept_map_id}`}
+                              className={deptListStyles.departmentLink} data-id={child.child_id}>
                             {child.child_name} ({child.child_type})
                         </Link>
                     </li>
