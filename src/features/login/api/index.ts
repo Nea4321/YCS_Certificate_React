@@ -1,1 +1,1 @@
-export { GetToken } from './GetToken.tsx'
+export { SocialLoginRequest } from './SocialLoginRequest.tsx'

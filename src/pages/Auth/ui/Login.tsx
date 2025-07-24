@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -21,6 +19,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
     const [error, setError] = useState("")
     const navigate = useNavigate()
 
+    /// 입력이 발생하면 { ex) cjh@55 -> email : cjh@55 } 로 변환 후 formData에 최신화
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({
@@ -30,6 +29,12 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
         if (error) setError("")
     }
 
+    /**
+     * 로그인 정보 전달.
+     *
+     * 기존 : 로그인 하면 처리기능 대신 1.5초 대기함.<br>
+     * 개선 예정 : 로그인 처리 기능 (입력한 정보가 DB에 있는지 확인) 넣은 후 기다리는 함수 삭제
+     * */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -45,15 +50,17 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
             // 실제 로그인 API 호출 시뮬레이션
             await new Promise((resolve) => setTimeout(resolve, 1500))
             console.log("로그인 성공:", { email: formData.email })
-            navigate("/dashboard")
+            // 로그인 하면 임시적으로 email값 전달 -> 이동된 순간만 사용 가능함 -> 삭제 예정
+            navigate("/", { state: { email: formData.email } });
         } catch (error) {
-            console.error(error)
+            console.error("login error : " + error)
             setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.")
         } finally {
             setLoading(false)
         }
     }
 
+    /// 소셜 로그인 하는 곳.
     const handleSocialLogin = async (provider: string) => {
         setLoading(true)
         setError("")
@@ -62,7 +69,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
             console.log(`${provider} 로그인 시도`)
             if (provider === "google") GoogleLogin()
             if (provider === "kakao") GoogleLogin()
-            if (provider === "~~~") GoogleLogin()
+            if (provider === "github") GoogleLogin()
 
             console.log(`${provider} 로그인 성공`)
         } catch (error) {

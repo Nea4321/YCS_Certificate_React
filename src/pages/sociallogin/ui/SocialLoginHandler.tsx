@@ -1,14 +1,14 @@
 import {useCallback, useEffect, useState} from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
-import {GetToken} from "@/features/login";
+import {SocialLoginRequest} from "@/features/login";
 
 /**
  * 소셜 로그인 후 콜백 처리하는 컴포넌트
  *
  * 팝업창에서 로그인을 하고나면 정상적으로 처리가 됬는지 확인이 필요함 -> 클라이언트 리다이렉트 주소가 그 역할을 함. (.env 안에 있는 거)
  * 확인하려면 어디에서 로그인 했는지, 거기에서 제공하는 코드 [ socialType(string), code(string) ] 이 필요함.
- * url 에서 해당  `socialType`과 `code`를 얻어서 확인을 하는 함수에 전달을 함.
- * 함수의 반환값("status")에 따라 로그인 처리 상태를 렌더링 하는게 이 사이트의 최종 목적.
+ * url 에서 해당  `socialType`과 `code`를 얻어서 확인을 하는 함수(hadlelogin)에 전달을 함.
+ * 함수의 반환값("status")에 따라 로그인 처리 상태를 렌더링 하는게 이 컴포넌트의 최종 목적.
  *
  *  @component
  *  @example
@@ -40,12 +40,14 @@ export const SocialLoginHandler = () => {
      * */
     const handleLogin = useCallback(async (socialType: string, code: string) => {
         try {
-            const data = await GetToken({ code, socialType })
+            const data = await SocialLoginRequest({ code, socialType })
             setStatus('SUCCESS')
             document.cookie = `user-key=${data.id}; path=/`
             window.opener.location.replace('/')
             window.close()
         } catch (error) {
+            // 아래 두 코드는 팝업창을 실행한 부모창을 '/' 으로 이동 하고 팝업창을 닫는 코드임.
+            // 로그인이 정상적으로 이루어 졌을때만 실행 되어야 하지만 백엔드 개발 덜 되서 실패 할 때도 꺼지게 만듬.
             window.opener.location.replace('/')
             window.close()
             console.error('Login error:', error)
@@ -62,7 +64,6 @@ export const SocialLoginHandler = () => {
      * .catch() 쓴 이유 -> handleLogin() 이 async(비동기) 함수임 -> promise객체를 반환 -> promise 처리가 없음 -> 예외 처리로 경고 제거
      *
      * */
-
     useEffect(() => {
         if (code && socialType) { handleLogin(socialType, code).catch(error => console.error(error)) }
     }, [code, socialType, handleLogin])
