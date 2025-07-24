@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Search } from "lucide-react"
 import { searchBarStyles } from "./styles"
 import { useNavigate } from "react-router-dom"
-import { AutocompleteList } from "./AutocompleteList"
+import { AutocompleteList } from "@/shared"
 import { axiosApi } from "@/shared/api/axios-api"
 
 export const SearchBar = () => {
