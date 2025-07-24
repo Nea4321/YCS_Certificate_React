@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { DepartmentListPage } from "@/pages/department-list"
 import { DepartmentPage } from "@/pages/department/DepartmentPage.tsx";
 import { CertificatePage } from "@/pages";
+import { Auth } from "@/pages/Auth/Auth.tsx";
+import { SocialLogin } from "@/pages/sociallogin";
+import { DashBoard } from "@/pages/dashboard/DashBoard";
 import { Header } from "@/shared/ui/header";
 import { MainPage } from "@/pages/main";
 import { CBTExamPage } from "@/pages/cbt/ui";
@@ -21,6 +24,9 @@ export const Router = () => {
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
                             <Route path="/cbt" element={<CBTExamPage/>} />
+                            <Route path="/auth" element={<Auth />} />    /// 로그인
+                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
+                            <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}

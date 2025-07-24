@@ -1,0 +1,385 @@
+/* 메인 컨테이너 */
+.container {
+  min-height: 100vh;
+  background-color: var(--background-color, #f8f9fa);
+}
+
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 420px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 폼 스타일 */
+.form {
+  padding: 2.5rem;
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* 메시지 스타일 */
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error {
+  background-color: #fed7d7;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+.success {
+  background-color: #c6f6d5;
+  color: #2f855a;
+  border: 1px solid #9ae6b4;
+}
+
+/* 폼 필드 */
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.input {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input:disabled {
+  background-color: #f7fafc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input::placeholder {
+  color: #a0aec0;
+}
+
+/* 제출 버튼 */
+.submitButton {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+/* 로딩 스타일 */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 구분선 */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #e2e8f0;
+}
+
+.dividerText {
+  background-color: white;
+  color: #718096;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  position: relative;
+}
+
+/* 소셜 로그인 버튼 */
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.socialButton {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: white;
+  color: #4a5568;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.socialButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.socialButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.socialIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.googleButton:hover:not(:disabled) {
+  border-color: #4285f4;
+  background-color: #f8f9ff;
+}
+
+.githubButton {
+  color: #24292e;
+}
+
+.githubButton:hover:not(:disabled) {
+  border-color: #24292e;
+  background-color: #f6f8fa;
+}
+
+.kakaoButton {
+  background-color: #fee500;
+  border-color: #fee500;
+  color: #3c1e1e;
+}
+
+.kakaoButton:hover:not(:disabled) {
+  background-color: #fdd835;
+  border-color: #fdd835;
+}
+
+/* 회원가입 프롬프트 */
+.signupPrompt {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.signupText {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.signupLink {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+}
+
+.signupLink:hover:not(:disabled) {
+  color: #5a67d8;
+}
+
+.signupLink:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 1rem 0.5rem;
+  }
+
+  .form {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .formFields {
+    gap: 1.25rem;
+  }
+
+  .input {
+    padding: 0.75rem;
+  }
+
+  .submitButton {
+    padding: 0.875rem;
+    font-size: 1rem;
+  }
+
+  .socialButton {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .socialIcon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .formWrapper {
+    background-color: #2d3748;
+  }
+
+  .title {
+    color: #f7fafc;
+  }
+
+  .subtitle {
+    color: #a0aec0;
+  }
+
+  .label {
+    color: #e2e8f0;
+  }
+
+  .input {
+    background-color: #4a5568;
+    border-color: #718096;
+    color: #f7fafc;
+  }
+
+  .input::placeholder {
+    color: #a0aec0;
+  }
+
+  .signupText {
+    color: #a0aec0;
+  }
+
+  .signupPrompt {
+    border-top-color: #4a5568;
+  }
+
+  .divider::before {
+    background-color: #4a5568;
+  }
+
+  .dividerText {
+    background-color: #2d3748;
+    color: #a0aec0;
+  }
+
+  .socialButton {
+    background-color: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+  }
+
+  .kakaoButton {
+    background-color: #fee500;
+    border-color: #fee500;
+    color: #3c1e1e;
+  }
+}

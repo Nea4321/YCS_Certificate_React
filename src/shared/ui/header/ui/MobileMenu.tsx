@@ -39,6 +39,7 @@ export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
           >
             홈
           </Link>
+
           <Link
             to="/departments"
             className={`${mobileMenuStyles.mobileNavLink} ${
@@ -48,6 +49,17 @@ export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
           >
             학과별 자격증
           </Link>
+
+          <Link
+              to="/auth"
+              className={`${mobileMenuStyles.mobileNavLink}${
+                  isActivePage("/departments") ? mobileMenuStyles.activeLink : ""
+              }`}
+              onClick={handleLinkClick}
+          >
+            로그인
+          </Link>
+
         </div>
       </div>
 
