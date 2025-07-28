@@ -2,7 +2,7 @@ import { memo } from "react"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
-import { CertificateCalendar } from "@/features/certificate/CertificateCalendar/CertificateCalendar.tsx"
+import { CalendarComponent } from "@/features/calendar/CalendarComponent.tsx"
 
 interface CertificateDetailProps {
     certificate: CertData
@@ -79,18 +79,19 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
             </div>
 
             <div className={certificateDetailStyles.content}>
+
+                <section className={departmentDetailStyles.calendarSection}>
+                    <h2>자격증 시험 일정</h2>
+                    {/* certificate_name를 통해서 해당 학과 자격증 구분 */}
+                    <CalendarComponent certificateName={certificate.certificate_name} />
+                </section>
+
                 <section className={certificateDetailStyles.contentsSection}>
                     <h2>자격증 정보</h2>
                     <div
                         className={`${certificateDetailStyles.contents} certificate-content`}
                         dangerouslySetInnerHTML={{ __html: html }}
                     />
-                </section>
-
-                <section className={departmentDetailStyles.calendarSection}>
-                    <h2>자격증 시험 일정</h2>
-                    {/* certificate_name를 통해서 해당 학과 자격증 구분 */}
-                    <CertificateCalendar certificateName={certificate.certificate_name} />
                 </section>
             </div>
         </div>
