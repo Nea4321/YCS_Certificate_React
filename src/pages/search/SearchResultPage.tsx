@@ -28,7 +28,7 @@ export default function SearchResultPage() {
                     return (
                         name.includes(keyword) || // 일반 포함
                         name.toLowerCase().includes(keyword.toLowerCase()) || // 영문
-                        choseong.startsWith(deKeyword) //초성
+                        choseong.includes(deKeyword) //초성
                     )
                 })
                 setResults(filtered)
