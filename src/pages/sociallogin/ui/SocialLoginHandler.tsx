@@ -44,7 +44,7 @@ export const SocialLoginHandler = () => {
         try {
             const data = await SocialLoginRequest({ code, socialType })
             setStatus('SUCCESS')
-            document.cookie = `user-key=${data.id}; path=/`
+            document.cookie = `user-key=${data.email}; path=/`
             window.opener.location.replace('/')
             window.close()
         } catch (error) {
