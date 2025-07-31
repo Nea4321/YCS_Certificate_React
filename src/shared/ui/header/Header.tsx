@@ -1,15 +1,14 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Logo, SearchBar, Navigation, MobileMenu } from "./ui"
 import { headerStyles } from "./styles"
+import {useLocation} from "react-router-dom";
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
+  const location = useLocation()
   const lastScrollY = useRef(0)
 
   // 스크롤 감지 및 헤더 숨기기/보이기
@@ -46,6 +45,8 @@ export const Header: React.FC = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
+  // 로그인 화면이면 헤더 없음
+  if(location.pathname === "/auth") {return null}
 
   return (
     <header

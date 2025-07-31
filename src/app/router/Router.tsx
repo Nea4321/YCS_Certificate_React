@@ -11,6 +11,7 @@ import { MainPage } from "@/pages/main";
 import { CBTExamPage } from "@/pages/cbt/ui";
 import { ScrollToTop } from "@/shared";
 import { SearchResultPage } from "@/pages/search"
+import {MainLayout} from "@/shared/layouts";
 
 
 export const Router = () => {
@@ -19,8 +20,9 @@ export const Router = () => {
             <ScrollToTop />
                 <div className="app-layout">
                     <Header />
-                    <main className="main-content">
-                        <Routes>
+                    {/*로그인 페이지면 헤더 공간 없앰.*/}
+                    <MainLayout>
+                    <Routes>
                             {/*<Route path="/" element={<Navigate to="/departments" replace />} />*/}
                             <Route path="/" element={<MainPage />} />
                             {/*캘린더 페이지 라우터*/}
@@ -40,7 +42,7 @@ export const Router = () => {
                             {/* 404 페이지 */}
                             <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>} />
                         </Routes>
-                    </main>
+                    </MainLayout>
                 </div>
         </BrowserRouter>
     )
