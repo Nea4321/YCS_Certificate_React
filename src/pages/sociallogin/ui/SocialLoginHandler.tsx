@@ -48,10 +48,6 @@ export const SocialLoginHandler = () => {
             window.opener.location.replace('/')
             window.close()
         } catch (error) {
-            // 아래 두 코드는 팝업창을 실행한 부모창을 '/' 으로 이동 하고 팝업창을 닫는 코드임.
-            // 로그인이 정상적으로 이루어 졌을때만 실행 되어야 하지만 백엔드 개발 덜 되서 실패 할 때도 꺼지게 만듬.
-            window.opener.location.replace('/')
-            window.close()
             console.error('Login error:', error)
             setStatus('FAIL')
         }

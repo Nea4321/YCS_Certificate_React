@@ -18,6 +18,6 @@ interface SocialLoginResponse {
  * 받은 액세스 토큰으로 유저 정보를 얻어오는게 이 함수 최종 목적.
  * */
 export const SocialLoginRequest = async ({ code, socialType }: SocialLoginRequest):Promise<SocialLoginResponse> => {
-    const res = await axios.post('/test', { code, socialType })
+    const res = await axios.post('/api/test/login', { socialType,code })
     return res.data
 }
