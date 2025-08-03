@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Calendar from "react-calendar"
-import { allEvents, deptCertUrlMap, certUrlMap, getColor } from "./examData2.ts"
+import { allEvents, deptCertUrlMap, certUrlMap, getColor } from "@/features/calendar/examData2.ts"
 import styles from "@/widgets/certificate/styles/certificate-detail.module.css"
 
 interface CalendarProps {
@@ -8,7 +8,7 @@ interface CalendarProps {
     dept_map_id?: number
 }
 
-export function CalendarComponent({ certificateName, dept_map_id }: CalendarProps) {
+export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) {
 
     // 클릭한 날짜를 저장 및 상태 관리
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)

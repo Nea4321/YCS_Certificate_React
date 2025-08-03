@@ -17,32 +17,31 @@ export const Router = () => {
     return (
         <BrowserRouter>
             <ScrollToTop />
-                <div className="app-layout">
-                    <Header />
-                    <main className="main-content">
-                        <Routes>
-                            {/*<Route path="/" element={<Navigate to="/departments" replace />} />*/}
-                            <Route path="/" element={<MainPage />} />
-                            {/*캘린더 페이지 라우터*/}
-                            <Route path="/calendar" element={<DepartmentCalendarPage/>} />
-                            <Route path="/departments" element={<DepartmentListPage />} />
-                            <Route path="/departments/:id" element={<DepartmentPage />} />
-                            <Route path="/certificate/:id" element={<CertificatePage />} />
-                            <Route path="/cbt" element={<CBTExamPage/>} />
-                            <Route path="/auth" element={<Auth />} />    /// 로그인
-                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
-                            <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지
-                            {/* 추가 라우트 정의 */}
-                            {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
-                            {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
-                            {/* 검색 기능 */}
-                            <Route path="/search" element={<SearchResultPage />} />
-                            {/* 404 페이지 */}
-                            <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>} />
-                        </Routes>
-                    </main>
-                </div>
+            <div className="app-layout">
+                <Header />
+                <main className="main-content">
+                    <Routes>
+                        {/*<Route path="/" element={<Navigate to="/departments" replace />} />*/}
+                        <Route path="/" element={<MainPage />} />
+                        {/*캘린더 페이지 라우터*/}
+                        <Route path="/calendar" element={<DepartmentCalendarPage/>} />
+                        <Route path="/departments" element={<DepartmentListPage />} />
+                        <Route path="/departments/:id" element={<DepartmentPage />} />
+                        <Route path="/certificate/:id" element={<CertificatePage />} />
+                        <Route path="/cbt" element={<CBTExamPage/>} />
+                        <Route path="/auth" element={<Auth />} />    /// 로그인
+                        <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
+                        <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지
+                        {/* 추가 라우트 정의 */}
+                        {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
+                        {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
+                        {/* 검색 기능 */}
+                        <Route path="/search" element={<SearchResultPage />} />
+                        {/* 404 페이지 */}
+                        <Route path="*" element={<div>페이지를 찾을 수 없습니다.</div>} />
+                    </Routes>
+                </main>
+            </div>
         </BrowserRouter>
     )
 }
-

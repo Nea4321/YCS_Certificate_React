@@ -1,14 +1,24 @@
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
-import { CalendarComponent } from "@/features/calendar/CalendarComponent.tsx"
+import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx"
+import { certificateApi } from "@/entities"
 
 interface CertificateDetailProps {
     certificate: CertData
 }
 
-export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) => {
+export const CertificateDetail = memo(({ certificate: initialCertificate }: CertificateDetailProps) => {
+    const { id } = useParams()
+    const [certificate, setCertificate] = useState<CertData | null>(initialCertificate ?? null)
+
+    useEffect(() => {
+        if (!id || initialCertificate) return
+        certificateApi.getCertData(Number(id)).then(setCertificate)
+    }, [id, initialCertificate])
+
     const processContent = (rawContent: string) => {
         if (!rawContent) return { css: "", html: "자격증 상세 정보가 없습니다." }
 
@@ -36,7 +46,7 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
         return { css, html }
     }
 
-    const { css, html } = processContent(certificate.contents || "")
+    const { css, html } = processContent(certificate?.contents || "")
 
     return (
         <div className={certificateDetailStyles.container}>
@@ -44,46 +54,44 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
                 <style
                     dangerouslySetInnerHTML={{
                         __html: `
-              .certificate-content {
-                font-size: 1.1em;
-                font-family: "Malgun Gothic", system-ui, sans-serif;
-                color: var(--text-color);
-                line-height: 1.8;
-              }
-              .certificate-content h3 {
-                color: var(--primary-color);
-                font-size: 1.3em;
-                font-weight: bold;
-                margin: 1.5em 0 1em 0;
-                padding: 10px 15px;
-                background-color: var(--certificate-bg);
-                border-left: 4px solid var(--primary-color);
-                border-radius: 4px;
-              }
-              .certificate-content p {
-                margin-bottom: 1em;
-                line-height: 1.8;
-              }
-              .certificate-content br + br {
-                display: block;
-                margin: 0.5em 0;
-              }
-            `,
+          .certificate-content {
+            font-size: 1.1em;
+            font-family: "Malgun Gothic", system-ui, sans-serif;
+            color: var(--text-color);
+            line-height: 1.8;
+          }
+          .certificate-content h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 1.5em 0 1em 0;
+            padding: 10px 15px;
+            background-color: var(--certificate-bg);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+          }
+          .certificate-content p {
+            margin-bottom: 1em;
+            line-height: 1.8;
+          }
+          .certificate-content br + br {
+            display: block;
+            margin: 0.5em 0;
+          }
+        `,
                     }}
                 />
             )}
 
             <div className={certificateDetailStyles.header}>
-                <h1 className={certificateDetailStyles.title}>{certificate.certificate_name}</h1>
-                <div className={certificateDetailStyles.category}>{certificate.infogb}</div>
+                <h1 className={certificateDetailStyles.title}>{certificate?.certificate_name}</h1>
+                <div className={certificateDetailStyles.category}>{certificate?.infogb}</div>
             </div>
 
             <div className={certificateDetailStyles.content}>
-
                 <section className={departmentDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
-                    {/* certificate_name를 통해서 해당 학과 자격증 구분 */}
-                    <CalendarComponent certificateName={certificate.certificate_name} />
+                    <CalendarWidget certificateName={certificate?.certificate_name || ""} />
                 </section>
 
                 <section className={certificateDetailStyles.contentsSection}>
@@ -97,5 +105,3 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
         </div>
     )
 })
-
-CertificateDetail.displayName = "CertificateDetail"
