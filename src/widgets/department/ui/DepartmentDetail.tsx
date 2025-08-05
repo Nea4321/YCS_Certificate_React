@@ -2,7 +2,7 @@ import { memo } from "react"
 import type { DeptMapData } from "@/entities/department/model"
 import { departmentDetailStyles } from "../styles"
 import { Link } from "react-router-dom"
-import { DepartmentCalendar } from "@/features/department/DepartmentCalendar/DepartmentCalendar.tsx"
+import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx";
 
 interface DepartmentDetailProps {
     department: DeptMapData
@@ -17,6 +17,11 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
 
             <div className={departmentDetailStyles.content}>
 
+                <section className={departmentDetailStyles.calendarSection}>
+                    <h2>자격증 시험 일정</h2>
+                    {/* dept_map_id를 통해서 해당 학과 자격증 구분 */}
+                    <CalendarWidget dept_map_id={department.dept_map_id} />
+                </section>
 
                 <section className={departmentDetailStyles.certificatesSection}>
                     <h2>관련 자격증</h2>
@@ -38,13 +43,6 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                     <div className={departmentDetailStyles.description}>
                         {department.description || "학과 소개 정보가 없습니다."}
                     </div>
-                </section>
-
-                {/* 메인코드에서 추가된 캘린더 */}
-                <section className={departmentDetailStyles.calendarSection}>
-                    <h2>자격증 시험 일정</h2>
-                    {/* dept_map_id를 통해서 해당 학과 자격증 구분 */}
-                    <DepartmentCalendar dept_map_id={department.dept_map_id} />
                 </section>
             </div>
         </div>

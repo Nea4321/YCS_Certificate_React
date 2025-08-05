@@ -1,0 +1,365 @@
+/* CalendarWidget 전용 스타일 */
+.calendarWidget {
+    width: 100%;
+}
+
+.calendarSection {
+    margin-bottom: 2rem;
+}
+
+/* react-calendar 기본 스타일 오버라이드 */
+.calendarWidget :global(.react-calendar) {
+    width: 100%;
+    border: none;
+    font-family: inherit;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.calendarWidget :global(.react-calendar__navigation) {
+    display: flex;
+    height: 3rem;
+    margin-bottom: 1rem;
+}
+
+.calendarWidget :global(.react-calendar__navigation button) {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.calendarWidget :global(.react-calendar__navigation button:hover) {
+    background-color: #f3f4f6;
+}
+
+.calendarWidget :global(.react-calendar__navigation__label) {
+    flex-grow: 1;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.calendarWidget :global(.react-calendar__month-view__weekdays) {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.calendarWidget :global(.react-calendar__month-view__weekdays__weekday) {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.calendarWidget :global(.react-calendar__month-view__weekdays__weekday abbr) {
+    text-decoration: none;
+}
+
+/* 핵심 수정: 캘린더 그리드 레이아웃 */
+.calendarWidget :global(.react-calendar__month-view__days) {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 1px !important;
+    background-color: #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.calendarWidget :global(.react-calendar__tile) {
+    background: white !important;
+    border: none !important;
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    min-height: 4rem;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box;
+    width: auto !important;
+    height: auto !important;
+}
+
+.calendarWidget :global(.react-calendar__tile:hover) {
+    background-color: #f9fafb !important;
+}
+
+.calendarWidget :global(.react-calendar__tile--active) {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.calendarWidget :global(.react-calendar__tile--now) {
+    font-weight: 700;
+    color: #1f2937;
+    background-color: #fef3c7 !important;
+}
+
+.calendarWidget :global(.react-calendar__month-view__days__day--neighboringMonth) {
+    color: #d1d5db;
+    background-color: #f9fafb !important;
+}
+
+/* 이벤트 도트 표시 */
+.tileEvents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.eventDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    border: none;
+}
+
+.eventDot[data-type="doc-reg"] {
+    background: currentColor;
+}
+
+.eventDot[data-type="doc-exam"] {
+    background: currentColor;
+}
+
+.eventDot[data-type="doc-pass"] {
+    background: currentColor;
+}
+
+.eventDot[data-type="prac-reg"] {
+    background: currentColor;
+}
+
+.eventDot[data-type="prac-exam"] {
+    background: currentColor;
+}
+
+.eventDot[data-type="prac-pass"] {
+    background: currentColor;
+}
+
+.moreEvents {
+    font-size: 0.5rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+/* 범례 섹션 */
+.legendSection {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.legendTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem 0;
+}
+
+.legendGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legendColor {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* 일정 섹션 */
+.scheduleSection {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.scheduleTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem 0;
+}
+
+.scheduleList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.certificateGroup {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 1rem;
+}
+
+.certificateTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.75rem 0;
+}
+
+.eventList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.eventItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: #f9fafb;
+}
+
+.eventColor {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.eventDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.eventLabel {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.eventDate {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* 선택된 날짜 정보 */
+.eventContainer {
+    margin-top: 30px;
+    padding: 24px;
+    background-color: #fdfdff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(74, 144, 226, 0.1);
+}
+
+.eventTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 18px;
+    border-left: 5px solid var(--primary-color);
+    padding-left: 12px;
+}
+
+.eventListContainer {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eventItemSelected {
+    background-color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.eventItemSelected:hover {
+    background-color: #f0f8ff;
+}
+
+.noEvent {
+    color: #999999;
+    font-style: italic;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.selectedEventColor {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.selectedEventLabel {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.selectedEventCert {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.eventContent {
+    /* 기존 스타일과 호환성을 위한 래퍼 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .legendGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .calendarWidget .react-calendar {
+        padding: 1rem;
+    }
+
+    .calendarWidget .react-calendar__tile {
+        min-height: 3rem;
+        padding: 0.5rem 0.25rem;
+    }
+}

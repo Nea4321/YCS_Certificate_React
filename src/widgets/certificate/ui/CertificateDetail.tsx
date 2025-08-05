@@ -1,18 +1,27 @@
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
-import { CertificateCalendar } from "@/features/certificate/CertificateCalendar/CertificateCalendar.tsx"
+import { certificateApi } from "@/entities"
 import { certificateTags } from "@/entities/certificate"
 import { tagColors } from "@/entities/certificate/model/tagColors"
 import { useNavigate } from "react-router-dom"
+import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx"
 
 interface CertificateDetailProps {
     certificate: CertData
 }
 
-export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) => {
+export const CertificateDetail = memo(({ certificate: initialCertificate }: CertificateDetailProps) => {
     const navigate = useNavigate()
+    const { id } = useParams()
+    const [certificate, setCertificate] = useState<CertData | null>(initialCertificate ?? null)
+
+    useEffect(() => {
+        if (!id || initialCertificate) return
+        certificateApi.getCertData(Number(id)).then(setCertificate)
+    }, [id, initialCertificate])
 
     const processContent = (rawContent: string) => {
         if (!rawContent) return { css: "", html: "자격증 상세 정보가 없습니다." }
@@ -41,8 +50,9 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
         return { css, html }
     }
 
-    const { css, html } = processContent(certificate.contents || "")
-    const tags = certificateTags[certificate.certificate_name] || []
+    const { css, html } = processContent(certificate?.contents || "")
+    const tags = certificateTags[initialCertificate.certificate_name] || []
+
 
     return (
         <div className={certificateDetailStyles.container}>
@@ -80,8 +90,8 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
             )}
 
             <div className={certificateDetailStyles.header}>
-                <h1 className={certificateDetailStyles.title}>{certificate.certificate_name}</h1>
-                <div className={certificateDetailStyles.category}>{certificate.infogb}</div>
+                <h1 className={certificateDetailStyles.title}>{certificate?.certificate_name}</h1>
+                <div className={certificateDetailStyles.category}>{certificate?.infogb}</div>
                 {/* 태그 박스 추가 */}
                 <div className={certificateDetailStyles.tagBox}>
                     {tags.map(tag => (
@@ -97,6 +107,12 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
                 </div>
             </div>
 
+
+            <section className={departmentDetailStyles.calendarSection}>
+                <h2>자격증 시험 일정</h2>
+                <CalendarWidget certificateName={certificate?.certificate_name || ""} />
+            </section>
+
             <div className={certificateDetailStyles.content}>
                 <section className={certificateDetailStyles.contentsSection}>
                     <h2>자격증 정보</h2>
@@ -106,11 +122,7 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
                     />
                 </section>
 
-                <section className={departmentDetailStyles.calendarSection}>
-                    <h2>자격증 시험 일정</h2>
-                    {/* certificate_name를 통해서 해당 학과 자격증 구분 */}
-                    <CertificateCalendar certificateName={certificate.certificate_name} />
-                </section>
+
             </div>
         </div>
     )
