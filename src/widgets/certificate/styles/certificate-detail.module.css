@@ -252,3 +252,28 @@
     text-align: center;
     padding: 20px 0;
 }
+
+.tagBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+    justify-content: flex-start;
+}
+
+.tag {
+    display: inline-block;
+    color: white;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+    user-select: none;
+    background-color: var(--primary-color);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.tag:hover {
+    opacity: 0.8;
+}

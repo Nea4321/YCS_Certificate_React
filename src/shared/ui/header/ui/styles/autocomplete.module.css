@@ -29,3 +29,35 @@
 .autocompleteItem:hover {
     background-color: var(--hover-color);
 }
+
+.itemContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.certName {
+    font-size: 14px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.tagBox {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.tag {
+    font-size: 11px;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+}

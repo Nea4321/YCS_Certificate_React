@@ -105,3 +105,21 @@
         margin: 0 auto;
     }
 }
+
+.tagBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.tag {
+    display: inline-block;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}

@@ -3,12 +3,17 @@ import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
 import { CertificateCalendar } from "@/features/certificate/CertificateCalendar/CertificateCalendar.tsx"
+import { certificateTags } from "@/entities/certificate"
+import { tagColors } from "@/entities/certificate/model/tagColors"
+import { useNavigate } from "react-router-dom"
 
 interface CertificateDetailProps {
     certificate: CertData
 }
 
 export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) => {
+    const navigate = useNavigate()
+
     const processContent = (rawContent: string) => {
         if (!rawContent) return { css: "", html: "자격증 상세 정보가 없습니다." }
 
@@ -37,6 +42,7 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
     }
 
     const { css, html } = processContent(certificate.contents || "")
+    const tags = certificateTags[certificate.certificate_name] || []
 
     return (
         <div className={certificateDetailStyles.container}>
@@ -76,6 +82,19 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
             <div className={certificateDetailStyles.header}>
                 <h1 className={certificateDetailStyles.title}>{certificate.certificate_name}</h1>
                 <div className={certificateDetailStyles.category}>{certificate.infogb}</div>
+                {/* 태그 박스 추가 */}
+                <div className={certificateDetailStyles.tagBox}>
+                    {tags.map(tag => (
+                        <span
+                            key={tag}
+                            className={certificateDetailStyles.tag}
+                            style={{ backgroundColor: tagColors[tag] }}
+                            onClick={() => navigate(`/search?keyword=${encodeURIComponent("#" + tag)}`)} // 🔗 태그 클릭 시 이동
+                        >
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
             </div>
 
             <div className={certificateDetailStyles.content}>

@@ -24,6 +24,7 @@ export const SearchBar = () => {
     e.preventDefault()
     if (searchQuery.trim()) {
       navigate(`/search?keyword=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("")// 검색 후 비우기
     }
   }
 
