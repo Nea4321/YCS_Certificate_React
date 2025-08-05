@@ -1,8 +1,5 @@
-import type React from "react"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { authStyles } from "../styles"
-import {GoogleLogin} from "@/features/login";
+import {LoginForm} from "@/features/login";
 
 
 
@@ -11,81 +8,13 @@ interface LoginProps {
 }
 
 export const Login = ({ onSwitchToSignup }: LoginProps) => {
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    })
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
-    const navigate = useNavigate()
-
-    /// 입력이 발생하면 { ex) cjh@55 -> email : cjh@55 } 로 변환 후 formData에 최신화
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
-        if (error) setError("")
-    }
-
-    /**
-     * 로그인 정보 전달.
-     *
-     * 기존 : 로그인 하면 처리기능 대신 1.5초 대기함.<br>
-     * 개선 예정 : 로그인 처리 기능 (입력한 정보가 DB에 있는지 확인) 넣은 후 기다리는 함수 삭제
-     * */
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-
-        if (!formData.email || !formData.password) {
-            setError("이메일과 비밀번호를 입력해주세요.")
-            return
-        }
-
-        setLoading(true)
-        setError("")
-
-        try {
-            // 실제 로그인 API 호출 시뮬레이션
-            await new Promise((resolve) => setTimeout(resolve, 1500))
-            console.log("로그인 성공:", { email: formData.email })
-            // 로그인 하면 임시적으로 email값 전달 -> 이동된 순간만 사용 가능함 -> 삭제 예정
-            navigate("/", { state: { email: formData.email } });
-        } catch (error) {
-            console.error("login error : " + error)
-            setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.")
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    /// 소셜 로그인 하는 곳.
-    const handleSocialLogin = async (provider: string) => {
-        setLoading(true)
-        setError("")
-
-        try {
-            console.log(`${provider} 로그인 시도`)
-            if (provider === "google") GoogleLogin()
-            if (provider === "kakao") GoogleLogin()
-            if (provider === "github") GoogleLogin()
-
-            console.log(`${provider} 로그인 성공`)
-        } catch (error) {
-            console.error(error)
-            setError(`${provider} 로그인에 실패했습니다.`)
-        } finally {
-            setLoading(false)
-        }
-    }
-
+    const { formData, error, handleInputChange, handleSocialLogin, handleSubmit } = LoginForm()
     return (
         <div className={authStyles.formWrapper}>
             <form onSubmit={handleSubmit} className={authStyles.form}>
                 <div className={authStyles.formHeader}>
                     <h1 className={authStyles.title}>로그인</h1>
-                    <p className={authStyles.subtitle}>계정에 로그인하여 서비스를 이용하세요</p>
+                    <p className={authStyles.subtitle}>로그인하고 자격지신을 100% 이용해보세요!</p>
                 </div>
 
                 {error && <div className={`${authStyles.message} ${authStyles.error}`}>{error}</div>}
@@ -103,7 +32,6 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                             onChange={handleInputChange}
                             className={authStyles.input}
                             placeholder="이메일을 입력하세요"
-                            disabled={loading}
                         />
                     </div>
 
@@ -119,21 +47,11 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                             onChange={handleInputChange}
                             className={authStyles.input}
                             placeholder="비밀번호를 입력하세요"
-                            disabled={loading}
                         />
                     </div>
                 </div>
 
-                <button type="submit" className={authStyles.submitButton} disabled={loading}>
-                    {loading ? (
-                        <div className={authStyles.loadingContainer}>
-                            <div className={authStyles.loadingSpinner}></div>
-                            <span>로그인 중...</span>
-                        </div>
-                    ) : (
-                        "로그인"
-                    )}
-                </button>
+                <button type="submit" className={authStyles.submitButton} >로그인</button>
 
                 <div className={authStyles.divider}>
                     <span className={authStyles.dividerText}>또는</span>
@@ -144,7 +62,6 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         type="button"
                         onClick={() => handleSocialLogin("google")}
                         className={`${authStyles.socialButton} ${authStyles.googleButton}`}
-                        disabled={loading}
                     >
                         <svg className={authStyles.socialIcon} viewBox="0 0 24 24">
                             <path
@@ -171,7 +88,6 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         type="button"
                         onClick={() => handleSocialLogin("github")}
                         className={`${authStyles.socialButton} ${authStyles.githubButton}`}
-                        disabled={loading}
                     >
                         <svg className={authStyles.socialIcon} viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -183,7 +99,6 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         type="button"
                         onClick={() => handleSocialLogin("kakao")}
                         className={`${authStyles.socialButton} ${authStyles.kakaoButton}`}
-                        disabled={loading}
                     >
                         <svg className={authStyles.socialIcon} viewBox="0 0 24 24">
                             <path
@@ -197,7 +112,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
 
                 <div className={authStyles.signupPrompt}>
                     <p className={authStyles.signupText}>계정이 없으신가요?</p>
-                    <button type="button" onClick={onSwitchToSignup} className={authStyles.signupLink} disabled={loading}>
+                    <button type="button" onClick={onSwitchToSignup} className={authStyles.signupLink}>
                         회원가입
                     </button>
                 </div>

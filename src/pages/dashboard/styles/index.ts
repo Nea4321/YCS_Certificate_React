@@ -1,0 +1,1 @@
+export { default as myPageStyles } from "./mypage.module.css"

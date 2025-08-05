@@ -1,11 +1,14 @@
 import { Link, useLocation } from "react-router-dom"
 import { navigationStyles } from "./styles"
+import {GetCookie} from "@/features/login/cookie/GetCooKie.ts";
+import {DeleteCookie} from "@/features/login/cookie/DeleteCooKie.ts";
 
 export const Navigation = () => {
 
   const location = useLocation()
     // 메인페이지에 이메일을 이런식으로 표시 하기위해 가져오는 임시 코드 -> 지울 예정
-    const email = location.state?.email;
+    const email = GetCookie("user-key");
+    const logout = () => {DeleteCookie("user-key")};
 
 
     const isActivePage = (path: string) => {
@@ -51,13 +54,14 @@ export const Navigation = () => {
         ) : (
             <Link
                 to="/"
+                onClick={() => {logout()}}
                 className={`${navigationStyles.navLink}`}
             >
                 로그아웃
             </Link>
 
         )}
-        {/* 마이페이지 버튼 이름은 로그인 한 이메일 or 이름 으로 표시 할 예정 */}
+        {email && (
         <Link
             to="/dashboard"
             className={`${navigationStyles.navLink} ${
@@ -66,6 +70,7 @@ export const Navigation = () => {
         >
             <div>{email}</div>
         </Link>
+        )}
 
     </nav>
   )

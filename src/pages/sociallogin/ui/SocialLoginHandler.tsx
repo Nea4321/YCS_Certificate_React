@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
 import {SocialLoginRequest} from "@/features/login";
 
@@ -29,6 +29,8 @@ export const SocialLoginHandler = () => {
     // 로그인 상태 관리 함수
     const [status, setStatus] = useState<'IDLE' | 'SUCCESS' | 'FAIL'>('IDLE')
 
+    // 1회 실행 체크용 useRef
+    const hasRun = useRef(false)
     /**
      * 로그인 정상 처리 확인 함수
      *
@@ -42,14 +44,10 @@ export const SocialLoginHandler = () => {
         try {
             const data = await SocialLoginRequest({ code, socialType })
             setStatus('SUCCESS')
-            document.cookie = `user-key=${data.id}; path=/`
+            document.cookie = `user-key=${data.email}; path=/`
             window.opener.location.replace('/')
             window.close()
         } catch (error) {
-            // 아래 두 코드는 팝업창을 실행한 부모창을 '/' 으로 이동 하고 팝업창을 닫는 코드임.
-            // 로그인이 정상적으로 이루어 졌을때만 실행 되어야 하지만 백엔드 개발 덜 되서 실패 할 때도 꺼지게 만듬.
-            window.opener.location.replace('/')
-            window.close()
             console.error('Login error:', error)
             setStatus('FAIL')
         }
@@ -64,8 +62,12 @@ export const SocialLoginHandler = () => {
      * .catch() 쓴 이유 -> handleLogin() 이 async(비동기) 함수임 -> promise객체를 반환 -> promise 처리가 없음 -> 예외 처리로 경고 제거
      *
      * */
+
     useEffect(() => {
-        if (code && socialType) { handleLogin(socialType, code).catch(error => console.error(error)) }
+        if (!hasRun.current && code && socialType) {
+            hasRun.current = true
+            handleLogin(socialType, code).catch(console.error)
+        }
     }, [code, socialType, handleLogin])
 
     return (
