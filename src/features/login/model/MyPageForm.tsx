@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import {GetCookie} from "@/features/login/cookie/GetCooKie.ts";
+import {useSelector} from "react-redux";
+import {RootState} from "@/app/store";
 
 // 대시보드에 들어가야할 기능들
 // 1. 로그인한 정보(아이디,이메일,비밀번호,가입일,소셜타입(구글,기본,카카오...)) 표시하기
@@ -14,11 +15,9 @@ import {GetCookie} from "@/features/login/cookie/GetCooKie.ts";
 
 export const MyPageForm =()=>{
     const [userInfo] = useState({
-        name: "조재현(하드코딩)",
-        email: GetCookie("user-key"),
-        joinDate: "2024.01.15(하드코딩)",
-        lastLogin: "2024.07.31 10:30(하드코딩)",
-        socialType: "google(하드코딩)"
+        name: useSelector((state: RootState) => state.user.userName),
+        email: useSelector((state: RootState) => state.user.userEmail),
+        socialType: useSelector((state: RootState) => state.user.socialType)
     })
     const [isEditing, setIsEditing] = useState(false)
     const [editData, setEditData] = useState({
@@ -54,14 +53,8 @@ export const MyPageForm =()=>{
     }
 
     const handleSave = async () => {
-        if (!editData.name || !editData.email) {
-            setMessage("이름과 이메일을 입력해주세요.")
-            return
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(editData.email)) {
-            setMessage("올바른 이메일 형식을 입력해주세요.")
+        if (!editData.name) {
+            setMessage("이름을 입력해주세요.")
             return
         }
         setMessage("")

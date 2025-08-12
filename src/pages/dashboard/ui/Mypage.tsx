@@ -60,27 +60,7 @@ export const MyPage = () => {
 
                             <div className={myPageStyles.infoItem}>
                                 <label className={myPageStyles.infoLabel}>이메일</label>
-                                {isEditing ? (
-                                    <input
-                                        name="email"
-                                        type="email"
-                                        value={editData.email ?? ""}
-                                        onChange={handleInputChange}
-                                        className={myPageStyles.input}
-                                    />
-                                ) : (
                                     <span className={myPageStyles.infoValue}>{userInfo.email}</span>
-                                )}
-                            </div>
-
-                            <div className={myPageStyles.infoItem}>
-                                <label className={myPageStyles.infoLabel}>가입일</label>
-                                <span className={myPageStyles.infoValue}>{userInfo.joinDate}</span>
-                            </div>
-
-                            <div className={myPageStyles.infoItem}>
-                                <label className={myPageStyles.infoLabel}>최근 로그인</label>
-                                <span className={myPageStyles.infoValue}>{userInfo.lastLogin}</span>
                             </div>
                             <div className={myPageStyles.infoItem}>
                                 <label className={myPageStyles.infoLabel}>소셜 타입</label>

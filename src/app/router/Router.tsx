@@ -12,6 +12,8 @@ import { CBTExamPage } from "@/pages/cbt/ui";
 import { ScrollToTop } from "@/shared";
 import { SearchResultPage } from "@/pages/search"
 import {MainLayout} from "@/shared/layouts";
+import {Logout} from "@/pages/logout/ui";
+import {ProtecteRoute} from "@/app/router/ProtecteRoute.tsx";
 
 
 export const Router = () => {
@@ -31,9 +33,10 @@ export const Router = () => {
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
                             <Route path="/cbt" element={<CBTExamPage/>} />
-                            <Route path="/auth" element={<Auth />} />    /// 로그인
-                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
-                            <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지
+                            <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
+                            <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
+                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}
+                        <Route path="/dashboard" element={<ProtecteRoute><DashBoard /></ProtecteRoute>} />     {/* 마이 페이지 */}
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}

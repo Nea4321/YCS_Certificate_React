@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {SingUpRequest} from "@/features/login";
 
 // 회원가입에 들어가야 하는 기능
 // 1. 회원 가입 하면 유저 DB에 등록하기
@@ -57,25 +58,31 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
         setError("")
         setSuccess("")
 
-        try {
-            //  회원가입 API 넣어야댐
-            // 유저정보 백엔드로 넘기기 -> 백엔드에서 유저DB에 정보 저장하기
+        try
+        {
+            // 백엔드에 회원정보 저장 요청
+             await SingUpRequest({
+                email: formData.email,
+                name: formData.name,
+                password: formData.password,
+                socialType: "normal"
+            });
 
             console.log("회원가입 성공:", {
                 name: formData.name,
                 email: formData.email,
             })
-
             setSuccess("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.")
-
             // 2초 후 로그인 페이지로 이동
             setTimeout(() => {
                 onSwitchToLogin()
             }, 2000)
 
         } catch (err) {
-            console.log("auth err : " + err)
-            setError("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.")
+            // 타입 지정 오류 방지 if 문  ( 타입 지정 오류 그만 떴으면................................................ )
+            if (err instanceof Error) {
+                setError(err.message || "회원가입 중 오류가 발생했습니다. 다시 시도해주세요.")
+            }
         }
     }
     return{formData,error,success,handleSubmit,handleInputChange}

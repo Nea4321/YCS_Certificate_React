@@ -131,6 +131,27 @@
   justify-content: center;
 }
 
+.backButton {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+
+  padding: 0.5rem 1rem;
+  background-color: rgba(21, 21, 21, 0.56);
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 10;
+}
+
+
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);

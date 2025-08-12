@@ -1,6 +1,9 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {GoogleLogin} from "@/features/login";
+import {GoogleLogin, LoginRequest} from "@/features/login";
+import {setUser} from "@/shared/slices";
+import {useDispatch} from "react-redux";
+import axios from "axios";
 
 // 로그인 추가해야 할 기능들
 // 1. 로그인 api 추가 (백엔드)
@@ -20,10 +23,11 @@ export const LoginForm = () => {
     })
     const [error, setError] = useState("")
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     /// 입력이 발생하면 { ex) cjh@55 -> email : cjh@55 } 로 변환 후 formData에 최신화
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        const {name, value} = e.target
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -48,16 +52,34 @@ export const LoginForm = () => {
         setError("")
 
         try {
-            // 실제 로그인 API 넣어야댐
-            console.log("로그인 성공:", { email: formData.email })
-            // 로그인 하면 임시적으로 email값 전달 -> 쿠키로 임시 사용중 개선 예정
-            document.cookie = `user-key=${formData.email}; path=/`
-            navigate("/");
+            // 로그인 api 호출 -> db 값 맞는지 확인 후 유저정보 넘겨줌.
+            const data = await LoginRequest({
+                email: formData.email,
+                password: formData.password,
+            });
+
+            //redux 에 유저 데이터 저장
+            if (data) {
+                dispatch(setUser({
+                    userName: data.userName || '',
+                    userEmail: data.email || '',
+                    socialType: data.socialType || 'NORMAL',
+                }))
+                console.log("로그인 성공:")
+                navigate("/")
+            }
+
         } catch (error) {
-            console.error("login error : " + error)
-            setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.")
+            if (axios.isAxiosError(error)) {
+                setError("로그인 에러");
+            } else if (error instanceof Error) {
+                const message = error.message || '로그인 도중 오류가 발생했습니다.';
+                console.error(error);
+                setError(message);
+            }
         }
     }
+
 
     /// 소셜 로그인 하는 곳.
     const handleSocialLogin = async (provider: string) => {

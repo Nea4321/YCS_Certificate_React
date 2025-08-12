@@ -1,14 +1,13 @@
 import { Link, useLocation } from "react-router-dom"
 import { navigationStyles } from "./styles"
-import {GetCookie} from "@/features/login/cookie/GetCooKie.ts";
-import {DeleteCookie} from "@/features/login/cookie/DeleteCooKie.ts";
+import {useSelector} from "react-redux";
+import {RootState} from "@/app/store";
 
 export const Navigation = () => {
 
   const location = useLocation()
-    // 메인페이지에 이메일을 이런식으로 표시 하기위해 가져오는 임시 코드 -> 지울 예정
-    const email = GetCookie("user-key");
-    const logout = () => {DeleteCookie("user-key")};
+    // 리덕스에서 이메일 가져옴
+    const email = useSelector((state: RootState) => state.user.userEmail)
 
 
     const isActivePage = (path: string) => {
@@ -53,8 +52,7 @@ export const Navigation = () => {
         </Link>
         ) : (
             <Link
-                to="/"
-                onClick={() => {logout()}}
+                to="/logout"
                 className={`${navigationStyles.navLink}`}
             >
                 로그아웃
