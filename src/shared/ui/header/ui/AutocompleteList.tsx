@@ -34,7 +34,7 @@ export const AutocompleteList = ({ query, certificates, onSelect }: Props) => {
     return (
         <ul className={styles.autocompleteList}>
             {filtered.map(cert => {
-                const tags = certificateTags[cert.certificate_name] || []
+                const tags = certificateTags[cert.certificate_id] || []
 
                 return (
                     <li

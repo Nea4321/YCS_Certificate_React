@@ -30,7 +30,7 @@ export const CertificateCard: React.FC<Props> = ({ cert }) => {
                 </div>
                 {/* 태그 표시 부분 */}
                 <div className={mainStyles.tagBox}>
-                    {certificateTags[cert.certificate_name]?.map((tag) => (
+                    {certificateTags[cert.certificate_id]?.map((tag) => (
                         <span
                             key={tag}
                             className={mainStyles.tag}
