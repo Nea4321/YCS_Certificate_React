@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { DepartmentListPage } from "@/pages/department-list"
 import { DepartmentPage } from "@/pages/department/DepartmentPage.tsx";
-import { DepartmentCalendarPage } from "@/pages/department-list/DepartmentCalendarPage";
 import { CertificatePage } from "@/pages";
 import { Auth } from "@/pages/Auth/Auth.tsx";
 import { SocialLogin } from "@/pages/sociallogin";
@@ -25,8 +24,6 @@ export const Router = () => {
                     <Routes>
                             {/*<Route path="/" element={<Navigate to="/departments" replace />} />*/}
                             <Route path="/" element={<MainPage />} />
-                            {/*캘린더 페이지 라우터*/}
-                            <Route path="/calendar" element={<DepartmentCalendarPage/>} />
                             <Route path="/departments" element={<DepartmentListPage />} />
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
