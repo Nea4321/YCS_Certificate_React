@@ -4,16 +4,35 @@ import "react-calendar/dist/Calendar.css"
 import { calendarStyles } from "@/widgets/calendar/styles"
 import { allEvents, deptCertUrlMap, certUrlMap, getColor } from "@/features/calendar/examData2"
 
+/**CalendarWidget에 전달되는 props
+ *
+ * @property {string} certificateName - 학과와 관련없는, 단일 자격증에 접근하기 위한 자격증 이름
+ * @property {number} dept_map_id - 학과 관련 자격증을 구분하기 위한 학과 매핑 id
+ */
 interface CalendarProps {
     certificateName?: string
     dept_map_id?: number
 }
 
+/**자격증 캘린더 컴포넌트
+ * - 사용자가 선택한 학과에 관련된 자격증의 여러 일정 정보가 담긴 캘린더 UI를 배치
+ * - 필기접수, 필기시험, 필기합격, 실기접수, 실기시험, 실기합격 6개의 일정이 존재한다
+ * - 학과 기준 또는 단일 자격증 기준으로 이벤트를 필터링하여 달력에 표시한다
+ * - 자격증별로 전체 일정 목록을 라벨/기간/색상으로 묶어서 보여준다
+ *
+ * @component
+ */
 export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) {
     // 클릭한 날짜를 저장 및 상태 관리
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
     // 날짜 형식 변환
+    /**사용자가 클릭한 캘린더 타일 날짜를 'YYYY-MM-DD' 형식으로 변환하여 반환하는 함수
+     *
+     * @param {Date} date - 변환할 Date 객체
+     *
+     * @returns 'YYYY-MM-DD'
+     */
     const formatDate = (date: Date): string => {
         const y = date.getFullYear()
         const m = ("0" + (date.getMonth() + 1)).slice(-2)
@@ -22,12 +41,26 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
     }
 
     // 시작일, 종료일 사이에 포함되는지 확인
+    /**Date 객체(사용자가 선택한 타일 날짜)가 일정 시작 일자와 종료 일자에 포함되는 날짜인지 확인하는 함수
+     *
+     * @returns 날짜가 범위 내에 있다면 true, 범위 내에 없다면 false
+     */
     const isDateInRange = (date: Date, start: string, end: string): boolean => {
         const target = formatDate(date)
         return start <= target && target <= end
     }
 
     // 학과 관련 자격증, 단일 자격증 구분 후 필터링 (수정된 로직)
+    /**표시할 자격증 이벤트를 필터링해서 반환한다
+     *
+     * - dept_map_id가 존재하는 경우: deptCertUrlMap에서 해당 학과에 매핑된 자격증을 가져와
+     *   일치하는 이벤트만을 반환한다
+     * - certificateName이 존재하는 경우: 해당 certificateName이 정확한 자격증 이름을 지닌다면 해당 이벤트만을 반환
+     *   또는 certificateName이 숫자 ID로 구성된 경우 certUrlMap에서 해당하는 ID를 지닌 자격증 이름을 찾아서 해당 이벤트만을 반환
+     * - 조건에 맞지 않는다면 빈 배열 반환
+     *
+     * @returns 필터링된 자격증 이벤트 배열
+     */
     const getFilteredEvents = () => {
         // 1. 학과 관련 자격증 기준으로 구분 (dept_map_id가 있는 경우)
         if (dept_map_id !== undefined && deptCertUrlMap[dept_map_id]) {
@@ -56,6 +89,12 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
     }
 
     // 주어진 날짜에 해당하는 자격증 시험 일정만 나타냄
+    /**특정 날짜에 해당하는 자격증 시험 일정을 반환한다
+     *
+     * @param {Date} date - 검사할 Date 객체
+     *
+     * @returns 해당 날짜에 포함된 ExamEvent 배열 내용
+     */
     const getEventsForDate = (date: Date) =>
         getFilteredEvents().filter((ev) => isDateInRange(date, ev.startdate, ev.enddate))
 
@@ -86,6 +125,18 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
     }
 
     // 각 날짜의 이벤트를 표시
+    /**캘린더에 일정을 표시하는 함수
+     *
+     * - 사용자가 선택한 타일에 존재하는 모든 이벤트(일정)를 가져온다
+     * - 이벤트가 존재하지 않는다면 null을 반환하고 아무것도 표시하지 않는다
+     * - 이벤트가 존재한다면 최대 3개의 이벤트를 점으로 표시하며,
+     *   점의 색상으로 일정을 구분한다
+     *
+     * @param date - 타일 날짜
+     * @param {string} view - 달력의 뷰 타입 ('month')
+     *
+     * @returns 해당 날짜에 일정이 존재한다면 이벤트 점 표시
+     */
     const tileContent = ({ date, view }: { date: Date; view: string }) => {
         if (view === "month") {
             const events = getEventsForDate(date)
@@ -110,6 +161,7 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
     }
 
     // 날짜 포맷팅 (한국어)
+    /**선택한 타일의 날짜를 YYYY년 MM월 DD일로 포맷팅 하는 함수*/
     const formatSelectedDate = (date: Date): string => {
         return date.toLocaleDateString("ko-KR", {
             year: "numeric",
@@ -120,6 +172,13 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
     }
 
     // 일정을 회차별로 그룹화
+    /**자격증별로 이벤트를 그룹화해서 반환
+     * - 현재 자격증의 모든 일정을 받아와 ExamEvent 배열 events에 저장
+     * - 자격증 이름을 키로 설정하고 grouped 배열에 존재하지 않는 자격증은 빈 배열로 생성
+     * - 이후 현재 순환중인 일정을 해당 자격증 배열인 grouped에 push
+     *
+     * @returns grouped
+     */
     const groupEventsByRound = () => {
         const events = getFilteredEvents()
         const grouped: Record<string, typeof events> = {}

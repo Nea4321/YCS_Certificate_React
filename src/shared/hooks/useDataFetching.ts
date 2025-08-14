@@ -3,6 +3,16 @@ import { executeFetch } from '../api';
 
 type DependencyList = ReadonlyArray<unknown>;
 
+/**useDataFetching에 전달하는 옵션
+ *
+ * @template T - fetchFn이 반환하는 데이터 타입(CertData)
+ *
+ * @property {(signal?: AbortSignal) => Promise<T>} fetchFn - 데이터를 가져오는 비동기 함수
+ * @property {T} initialData - 초기 데이터 값
+ * @property {DependencyList} dependencies - 의존성 배열
+ * @property {(data: T) => void} onSuccess - 요청 성공 시 실행할 콜백
+ * @property {(error: string) => void} onError - 요청 실패 시 실행할 콜백
+ */
 interface UseDataFetchingOptions<T> {
     fetchFn: (signal?: AbortSignal) => Promise<T>;
     initialData?: T;
@@ -10,7 +20,15 @@ interface UseDataFetchingOptions<T> {
     onSuccess?: (data: T) => void;
     onError?: (error: string) => void;
 }
-
+/**useDataFetching이 반환하는 값
+ *
+ * @template T - fetchFn이 반환하는 데이터 타입(CertData)
+ *
+ * @property {T} data - 현재 데이터 상태
+ * @property {boolean} loading - 로딩 상태 여부
+ * @property {string | null} error - 에러 메시지
+ * @property {() => Promise<void>} refetch - 데이터를 다시 불러오는 함수
+ */
 interface UseDataFetchingResult<T> {
     data: T;
     loading: boolean;
@@ -18,6 +36,19 @@ interface UseDataFetchingResult<T> {
     refetch: () => Promise<void>;
 }
 
+/**데이터 요청, 로딩, 에러, 취소, 재요청을 지원하는 훅
+ *
+ * @template T - fetchFn이 반환하는 데이터 타입
+ *
+ * @param {UseDataFetchingOptions<T>} options - 훅 설정 옵션
+ * @param {(signal?: AbortSignal) => Promise<T>} options.fetchFn - 데이터를 가져오는 비동기 함수
+ * @param {T} options.initialData - 초기 데이터 값
+ * @param {DependencyList} options.dependencies - 의존성 배열
+ * @param {(data: T) => void} options.onSuccess - 요청 성공 시 실행할 롤백
+ * @param {(error: string) => void} options.onError - 요청 실패 시 실행할 롤백
+ *
+ * @returns {UseDataFetchingResult<T>} data, loading, error, refetch
+ */
 export function useDataFetching<T>({
                                        fetchFn,
                                        initialData,

@@ -9,10 +9,27 @@ import { tagColors } from "@/entities/certificate/model/tagColors"
 import { useNavigate } from "react-router-dom"
 import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx"
 
+/**CertificateDetail에 전달할 props
+ *
+ * @property {CertData} certificate - 부모(Certificate.tsx)에게 전달받은 사용자가 선택한 자격증의 정보 객체
+ * 전달되지 않은 경우 URL 파라미터의 id를 사용해 내부에서 데이터 로드
+ */
 interface CertificateDetailProps {
     certificate: CertData
 }
 
+/**자격증 상세 페이지 컴포넌트
+ *
+ * - 사용자가 선택한 자격증의 id를 사용해 해당 자격증의 데이터를 로드한다
+ * - 이후 전달받은 데이터를 CertificateDetail이 배치한다
+ * - 전달받은 데이터를 사용해 해당 자격증의 관련 태그를 표시할 수 있으며
+ *   해당하는 자격증의 시험 일정을 보여주는 캘린더를 배치한다
+ * - 하단에 자격증 정보 존재
+ *
+ * @param {CertificateDetailProps} props - 컴포넌트에 전달되는 props
+ * @param {CertData} props.certificate - 자격증 데이터 객체
+ *
+ * @component*/
 export const CertificateDetail = memo(({ certificate: initialCertificate }: CertificateDetailProps) => {
     const navigate = useNavigate()
     const { id } = useParams()

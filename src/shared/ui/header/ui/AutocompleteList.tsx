@@ -4,12 +4,27 @@ import { getChoseong, disassemble } from "es-hangul"
 import { certificateTags } from "@/entities/certificate"
 import { tagColors } from "@/entities/certificate/model/tagColors"
 
+/**AutocompleteList에 제출되는 props
+ *
+ * @property {string} query - 사용자가 검색창에 입력한 내용
+ * @property {certificate_id: number; certificate_name: string}[] certificates - DB에서 불러온 모든 자격증 목록
+ * @property {() => void} onSelect - 검색창을 초기화하는 함수
+ */
 interface Props {
     query: string
     certificates: { certificate_id: number; certificate_name: string }[]
     onSelect: () => void
 }
 
+/**검색창 자동완성 컴포넌트
+ *
+ * - 초성 검색으로도 자동완성이 가능하며 자격증 이름과 해당하는 태그 UI를 배치했다
+ * - 자동완성은 한 번에 5개까지 나올 수 있다
+ * - 자동완성으로 표시된 자격증을 클릭하면 자격증 상세 페이지로 리다이렉트 된다
+ * - 자동완성으로 표시된 태그를 클릭하면 해당 태그를 지닌 자격증들로 구성된 목록 페이지로 리다이렉트 된다
+ *
+ * @component
+ */
 export const AutocompleteList = ({ query, certificates, onSelect }: Props) => {
     const navigate = useNavigate()
 

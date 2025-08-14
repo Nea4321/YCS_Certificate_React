@@ -1,0 +1,156 @@
+/* 전체 래퍼 */
+.testWrapper {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f0f4fa;
+    gap: 0;
+}
+
+/* 왼쪽 문제 영역 */
+.questionArea {
+    flex: 1;
+    min-height: 100vh;
+    padding: 24px 32px;
+}
+
+/* 오른쪽 답안지 영역 */
+.answerArea {
+    width: 300px;
+    position: sticky;
+    top: 80px; /* 헤더 높이에 맞게 조절 */
+    align-self: flex-start;
+    padding: 24px 16px;
+    background-color: #ffffff;
+    border-left: 1px solid #ddd;
+    box-shadow: -4px 0 8px rgba(0,0,0,0.03);
+    height: fit-content;
+}
+
+/* 시험 제목 */
+.testTitle {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #111;
+}
+
+/* 시험 정보 */
+.testInfo {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* 문제 카드 */
+.questionCard {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+}
+
+/* 문제 제목 */
+.questionHeader {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 12px;
+}
+
+/* 문제 설명 */
+.questionText {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 16px;
+}
+
+/* 선택지 */
+.choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.choiceItem {
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 답안지 */
+.answerTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: center;
+    color: #222;
+}
+
+.answerGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.answerRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #444;
+}
+
+/* 채점 버튼 */
+.submitBtn {
+    display: block;
+    width: 100%;
+    background-color: #3b82f6;
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.paginationControls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.pageButton {
+    background-color: #3b82f6;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+.pageButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pageStatus {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
