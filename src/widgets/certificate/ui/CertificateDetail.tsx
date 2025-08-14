@@ -42,7 +42,7 @@ export const CertificateDetail = memo(({ certificate }: CertificateDetailProps) 
     }
 
     const { css, html } = processContent(certificate.contents || "")
-    const tags = certificateTags[certificate.certificate_name] || []
+    const tags = certificateTags[certificate.certificate_id] || []
 
     return (
         <div className={certificateDetailStyles.container}>

@@ -29,3 +29,18 @@
     text-align: center;
     gap: 10px;
 }
+
+/* 필터바 상단 고정 (헤더 높이에 맞춰 top 조정 가능) */
+.filterWrap {
+    position: sticky;
+    top: 0;                 /* 상단 헤더가 더 크면 그 높이만큼 숫자 조정 */
+    z-index: 20;
+    background: #fff;       /* 내용 위에 겹치므로 배경 필요 */
+    padding: 4px 0 8px;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+
+/* 스크롤 시 그림자 주고 싶다면 JS로 .scrolled 토글해서 사용 */
+.filterWrap.scrolled {
+    box-shadow: 0 8px 12px -12px rgba(0,0,0,0.2);
+}

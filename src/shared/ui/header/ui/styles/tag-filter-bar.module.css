@@ -1,0 +1,101 @@
+/* 전체 래퍼: 폭 제한 + 중앙 배치 */
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 0 0.25rem;
+}
+
+/* 상단 한 줄(인기 태그 + 버튼) : 중앙 정렬 */
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 인기 태그 가운데 */
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: min(1120px, 90vw);
+}
+
+/* 인기 태그 버튼 */
+.tag {
+    padding: 0.42rem 0.9rem;
+    border: 0;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+.tag:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+
+/* 더보기/접기 버튼 */
+.more {
+    background: #3f3f46;
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.42rem 0.8rem;
+    font-size: 0.86rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+
+/* 펼침 영역: height를 트랜지션.
+   JS에서 height를 0 ↔ px ↔ auto로 제어한다. */
+.expand {
+    width: min(1120px, 90vw);
+    overflow: hidden;
+    height: 0;                       /* 접힘 기본값 */
+    transition: height 280ms cubic-bezier(.22,.61,.36,1); /* 자연스러운 감속 */
+    margin-top: 0;
+    border-top: 1px dashed transparent;
+}
+
+/* 열린 상태에서의 장식(경계 힌트) */
+.open {
+    margin-top: 0.55rem;
+    border-top: 1px dashed #e7e7e7;
+}
+
+/* 내부 그리드 */
+.chips {
+    padding: 0.6rem 0.2rem 0.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 0.5rem;
+}
+
+/* 태그 칩 */
+.chip {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter .18s ease, transform .15s ease, box-shadow .18s ease;
+}
+.chip:hover { filter: brightness(.95); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+
+/* 키보드 포커스 접근성 */
+.tag:focus-visible, .more:focus-visible, .chip:focus-visible {
+    outline: 2px solid #94a3b8;   /* slate-300 */
+    outline-offset: 2px;
+    border-radius: 12px;
+}
+
+/* 사용자 ‘애니메이션 줄이기’ 선호 시 트랜지션 비활성화 */
+@media (prefers-reduced-motion: reduce) {
+    .expand { transition: none; }
+}
+
+@media (max-width: 640px) {
+    .tag, .more { font-size: .8rem; padding: .36rem .7rem; }
+    .chips { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+}
