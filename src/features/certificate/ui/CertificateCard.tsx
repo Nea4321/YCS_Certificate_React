@@ -4,8 +4,8 @@ import { getImageForCertificate } from "@/entities/certificate/lib/getImageForCe
 import { mainStyles } from "../../../pages/main/styles"
 import { Link } from "react-router-dom"
 import { certificateTags } from "@/entities/certificate"
-import { tagColors } from "@/entities/certificate/model/tagColors"
 import { useNavigate } from "react-router-dom"
+import { TagBadge } from "@/shared/ui/tag"
 
 interface Props {
     cert: Certificate
@@ -30,19 +30,16 @@ export const CertificateCard: React.FC<Props> = ({ cert }) => {
                 </div>
                 {/* 태그 표시 부분 */}
                 <div className={mainStyles.tagBox}>
-                    {certificateTags[cert.certificate_id]?.map((tag) => (
-                        <span
+                    {(certificateTags[cert.certificate_id] ?? []).slice(0, 3).map((tag) => (
+                        <TagBadge
                             key={tag}
-                            className={mainStyles.tag}
-                            style={{ backgroundColor: tagColors[tag] || "#eee" }}
+                            tag={tag}
                             onClick={(e) => {
-                                e.stopPropagation() // 카드 클릭 방지용
-                                e.preventDefault() // 링크 동작 방지용
-                                navigate(`/search?keyword=${encodeURIComponent('#' + tag)}`)// 태그로 검색 이동
+                                e.stopPropagation();  // 링크 클릭 막기
+                                e.preventDefault();
+                                navigate(`/search?keyword=${encodeURIComponent("#" + tag)}`);
                             }}
-                        >
-                            #{tag}
-                        </span>
+                        />
                     ))}
                 </div>
             </div>
