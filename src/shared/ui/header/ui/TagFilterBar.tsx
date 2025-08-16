@@ -19,7 +19,7 @@ export const TagFilterBar = ({ closeOnTagClick = false }: TagFilterBarProps) => 
     const [prevScrollY, setPrevScrollY] = useState<number | null>(null)
     const [isAnimating, setIsAnimating] = useState(false)
 
-    const popularTags = ["IT", "건축", "기계", "전기", "조리"]
+    const popularTags = ["IT", "건축", "기계", "전기", "식품"]
 
     const otherTags = useMemo(
         () =>
