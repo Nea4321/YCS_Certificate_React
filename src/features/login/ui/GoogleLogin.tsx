@@ -1,7 +1,10 @@
 import {GetPopupOptions, OpenPopup} from "@/features/login";
 
-// 다른 소셜 로그인 기능 들은 url 만 바꿔서 이 코드 공통으로 만들어서 사용하면 될 듯?
-// 구글 팝업창 띄우는 역할
+/**
+ * Google 로그인 팝업창 띄우는 곳.
+ *
+ * 다른 소셜 로그인도 아래 url 만 고쳐서 만들면 될 듯 함.
+ * */
 export const GoogleLogin = () => {
 const url = 'https://accounts.google.com/o/oauth2/v2/auth?' +
     'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +

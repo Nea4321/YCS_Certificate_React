@@ -4,6 +4,11 @@ import { Signup } from "./ui/Signup"
 import { authStyles } from "./styles"
 import {useNavigate} from "react-router-dom";
 
+/**
+ * 로그인,회원가입 페이지 모음.
+ *
+ * 버튼을 눌러서 auth 페이지에 보여지는걸 다르게 해줌.
+ * */
 export const Auth = () => {
     const [currentView, setCurrentView] = useState<"login" | "signup">("login")
 

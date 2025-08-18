@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
 import {SocialLoginRequest} from "@/features/login";
-import {setUser} from "@/shared/slices";
+import {setUser} from "@/shared/slice";
 import {useDispatch} from "react-redux";
 
 
@@ -47,7 +47,7 @@ export const SocialLoginHandler = () => {
 
             const data = await SocialLoginRequest({ code, socialType })
 
-            //redux 에 유저 데이터 저장
+            //slice 에 유저 데이터 저장
             if(data === null){
                 setStatus('FAIL')
                 console.log('Login error')
@@ -59,6 +59,7 @@ export const SocialLoginHandler = () => {
                     userName: data.userName || '',
                     userEmail: data.email || '',
                     socialType: data.socialType || 'NORMAL',
+                    tokenExp: data.exp || 0,
                 }))
                 window.opener.location.replace('/')
                 window.close()
@@ -66,8 +67,6 @@ export const SocialLoginHandler = () => {
             }
 
     }, [dispatch])
-
-
 
     /**
      * code,socialType,handleLogin 이 바뀌면 ( google 로그인 했다가 kakao 로그인을 하면 ) handleLogin 실행.

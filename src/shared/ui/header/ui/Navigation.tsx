@@ -19,7 +19,7 @@ export const Navigation = () => {
       <Link
         to="/"
         className={`${navigationStyles.navLink} ${
-          isActivePage("/") && !isActivePage("/departments") && !isActivePage("/auth") ? navigationStyles.activeLink : ""
+          isActivePage("/") && (!isActivePage("/departments") && !isActivePage("/auth") && !isActivePage("/dashboard") && !isActivePage("/cbt")) ? navigationStyles.activeLink : ""
         }`}
       >
         홈
@@ -36,12 +36,8 @@ export const Navigation = () => {
         >
             CBT
         </Link>
-        {/* email 값 없으면 로그인, email 값 있으면 로그아웃 표시 -> 임시 코드로 수정 예정
-            현재 생각 로직 : 백엔드에서 로그인 (db에 있는거 확인) 확인하면
-            유저 정보(email,이름..) 과 함께 isLogin(boolean 자료형, 로그인 여부를 알리는 변수) 를 넘겨서
-            isLogin 으로 버튼 표시 판단 할 예정
-
-            로그아웃 로직 : isLogin,백엔드에서 받아온 유저정보들 을 null로 바꾼 후 메인페이지로 이동되게 코드 만들 예정*/}
+        {/* redux에 email 있으면 로그인 버튼 표시
+            없으면 로그아웃 버튼 표시*/}
         {!email ? (
         <Link
             to="/auth"

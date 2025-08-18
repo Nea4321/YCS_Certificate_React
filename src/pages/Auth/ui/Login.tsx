@@ -7,6 +7,15 @@ interface LoginProps {
     onSwitchToSignup: () => void
 }
 
+/**
+ * 로그인 페이지.
+ *
+ * LoginForm() 을 가져와서 로그인 관련 처리 기능들을 사용함.
+ * 위에 있는 인터페이스 LoginProps 는 회원가입,로그인 전환을 위한 함수를 정의해놓음.
+ *
+ * Auth.tsx 에서 로그인 페이지 일 때는 onSwitchToSingup 함수 안에 currentView를 Singup 으로 바꾸는 함수가 들어있음
+ * 반대로 회원 페이지 에서는 onSwitchToSingup 함수 안에 currnetView 를 login으로 바꾸는 함수가 들어있음.
+ * */
 export const Login = ({ onSwitchToSignup }: LoginProps) => {
     const { formData, error, handleInputChange, handleSocialLogin, handleSubmit } = LoginForm()
     return (
