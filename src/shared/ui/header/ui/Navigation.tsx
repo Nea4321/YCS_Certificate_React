@@ -20,7 +20,7 @@ export const Navigation = () => {
       <Link
         to="/"
         className={`${navigationStyles.navLink} ${
-          isActivePage("/") && !isActivePage("/departments") && !isActivePage("/auth") ? navigationStyles.activeLink : ""
+          isActivePage("/") && !isActivePage("/departments") && !isActivePage("/auth") && !isActivePage("/cbt") ? navigationStyles.activeLink : ""
         }`}
       >
         홈

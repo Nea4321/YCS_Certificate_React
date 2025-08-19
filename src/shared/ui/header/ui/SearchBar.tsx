@@ -6,9 +6,20 @@ import { useNavigate } from "react-router-dom"
 import { AutocompleteList } from "@/shared"
 import { axiosApi } from "@/shared/api/axios-api"
 
+/**헤더 자격증 검색 컴포넌트
+ *
+ * - 페이지에 처음 접근하면 DB에 저장된 모든 자격증을 불러온다
+ * - 이후 사용자가 검색창에 입력한 내용은 searchQuery 상태로 관리된다
+ * - 사용자가 검색을 실행하면 searchQuery의 내용을 바탕으로
+ * `/search?keyword=${encodeURIComponent(searchQuery)}` 에 리다이렉트
+ * - 이후 검색창은 공백으로 상태 변경
+ *
+ * @component
+ */
 export const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("") // 검색 입력 상태
+  const [isSearchFocused, setIsSearchFocused] = useState(false) // 포커스 상태
+  // 로드한 전체 자격증(자동완성)
   const [allCertificates, setAllCertificates] = useState<{ certificate_id: number, certificate_name: string }[]>([])
   const navigate = useNavigate()
 
@@ -20,6 +31,7 @@ export const SearchBar = () => {
     })
   }, [])
 
+  // 검색 제출을 위한 핸들러
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
@@ -47,6 +59,7 @@ export const SearchBar = () => {
           autoCapitalize="off" // 첫 글자 자동 대문자 비활성화
         />
       </form>
+      {/*검색창에 포커스가 잡혀있을 경우에만 자동완성이 표시되도록 조건을 줌*/}
       {isSearchFocused && (
           <AutocompleteList
               query={searchQuery}

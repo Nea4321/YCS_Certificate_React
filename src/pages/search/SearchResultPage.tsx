@@ -8,6 +8,14 @@ import { getChoseong, disassemble } from "es-hangul"
 import { certificateTags } from "@/entities/certificate"
 import { TagFilterBar } from "@/shared/ui/tag/TagFilterBar.tsx"
 
+/**검색 목록 페이지 컴포넌트
+ * - 쿼리스트링의 keyword를 가져와서 사용한다
+ * - 만약 keyword의 첫 글자가 '#'라면 태그를 기준으로 검색
+ * - 일반 검색일 경우 DB에서 가져온 모든 자격증 목록 중 keyword가 포함된 자격증들을 results 상태를 변경하여 전달,
+ *   이후 SearchResultList에 results를 전달하여 화면에 표시
+ *
+ * @component
+ */
 export default function SearchResultPage() {
     const [searchParams] = useSearchParams()
     const rawKeyword = searchParams.get("keyword") || ""
@@ -15,6 +23,14 @@ export default function SearchResultPage() {
     const [results, setResults] = useState<Certificate[]>([])
     const navigate = useNavigate()
 
+    /**사용자가 검색을 제출하면 실행하는 useEffect
+     * - 모든 자격증 정보를 불러온다
+     * - 태그 검색, 일반 검색의 조건을 검사한다
+     *
+     * @returns results가 0이라면 검색 결과가 없습니다
+     *  results가 0이 아니라면 <SearchResultList results={results} />
+     *
+     */
     useEffect(() => {
         const fetchResults = async () => {
             try {
