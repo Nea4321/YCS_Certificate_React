@@ -1,9 +1,10 @@
 import React, {useState} from "react";
+import {SingUpRequest} from "@/features/login";
+import axios from "axios";
 
-// 회원가입에 들어가야 하는 기능
-// 1. 회원 가입 하면 유저 DB에 등록하기
-
-
+/**
+ * 회원가입 처리 기능 모음.
+ * */
 export const SingupForm =(onSwitchToLogin: () => void)=>{
     const [formData, setFormData] = useState({
         name: "",
@@ -14,6 +15,8 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
 
+    // 작동 방식은 LoginForm.tsx 에 있는것과 비슷함.
+    // 그래서 주석 생략
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({
@@ -57,25 +60,30 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
         setError("")
         setSuccess("")
 
-        try {
-            //  회원가입 API 넣어야댐
-            // 유저정보 백엔드로 넘기기 -> 백엔드에서 유저DB에 정보 저장하기
+        try
+        {
+            // 백엔드에 회원정보 저장 요청
+               await SingUpRequest({
+                email: formData.email,
+                name: formData.name,
+                password: formData.password,
+                socialType: "normal"
+            });
 
             console.log("회원가입 성공:", {
                 name: formData.name,
                 email: formData.email,
             })
-
             setSuccess("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.")
-
             // 2초 후 로그인 페이지로 이동
             setTimeout(() => {
                 onSwitchToLogin()
             }, 2000)
 
-        } catch (err) {
-            console.log("auth err : " + err)
-            setError("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.")
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data || "회원가입 중 오류 발생");
+            } else {setError("알 수 없는 오류 발생");}
         }
     }
     return{formData,error,success,handleSubmit,handleInputChange}

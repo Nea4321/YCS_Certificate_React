@@ -3,6 +3,8 @@
 import { Link, useLocation } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import { mobileMenuStyles } from "./styles"
+import {useSelector} from "react-redux";
+import {RootState} from "@/app/store";
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -11,7 +13,7 @@ interface MobileMenuProps {
 
 export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
   const location = useLocation()
-
+  const email = useSelector((state: RootState) => state.user.userEmail)
   const isActivePage = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(path)
   }
@@ -49,16 +51,38 @@ export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
           >
             학과별 자격증
           </Link>
-
+          {!email ? (
           <Link
               to="/auth"
               className={`${mobileMenuStyles.mobileNavLink}${
-                  isActivePage("/departments") ? mobileMenuStyles.activeLink : ""
+                  isActivePage("/auth") ? mobileMenuStyles.activeLink : ""
               }`}
               onClick={handleLinkClick}
           >
             로그인
           </Link>
+          ):(
+              <Link
+                  to="/logout"
+                  className={`${mobileMenuStyles.mobileNavLink}${
+                      isActivePage("/logout") ? mobileMenuStyles.activeLink : ""
+                  }`}
+                  onClick={handleLinkClick}
+              >
+                로그아웃
+              </Link>
+          )}
+          {email && (
+              <Link
+                  to="/dashboard"
+                  className={`${mobileMenuStyles.mobileNavLink}${
+                      isActivePage("/dashboard") ? mobileMenuStyles.activeLink : ""
+                  }`}
+                  onClick={handleLinkClick}
+              >
+                <div>{email}</div>
+              </Link>
+          )}
 
         </div>
       </div>

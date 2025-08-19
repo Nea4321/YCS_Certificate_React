@@ -5,6 +5,11 @@ interface SignupProps {
     onSwitchToLogin: () => void
 }
 
+/**
+ * 회원가입 페이지
+ * 
+ * 로그인 페이지와 기능이 비슷하므로 설명 스킵
+ * */
 export const Signup = ({ onSwitchToLogin }: SignupProps) => {
     const { formData,error,success,handleInputChange,handleSubmit } = SingupForm(onSwitchToLogin)
     return (

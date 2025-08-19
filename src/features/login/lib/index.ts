@@ -1,2 +1,2 @@
-export { GetPopupOptions } from './GetPopupOptions.tsx'
-export { OpenPopup } from './OpenPopup.tsx'
+export { GetPopupOptions } from './GetPopupOptions'
+export { OpenPopup } from './OpenPopup'

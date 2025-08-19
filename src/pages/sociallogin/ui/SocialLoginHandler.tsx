@@ -1,6 +1,9 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
 import {SocialLoginRequest} from "@/features/login";
+import {setUser} from "@/shared/slice";
+import {useDispatch} from "react-redux";
+
 
 /**
  * 소셜 로그인 후 콜백 처리하는 컴포넌트
@@ -25,12 +28,12 @@ export const SocialLoginHandler = () => {
     const [searchParams] = useSearchParams()
     // ?code=~~ 형태에서 code 값 추출
     const code = searchParams.get('code')
-
     // 로그인 상태 관리 함수
     const [status, setStatus] = useState<'IDLE' | 'SUCCESS' | 'FAIL'>('IDLE')
-
     // 1회 실행 체크용 useRef
     const hasRun = useRef(false)
+
+    const dispatch = useDispatch()
     /**
      * 로그인 정상 처리 확인 함수
      *
@@ -41,18 +44,29 @@ export const SocialLoginHandler = () => {
      * @param socialType(string), code(string)
      * */
     const handleLogin = useCallback(async (socialType: string, code: string) => {
-        try {
-            const data = await SocialLoginRequest({ code, socialType })
-            setStatus('SUCCESS')
-            document.cookie = `user-key=${data.email}; path=/`
-            window.opener.location.replace('/')
-            window.close()
-        } catch (error) {
-            console.error('Login error:', error)
-            setStatus('FAIL')
-        }
-    }, [])
 
+            const data = await SocialLoginRequest({ code, socialType })
+
+            //slice 에 유저 데이터 저장
+            if(data === null){
+                setStatus('FAIL')
+                console.log('Login error')
+                
+            }
+            else {
+                setStatus('SUCCESS')
+                dispatch(setUser({
+                    userName: data.userName || '',
+                    userEmail: data.email || '',
+                    socialType: data.socialType || 'NORMAL',
+                    tokenExp: data.exp || 0,
+                }))
+                window.opener.location.replace('/')
+                window.close()
+
+            }
+
+    }, [dispatch])
 
     /**
      * code,socialType,handleLogin 이 바뀌면 ( google 로그인 했다가 kakao 로그인을 하면 ) handleLogin 실행.
