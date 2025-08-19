@@ -593,3 +593,5 @@ dev-dist/
 # Java heap dump
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,git,java,maven,eclipse,gradle,netbeans,visualstudiocode,dotenv,intellij+all,react,android,reactnative
+# local env
+env
