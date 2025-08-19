@@ -4,13 +4,14 @@ import { axiosApi } from "@/shared/api/axios-api"
 import { SearchResultList } from "./ui"
 import { searchStyles } from "./styles"
 import type { Certificate } from "@/entities/certificate/model/types"
-import { getChoseong, disassemble } from "es-hangul";
+import { getChoseong, disassemble } from "es-hangul"
 import { certificateTags } from "@/entities/certificate"
+import { TagFilterBar } from "@/shared/ui/tag/TagFilterBar.tsx"
 
 export default function SearchResultPage() {
     const [searchParams] = useSearchParams()
     const rawKeyword = searchParams.get("keyword") || ""
-    const keyword = decodeURIComponent(rawKeyword).trim() // URL 인코딩된 값 디코딩
+    const keyword = decodeURIComponent(rawKeyword).trim()
     const [results, setResults] = useState<Certificate[]>([])
     const navigate = useNavigate()
 
@@ -21,21 +22,19 @@ export default function SearchResultPage() {
                 const data: Certificate[] = response.data
                 const deKeyword = [...disassemble(keyword)].join("")
 
-                // 1. 태그 검색 (#전기 등)
                 if (keyword.startsWith("#")) {
                     const tagQuery = keyword.slice(1).trim()
-                    // certificateTags 기반으로 태그에 해당하는 자격증명 목록
-                    const matchedCertNames = Object.entries(certificateTags)
+                    const matchedCertIds = Object.entries(certificateTags)
                         .filter(([, tags]) => tags.includes(tagQuery))
-                        .map(([name]) => name)
-                    // 실제 API에서 가져온 데이터에서 이름 일치하는 자격증만 필터링
-                    const filteredByTag = data.filter(cert => matchedCertNames.includes(cert.certificate_name))
+                        .map(([id]) => Number(id))
 
+                    const filteredByTag = data.filter(cert =>
+                        matchedCertIds.includes(cert.certificate_id)
+                    )
                     setResults(filteredByTag)
                     return
                 }
 
-                // 2. 일반 검색
                 const filtered = data.filter(cert => {
                     const name = cert.certificate_name
                     const choseong = getChoseong(name)
@@ -53,18 +52,7 @@ export default function SearchResultPage() {
         }
 
         fetchResults()
-    }, [keyword]) //  useEffect 재실행
-
-    if (results.length === 0) {
-        return (
-            <div className={searchStyles.noResultWrapper}>
-                <h2>검색 결과가 없습니다</h2>
-                <button className={searchStyles.backButton} onClick={() => navigate(-1)}>
-                    ← 뒤로가기
-                </button>
-            </div>
-        )
-    }
+    }, [keyword])
 
     return (
         <div>
@@ -73,7 +61,21 @@ export default function SearchResultPage() {
                     ← 뒤로가기
                 </button>
             </div>
-            <SearchResultList results={results} />
+
+            <div className={searchStyles.filterWrap}>
+                <TagFilterBar closeOnTagClick={true} />
+            </div>
+
+            {results.length === 0 ? (
+                <div className={searchStyles.noResultWrapper}>
+                    <h2>검색 결과가 없습니다</h2>
+                    <button className={searchStyles.backButton} onClick={() => navigate(-1)}>
+                        ← 뒤로가기
+                    </button>
+                </div>
+            ) : (
+                <SearchResultList results={results} />
+            )}
         </div>
     )
 }

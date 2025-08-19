@@ -108,18 +108,16 @@
 
 .tagBox {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+    align-items: center;
     justify-content: center;
+    gap: 4px;         /* 기존 6px → 줄여서 간격 최소화 */
+    height: 26px;     /* 기존 32px → 줄여서 카드 안에서 차지하는 높이 축소 */
+    padding: 0 6px 6px; /* 아래쪽 여백만 조금 */
 }
 
-.tag {
-    display: inline-block;
-    color: white;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
+.tagButton {
+    font-size: 0.7rem;    /* 글자 크기 ↓ */
+    padding: 2px 6px;     /* 안쪽 여백 ↓ */
+    border-radius: 8px;   /* 둥근 모서리 유지 */
+    white-space: nowrap;  /* 태그 이름 줄바꿈 방지 */
 }

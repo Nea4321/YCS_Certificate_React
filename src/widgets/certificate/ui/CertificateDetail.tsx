@@ -51,7 +51,7 @@ export const CertificateDetail = memo(({ certificate: initialCertificate }: Cert
     }
 
     const { css, html } = processContent(certificate?.contents || "")
-    const tags = certificateTags[initialCertificate.certificate_name] || []
+    const tags = certificateTags[initialCertificate.certificate_id] || []
 
 
     return (
