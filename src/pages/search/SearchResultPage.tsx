@@ -6,7 +6,7 @@ import { searchStyles } from "./styles"
 import type { Certificate } from "@/entities/certificate/model/types"
 import { getChoseong, disassemble } from "es-hangul"
 import { certificateTags } from "@/entities/certificate"
-import { TagFilterBar } from "@/shared/ui/header/ui/TagFilterBar"
+import { TagFilterBar } from "@/shared/ui/tag/TagFilterBar.tsx"
 
 export default function SearchResultPage() {
     const [searchParams] = useSearchParams()

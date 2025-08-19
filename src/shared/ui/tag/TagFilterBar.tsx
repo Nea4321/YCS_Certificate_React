@@ -1,4 +1,4 @@
-import { tagColors } from "@/entities/certificate/model/tagColors"
+import { tagColors } from "@/entities/certificate/model/tagColors.ts"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
@@ -45,7 +45,7 @@ export const TagFilterBar = ({ closeOnTagClick = false }: TagFilterBarProps) => 
                     aria-expanded={expanded}
                     aria-controls="tag-filter-expand"
                 >
-                    {expanded ? <>접기 <ChevronUp size={16} /></> : <>전체 태그 <ChevronDown size={16} /></>}
+                    {expanded ? <>접기 <ChevronUp size={16} /></> : <>펼치기 <ChevronDown size={16} /></>}
                 </button>
             </div>
 
