@@ -3,6 +3,14 @@
     min-height: 100vh;
     padding: 2rem 4rem;
 }
+.contentCard,
+.examContainer {
+    max-width: min(1200px, 92vw);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+}
 
 .contentCard {
     margin: 0 auto;
@@ -14,41 +22,50 @@
 
 .cbtCategoryGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
     margin: 20px 0 24px;
 }
 
 .categoryCard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 16px;
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 18px;
+    display: grid;
+    place-items: center;
+    height: 40px;
+    padding: 0 12px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 500;
-    color: #222;
+    color: #111827;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition:
+            border-color .15s ease,
+            background-color .15s ease,
+            box-shadow .15s ease,
+            transform .05s ease;
+    white-space: nowrap;
 }
 
 .categoryCard:hover {
-    background-color: #eef7fb;
-    border-color: #2a8ca3;
+    background-color: #f9fafb;
+    border-color: #93c5fd;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    transform: translateY(-1px);
 }
 
 .selected {
-    background-color: #e5f3f8;
-    border-color: #2a8ca3;
-    color: #2a8ca3;
-    font-weight: 600;
+    background-color: #1e40af;
+    border-color: #1e40af;
+    color: #ffffff;
+    box-shadow: none;
 }
 
 .categoryName {
-    flex-grow: 1;
-    text-align: left;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .cbtTitle {
@@ -200,9 +217,9 @@
     .examCategory {
         font-size: 14px;
     }
-   .cbtCountInfo{
-       font-size: 14px;
-   }
+    .cbtCountInfo{
+        font-size: 14px;
+    }
     .cbtCountInfo strong {
         font-size: 14px;
     }
