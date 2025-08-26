@@ -276,6 +276,17 @@
   border-color: #fdd835;
 }
 
+.naverButton {
+  background-color: #03C75A; /* 네이버 그린 */
+  border-color: #03C75A;
+  color: #fff;
+}
+
+.naverButton:hover:not(:disabled){
+  background-color: #02b350;
+  border-color:#02b350;/* hover 시 조금 어둡게 */
+}
+
 /* 회원가입 프롬프트 */
 .signupPrompt {
   text-align: center;
@@ -403,4 +414,10 @@
     border-color: #fee500;
     color: #3c1e1e;
   }
+  .naverButton {
+    background-color: #03C75A;
+    border-color: #03C75A;
+    color: #fff;
+  }
+
 }

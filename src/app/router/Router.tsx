@@ -34,9 +34,6 @@ export const Router = () => {
                             <Route path="/cbt" element={<CBTExamPage/>} />
                             <Route path="/cbt/start" element={<CBTStartPage/>} /> {/*문제 유형 결정 페이지*/}
                             <Route path="/cbt/test" element={<CBTTestPage/>} /> {/* cbt 페이지 */}
-                            <Route path="/auth" element={<Auth />} />    /// 로그인
-                            <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
-                            <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지
                             <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}

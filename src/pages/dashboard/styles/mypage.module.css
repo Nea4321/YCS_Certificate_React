@@ -1,53 +1,16 @@
-/* 전체 컨테이너 */
+/* =================================
+   BASE STYLES & VARIABLES
+   ================================= */
+
 .container {
     min-height: 100vh;
     background-color: #f8f9fa;
 }
 
-/* 헤더 */
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 1.5rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+/* =================================
+   LAYOUT COMPONENTS
+   ================================= */
 
-.headerContent {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.headerTitle {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.logoutButton {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.logoutButton:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.logoutButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* 메인 컨텐츠 */
 .main {
     max-width: 1200px;
     margin: 0 auto;
@@ -60,14 +23,39 @@
     gap: 2rem;
 }
 
-/* 프로필 카드 */
-.profileCard {
+/* =================================
+   CARD COMPONENTS
+   ================================= */
+
+.profileCard,
+.infoCard,
+.accountCard {
     background: white;
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
 }
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* =================================
+   PROFILE SECTION
+   ================================= */
 
 .profileHeader {
     display: flex;
@@ -109,54 +97,21 @@
     margin: 0;
 }
 
-/* 정보 카드 */
-.infoCard,
-.accountCard {
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-}
-
-.cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.cardTitle {
-    font-size: 1.25rem;
+.adminBadge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #2d3748;
-    margin: 0;
+    margin-top: 0.5rem;
 }
 
-/* 메시지 */
-.message {
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
+/* =================================
+   FORM ELEMENTS
+   ================================= */
 
-.error {
-    background-color: #fed7d7;
-    color: #c53030;
-    border: 1px solid #feb2b2;
-}
-
-.success {
-    background-color: #c6f6d5;
-    color: #2f855a;
-    border: 1px solid #9ae6b4;
-}
-
-/* 정보 그리드 */
 .infoGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -200,7 +155,10 @@
     opacity: 0.6;
 }
 
-/* 버튼들 */
+/* =================================
+   BUTTONS
+   ================================= */
+
 .editButton {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -217,19 +175,6 @@
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.editButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.actionButtons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e2e8f0;
-}
-
 .saveButton {
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     color: white;
@@ -239,9 +184,6 @@
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .saveButton:hover:not(:disabled) {
@@ -264,42 +206,6 @@
     background: #cbd5e0;
 }
 
-.saveButton:disabled,
-.cancelButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* 로딩 스피너 */
-.loadingContainer {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.loadingSpinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* 계정 관리 */
-.accountActions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
 .deleteButton {
     background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
     color: white;
@@ -309,24 +215,245 @@
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s ease;
-    text-align: left;
 }
 
-.deleteButton:hover {
+.deleteButton:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
 }
 
-/* 반응형 디자인 */
+.suspendButton {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.suspendButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
+}
+
+.activateButton {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.activateButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+/* Button Groups */
+.actionButtons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.accountActions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.memberActions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Button States */
+.editButton:disabled,
+.saveButton:disabled,
+.cancelButton:disabled,
+.deleteButton:disabled,
+.suspendButton:disabled,
+.activateButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* =================================
+   MESSAGES & NOTIFICATIONS
+   ================================= */
+
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.error {
+    background-color: #fed7d7;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.success {
+    background-color: #c6f6d5;
+    color: #2f855a;
+    border: 1px solid #9ae6b4;
+}
+
+/* =================================
+   FAVORITES SECTION
+   ================================= */
+
+.favoritesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.favoriteItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.favoriteItem:hover {
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.favoriteIcon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.favoriteInfo {
+    flex: 1;
+}
+
+.favoriteName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0 0 0.25rem 0;
+}
+
+.favoriteCategory {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0;
+}
+
+/* =================================
+   MEMBER MANAGEMENT
+   ================================= */
+
+.membersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.memberItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.memberItem:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.memberInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.memberAvatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.memberDetails {
+    flex: 1;
+}
+
+.memberName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0 0 0.25rem 0;
+}
+
+.memberEmail {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0 0 0.25rem 0;
+}
+
+.memberJoinDate {
+    font-size: 0.75rem;
+    color: #a0aec0;
+    margin: 0;
+}
+
+.memberStatus {
+    margin-left: 1rem;
+}
+
+.statusBadge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.statusActive {
+    background-color: #c6f6d5;
+    color: #2f855a;
+}
+
+.statusSuspended {
+    background-color: #fed7d7;
+    color: #c53030;
+}
+
+/* =================================
+   RESPONSIVE DESIGN
+   ================================= */
+
 @media (max-width: 768px) {
-    .headerContent {
-        padding: 0 1rem;
-    }
-
-    .headerTitle {
-        font-size: 1.5rem;
-    }
-
     .main {
         padding: 1rem;
     }
@@ -366,20 +493,29 @@
         align-items: flex-start;
         gap: 1rem;
     }
+
+    .memberItem {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .memberActions {
+        justify-content: center;
+    }
+
+    .favoritesGrid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 480px) {
-    .headerContent {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-
     .profileHeader {
         gap: 0.75rem;
     }
 
-    .avatar {
+    .avatar,
+    .memberAvatar {
         width: 50px;
         height: 50px;
     }
@@ -390,5 +526,10 @@
 
     .profileName {
         font-size: 1.25rem;
+    }
+
+    .memberActions {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }

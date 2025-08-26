@@ -29,6 +29,12 @@ declare module '*.less' {
 interface ImportMetaEnv {
     readonly VITE_GOOGLE_CLIENT_ID: string
     readonly VITE_GOOGLE_REDIRECT_URI: string
+    readonly VITE_NAVER_CLIENT_ID: string
+    readonly VITE_NAVER_REDIRECT_URI: string
+    readonly VITE_KAKAO_REST_API_KEY: string
+    readonly VITE_KAKAO_REDIRECT_URI: string
+    readonly VITE_GITHUB_CLIENT_ID: string
+    readonly VITE_GITHUB_REDIRECT_URI: string
 }
 
 /**

@@ -51,7 +51,6 @@ export const SocialLoginHandler = () => {
             if(data === null){
                 setStatus('FAIL')
                 console.log('Login error')
-                
             }
             else {
                 setStatus('SUCCESS')
