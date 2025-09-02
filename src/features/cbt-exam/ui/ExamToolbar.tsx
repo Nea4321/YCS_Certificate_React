@@ -1,5 +1,5 @@
 import React from "react";
-import type { LayoutMode } from "../../model/useExamPaging";
+import type { LayoutMode } from "@/features/cbt-exam/model/useExamPaging";
 
 export function ExamToolbar({
                                 fontZoom, setFontZoom, layout, setLayout, onLayoutChange,

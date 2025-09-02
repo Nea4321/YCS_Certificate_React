@@ -115,7 +115,6 @@
     top: 0;
     z-index: 5;
     margin-left: 5px;
-    height:var(--toolbarH);
     border: 1px solid #d9dee6;
 }
 

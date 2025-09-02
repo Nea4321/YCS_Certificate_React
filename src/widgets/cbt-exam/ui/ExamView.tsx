@@ -6,7 +6,7 @@ import {
     ExamHeader, ExamToolbar, QuestionPaper, AnswerSheet, UnansweredModal, FooterBar,
     LayoutMode
 } from "@/features/cbt-exam";
-import { Calculator } from "@/features/cbt-exam"; // 네가 둔 위치 그대로
+import { Calculator } from "@/features/cbt-exam";
 
 export interface ExamViewProps {
     certName: string;
@@ -32,7 +32,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
     const [showCalc, setShowCalc] = useState(false);
 
     const { bodyRef, headerRef, footerRef, toolbarRef } = useStickyHeights();
-    const { effPageSize, totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion } =
+    const { totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion } =
         useExamPaging(layout, pageSize, currentPage, setCurrentPage, questions.length, questions);
     const { unanswered, numbers: unansweredNumbers, hasUnanswered } = useUnanswered(answers);
 

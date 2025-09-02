@@ -45,14 +45,12 @@ export const CBTTestPage: React.FC = () => {
     const { leftTime, limitMin} = useExamTimer(ui === "exam", 60 * 60);
     const timer = { leftTime, limitMin };
 
-    const totalPages = Math.ceil(totalQuestions / pageSize);
 
     return (
         <>
             {ui === "exam" ? (
                 <ExamView
                     certName={certName}
-                    totalQuestions={totalQuestions}
                     pageSize={pageSize}  // 동적으로 계산된 pageSize 전달
                     currentPage={currentPage}  // 현재 페이지 전달
                     setCurrentPage={setCurrentPage}  // 페이지 이동 처리 함수 전달
@@ -62,7 +60,6 @@ export const CBTTestPage: React.FC = () => {
                     questions={mockQuestions}
                     fontZoom={fontZoom}
                     setFontZoom={setFontZoom}  // 글자 크기 변경 함수 전달
-                    totalPages={totalPages}  // 총 페이지 수 전달
                 />
             ) : (
                 <PracticeView

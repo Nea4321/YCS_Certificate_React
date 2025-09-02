@@ -53,5 +53,5 @@ export function useExamPaging(
         setCurrentPage(nextPage);
     };
 
-    return { effPageSize, totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion };
+    return { totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion };
 }

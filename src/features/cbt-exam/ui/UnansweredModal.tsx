@@ -1,5 +1,3 @@
-import React from "react";
-
 export function UnansweredModal({
                                     numbers, onSelect, onClose, styles
                                 }:{

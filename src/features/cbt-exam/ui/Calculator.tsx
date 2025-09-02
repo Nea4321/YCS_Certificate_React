@@ -94,6 +94,27 @@ export function Calculator({ onClose }: { onClose: () => void }) {
         }
     };
 
+    const backspace = () => {
+        if (display === "INFINITY") return;
+
+        if (justEval) {
+            setJustEval(false);
+            setDisplay("0");
+            return;
+        }
+
+        setDisplay(prev => {
+
+            if (prev === "0") return prev;
+
+            const next = prev.slice(0, -1);
+
+            if (next === "" || next === "-" || next === "-0") return "0";
+
+            return next;
+        });
+    };
+
     const pushOp = (next: BinOp) => {
         const cur = display === "INFINITY" ? 0 : asNum(display);
         if (acc === null) {
@@ -180,7 +201,7 @@ export function Calculator({ onClose }: { onClose: () => void }) {
                 <Btn label="√"   onClick={sqrt}      variant="act" ariaLabel="제곱근" />
                 <Btn label="±"   onClick={toggleSign} variant="act" ariaLabel="부호 변경" />
                 <Btn label="1/x" onClick={reciprocal} variant="act" ariaLabel="역수" />
-                <Btn label="←" variant="act" ariaLabel="한 글자 지우기" />
+                <Btn label="←" onClick={backspace} variant="act" ariaLabel="한 글자 지우기" />
 
                 {/* 2행 */}
                 <Btn label="MR" onClick={memRecall} variant="mem" />
