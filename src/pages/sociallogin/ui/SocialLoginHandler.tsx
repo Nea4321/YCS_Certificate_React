@@ -68,7 +68,7 @@ export const SocialLoginHandler = () => {
     }, [dispatch])
 
     /**
-     * code,socialType,handleLogin 이 바뀌면 ( google 로그인 했다가 kakao 로그인을 하면 ) handleLogin 실행.
+     * code,socialType,handleLogin 이 바뀌면 ( google 로그인 했다가 naver 로그인을 하면 ) handleLogin 실행.
      *
      * 문제점 : [code,social~~] 값이 바뀔 때 마다 함수 handleLogin() 생성 -> 기능은 같은데 참조값이 다른 쓸모없는 함수 발생 -> 경고 생성
      * 개선 : handleLogin에다가 useCallback() 을 사용해 한번만 생성 되게끔 만듬

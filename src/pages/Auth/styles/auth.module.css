@@ -251,6 +251,11 @@
   flex-shrink: 0;
 }
 
+.googleButton {
+  background-color: #fff;
+  color: #3c1e1e;
+}
+
 .googleButton:hover:not(:disabled) {
   border-color: #4285f4;
   background-color: #f8f9ff;
@@ -262,18 +267,7 @@
 
 .githubButton:hover:not(:disabled) {
   border-color: #24292e;
-  background-color: #f6f8fa;
-}
-
-.kakaoButton {
-  background-color: #fee500;
-  border-color: #fee500;
-  color: #3c1e1e;
-}
-
-.kakaoButton:hover:not(:disabled) {
-  background-color: #fdd835;
-  border-color: #fdd835;
+  background-color: #e3e3e3;
 }
 
 .naverButton {
@@ -408,10 +402,8 @@
     border-color: #718096;
     color: #e2e8f0;
   }
-
-  .kakaoButton {
-    background-color: #fee500;
-    border-color: #fee500;
+  .googleButton {
+    background-color: #e2e8f0;
     color: #3c1e1e;
   }
   .naverButton {

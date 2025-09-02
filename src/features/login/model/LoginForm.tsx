@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {GithubLogin, GoogleLogin, KakaoLogin, LoginRequest, NaverLogin} from "@/features/login";
+import {GithubLogin, GoogleLogin, LoginRequest, NaverLogin} from "@/features/login";
 import {setUser} from "@/shared/slice";
 import {useDispatch} from "react-redux";
 
@@ -106,7 +106,6 @@ export const LoginForm = () => {
                 console.log(`${provider} 로그인 시도`)
                 if (provider === "google") GoogleLogin()
                 if (provider === "naver") NaverLogin()
-                if (provider === "kakao") KakaoLogin()
                 if (provider === "github") GithubLogin()
 
                 console.log(`${provider} 로그인 성공`)
