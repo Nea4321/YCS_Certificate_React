@@ -7,7 +7,7 @@ import { SocialLogin } from "@/pages/sociallogin";
 import { DashBoard } from "@/pages/dashboard/DashBoard";
 import { Header } from "@/shared/ui/header";
 import { MainPage } from "@/pages/main";
-import { CBTExamPage } from "@/pages/cbt/ui";
+import { CBTExamPage } from "@/pages/cbt";
 import { ScrollToTop } from "@/shared";
 import { SearchResultPage } from "@/pages/search"
 import {MainLayout} from "@/shared/layouts";

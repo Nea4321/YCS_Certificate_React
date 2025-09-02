@@ -1,0 +1,711 @@
+/* 전역 컨테이너 */
+.examWrap {
+    width: 100%;
+    height: 100vh;         /* ⬅ 전체를 뷰포트 높이로 고정 */
+    overflow: hidden;      /* ⬅ 문서(body) 스크롤 억제 */
+    font-family: 'Gulim','굴림','Malgun Gothic','맑은 고딕', system-ui, sans-serif;
+
+    --sheetW:220px;
+    --gap:12px;
+    --headerH:52px;
+    --footerH:0px;
+    --toolbarH:40px;
+    --qScaleQ: 1;
+}
+
+.examWrap button,
+.examWrap input,
+.examWrap select,
+.examWrap textarea {
+    font-family: inherit !important;
+}
+
+/* ========= 레이아웃 그리드 ========= */
+.examBody {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) var(--sheetW);
+    grid-template-rows:auto 1fr;
+    grid-template-areas:
+    "header header"
+    "left   right";
+    gap:var(--gap);
+    align-items:start;
+    box-sizing:border-box;
+    height:calc(100vh - var(--footerH,0px));
+    overflow:hidden;                         /* ⬅ 문서 스크롤 차단 */
+}
+
+/* 영역 배치 */
+.examHeader { grid-area: header; }
+.paperCol {
+    grid-area:left;
+    min-width:0;
+    display:grid;
+    grid-template-rows:auto 1fr;  /* 위: 툴바, 아래: 문제지 */
+    row-gap:0;
+    /* 컬럼 자체 높이는 헤더/푸터 제외 */
+    max-height:calc(100vh - var(--headerH,0px) - var(--footerH,0px));
+    overflow:hidden;
+}
+.examSheet  { grid-area: right; }
+
+/* ========= 헤더 ========= */
+.examHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px 6px;
+    background: #f8fafc url('/public/CBTExamView/header_bg.png') repeat-x left top;
+    background-size: auto 100%;
+    border-bottom: 5px solid #3664B1;
+    margin: 0 0 5px 0;
+}
+
+.examTitle { font-size: 18px; font-weight: 700; }
+
+.headerRight {
+    display: flex;
+    position: relative;
+    align-items: center;
+    gap: 10px;
+    margin-left : 12px;
+    padding-left: 12px;
+}
+.headerRight::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #c7d4e6;                 /* 살짝 더 밝은 톤 */
+    box-shadow: 1px 0 0 rgba(255,255,255,.95);
+}
+
+.timerIcon {
+    width: 26px;
+    height: 26px;
+    background: url('/public/CBTExamView/clock_icon.png') no-repeat center/contain;
+    flex: 0 0 auto;
+}
+
+/* 제한/남은 시간 두 줄 */
+.headerTimer {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    column-gap: 6px;
+    row-gap: 4px;
+    align-items: baseline;
+    white-space: nowrap;
+}
+.timerRow   { display: contents; font-size: 12px; color: #1f2a44; }
+.timerRemaining { display: contents; font-size: 12px; color: #dc2626; }
+.timerLabel { font-weight: 700; }
+.timerValue { font-weight: 700; }
+.timerLeft  { font-weight: 700; }
+
+/* ========= 툴바 ========= */
+.examToolbar {
+    background: linear-gradient(#f3f4f6, #eceff3);
+    padding-left: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin-left: 5px;
+    height:var(--toolbarH);
+    border: 1px solid #d9dee6;
+}
+
+.toolbarGroup  { display: flex; align-items: center; gap: 6px; }
+.toolbarLabel  { font-size: 12px; color: #1f2a44; font-weight: 700; line-height: 15px; width: 30px; }
+.toolbarDivider{ width: 1px; height: 18px; background: #c7cdd6; margin: 0 4px; }
+
+.percentBtn,
+.layoutBtn {
+    border: none;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+}
+
+.percentBtn { width: 35px; height: 35px; }
+.layoutBtn  { width: 30px; height: 30px; }
+
+.toolbarCounters {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 10px;
+}
+.counterRow  { display: flex; align-items: baseline; gap: 6px; height: 20px; font-size: 11px; }
+.counterLabel{ color: #1f2a44; }
+.counterNum  { min-width: 18px; text-align: right; color: #1f2a44; font-weight: bold; }
+.counterNumWarn { color: #d22; }
+
+/* ========= 본문(문제지) ========= */
+.paper {
+    box-sizing:border-box;
+    height:calc(100vh - var(--headerH,0px) - var(--footerH,0px) - var(--toolbarH,0px));
+    overflow:auto;
+    background:#fff;
+    border:1px solid #d9dee6;
+    border-top:none;
+    box-shadow:inset 0 0 0 1px #f2f5f9;
+    padding:16px 20px;
+}
+
+/* 레이아웃 전환 모드 */
+.layoutTwoCol .paper {
+    column-count: 1;
+    column-gap: 0;
+}
+.layoutTwoColNarrow .paper {
+    position: relative;
+    column-count: 2;
+    column-gap: 32px;
+}
+.layoutTwoColNarrow .paper::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 50%;
+    width: 1px;
+    background: #d9dee6;
+}
+.layoutTwoColNarrow .qblock { break-inside: avoid; }
+.layoutOneCol .paper {
+    column-count: 1;
+    column-gap: 0;
+}
+
+.qblock { padding: 8px 0 16px; }
+.qnum   { font-size: calc(16px * var(--qScaleQ)); margin-bottom: 6px; }
+
+.opts { list-style: none; padding: 0; margin: 0; }
+.opt  { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: calc(15px * var(--qScaleQ)); line-height: calc(1.6 * var(--qScaleQ)); }
+
+.optLabel { display: inline-flex; align-items: center; gap: 8px; }
+
+/* 네이티브 라디오 숨김(접근성 유지) */
+.optRadio {
+    position: absolute;
+    width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+    border: 0; white-space: nowrap;
+}
+
+/* 보기 번호 이미지 */
+.optImg {
+    display: inline-block;
+    width: calc(16px * var(--qScaleQ));
+    height: calc(16px * var(--qScaleQ));
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    cursor: pointer;
+}
+.optImg1 { background-image: url('/public/CBTExamView/num01.png'); }
+.optImg2 { background-image: url('/public/CBTExamView/num02.png'); }
+.optImg3 { background-image: url('/public/CBTExamView/num03.png'); }
+.optImg4 { background-image: url('/public/CBTExamView/num04.png'); }
+
+/* 체크 시 체크 마크로 */
+.optRadio:checked + .optImg { background-image: url('/public/CBTExamView/numcheck.png'); }
+
+/* 키보드 포커스 */
+.optRadio:focus-visible + .optImg {
+    outline: 2px solid #0b63b0;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.optText { font-size: calc(15px * var(--qScaleQ)); line-height: calc(1.6 * var(--qScaleQ)); }
+
+/* ========= 우측: 답안 표기란 ========= */
+.examSheet {
+    position:sticky;
+    top:calc(var(--headerH) + var(--gap));
+    align-self:start;
+    width:100%;
+    background:#fff;
+    border:1px solid #bfd8fb;
+    border-radius:4px;
+    max-height: calc(100vh - var(--headerH) - var(--footerH) - var(--gap));
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.sheetHeader {
+    font-weight: 700;
+    background: #0b63b0;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 2px;
+    text-align: center;
+    background: url('/public/CBTExamView/answer_title_bg.png') repeat-x left top;
+}
+
+.sheetRow {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: center;
+    column-gap: 20px;
+    padding: 6px 8px;
+    background: linear-gradient(to right, #eaf3ff 0, #eaf3ff 34px, transparent 34px);
+}
+.sheetRowNum {
+    justify-self: center;
+    align-self: center;
+    width: 20px;
+    text-align: center;
+    font-weight: 700;
+    color: #1f57a6;
+    font-size: 13px;
+}
+
+.circleChoices { display: flex; gap: 10px; }
+.circleChoice input { display: none; }
+
+.sheetRadio { display: none; }
+
+/* 답안 숫자 아이콘 */
+.ansImg {
+    display: inline-block;
+    width: calc(16px * var(--qScaleQ, 1));
+    height: calc(16px * var(--qScaleQ, 1));
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    cursor: pointer;
+}
+.ansImg1 { background-image: url('/public/CBTExamView/num01_answer.png'); }
+.ansImg2 { background-image: url('/public/CBTExamView/num02_answer.png'); }
+.ansImg3 { background-image: url('/public/CBTExamView/num03_answer.png'); }
+.ansImg4 { background-image: url('/public/CBTExamView/num04_answer.png'); }
+/* 체크 시 공통 체크 이미지 */
+.sheetRadio:checked + .ansImg { background-image: url('/public/CBTExamView/check_answer.png'); }
+
+/* ========= 하단 푸터 ========= */
+.examFooterRow {
+    position: sticky;
+    bottom: 0;
+    background: #cfd2d8;
+    border-top: 1px solid #d9dee6;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 9px;
+    z-index: 10;
+}
+.footerPagerWrap { justify-self: center; }
+.footerPager { display: inline-flex; align-items: center; gap: 12px; font-size: 9pt; }
+.footerPager button { flex: 0 0 auto !important; width: auto; }
+
+.footerLeft {
+    justify-self: start;
+}
+.footerCalcBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    justify-self: start;
+    border: 1px solid #c7cdd6;
+    background: url('/public/CBTExamView/footer_btn.png') no-repeat center center;
+    border-radius: 18px;
+    padding: 4px 12px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #3664b1;
+    cursor: pointer;
+    line-height: 1;
+    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+
+.calcBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    justify-self: start;
+    border: 1px solid #c7cdd6;
+    border-radius: 18px;
+    padding: 4px 12px;
+    font-weight: bold;
+    font-size: 13px;
+    background-color: #b2b1b1;
+    cursor: pointer;
+    line-height: 1;
+    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+
+.calcIcon {
+    width: 24px;
+    height: 18px;
+    display: block;
+    flex: 0 0 18px;
+    object-fit: contain;
+}
+
+.footerBtn {
+    border: 1px solid #c7cdd6;
+    border-radius: 32px;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #3664b1;
+    background: url('/public/CBTExamView/footer_btn.png')  no-repeat center center;
+}
+
+.footerBtn:disabled { opacity:.5; cursor:not-allowed; }
+
+.footerPage { font-size: 1.25em; color: #3664b1; font-weight: bold; }
+
+.unansweredFooterBtn {
+    justify-self: end;
+    border: 1px solid #c7cdd6;
+    background: #fff;
+    border-radius: 18px;
+    padding: 4px 12px 4px 12px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #3664b1;
+    cursor: pointer;
+    background: url('/public/CBTExamView/footer_btn.png')  no-repeat center center;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.unanswerIcon{
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 18px;
+    object-fit: contain;
+}
+
+.unansweredBtnDisabled { opacity:.5; cursor:not-allowed; pointer-events: none; }
+
+/* ========= 모달 ========= */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+.unansweredDialog {
+    width: 480px;
+    max-width: calc(100vw - 32px);
+    max-height: 60vh;
+    background: #fff;
+    border: 2px solid #2c6bb2;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    padding: 10px 12px 12px;
+    overflow: hidden;
+}
+
+.legacyHeader {
+    color: #3664b1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0 8px;
+    border-bottom: 1px solid #c7d4e6;
+    margin-bottom: 8px;
+}
+.legacyInfoIcon {
+    width: 18px; height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/public/CBTExamView/what_icon.png') no-repeat 2px 4px;
+}
+.legacyTitle { font-weight: 700; color: #1f2a44; }
+.legacyDesc  { font-size: 12px; color: #2d3b52; }
+.legacyClose {
+    margin-left: auto;
+    width: 23px; height: 20px;
+    border: 1px solid #527aa5;
+    border-radius: 3px;
+    background: linear-gradient(#f0f4fa, #e6edf6);
+    color: #1f2a44;
+    font-weight: bold;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+}
+.legacyClose:hover { background: linear-gradient(#e8f1ff, #dbe9ff); }
+
+.numGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 2px 2px;
+    overflow-y: auto;
+    max-height: 40vh;
+}
+.legacyGrid { gap: 10px; }
+
+.numBtnLegacy {
+    width:35px;
+    height: 26px;
+    padding: 0 10px;
+    border: 1px solid #b7c2d1;
+    border-radius: 6px;
+    background: none repeat scroll 0 0 #f5f5f5;
+    color: #1f2a44;
+    font-weight: 700;
+    font-size: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 1px 0 rgba(0,0,0,.05);
+    cursor: pointer;
+}
+.numBtnLegacy:hover{
+    background: linear-gradient(#eaf2ff, #dbe9ff);
+    border-color: #7aa2d6;
+}
+
+/* ====== Calculator: base skin ====== */
+.calcDialog{
+    max-width: calc(100vw - 40px);
+    background: #f6f7f9;
+    border: 1px solid #cfd6e3;
+    border-radius: 6px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.18);
+    overflow: hidden;
+}
+
+.calcPanel{
+    display:flex;
+    flex-direction:column;
+    background: url('/public/CBTExamView/calc_bg.png')  repeat-x center center;
+}
+
+/* Title bar */
+.calcHeader{
+    display:flex; align-items:center;
+    padding: 6px 8px;
+    background: linear-gradient(#f3f4f6,#e9edf3);
+    border-bottom: 1px solid #d4dbe6;
+}
+.calcTitle{ font-weight:700; color:#1f2a44; }
+.calcClose{
+    margin-left:auto; width:22px; height:22px;
+    border:1px solid #9fb3cf; border-radius:3px;
+    background: linear-gradient(#f7f9fc,#e7edf6);
+    cursor:pointer; color:#1f2a44; font-weight:700; line-height:18px;
+}
+
+/* Display */
+.calcDisplay{
+    box-sizing:border-box;
+    margin: 8px 10px 6px;
+    height: 40px;
+    padding: 6px 8px;
+    background:#151b26;
+    color:#00ff9c;
+    font: 700 20px/28px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    text-align:right;
+    border-radius:3px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.35);
+}
+
+/* Keypad grid (6 columns) */
+.calcGrid{
+    display:grid;
+}
+
+
+.calcLegacy .calcBtn,
+.calcLegacy .calcBtnEq{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    background-color: #e9ecef;
+    color: #7c7c7c;
+}
+
+/* ====== Legacy skin (first screenshot-like) ====== */
+.calcLegacy{
+    --calc-w: 300px;          /* 패널 너비 */
+    --btn-min-w: 44px;        /* 각 칸 최소 가로폭 */
+    --gap-x: 1px;             /* 가로 간격 */
+    --gap-y: 2px;             /* 세로 간격 */
+    --btn-h: 22px;            /* 버튼 높이 */
+    --fs: 11px;               /* 글자 크기 */
+    --pad-x: 4px;             /* 버튼 좌우 패딩 */
+}
+
+.calcLegacy .calcHeader{
+    background: linear-gradient(#e9eaeb, #d5d6d7);
+    border-bottom: 1px solid #c5c9cf;
+    padding: 6px 8px;
+}
+
+
+.calcCompact{
+    --calc-w: 300px;
+    --btn-min-w: 46px;
+    --gap-x: 1px;
+    --gap-y: 2px;
+    --btn-h: 22px;
+    --fs: 11px;
+    --pad-x: 4px;
+}
+
+.calcWide{
+    --calc-w: 340px;          /* 패널 더 넓게 */
+    --btn-min-w: 56px;        /* 각 버튼 칸 최소폭 키우기 */
+    --gap-x: 0.5px;           /* 거의 붙은 느낌 */
+}
+
+
+.calcLegacy.calcCompact .calcDisplay{
+    margin: 5px 6px 4px;
+    height: 38px;                           /* 36~40px 사이 취향대로 */
+    padding: 6px 8px;
+    font-size: 18px;                        /* 숫자 크기도 약간 축소 */
+}
+
+.calcLegacy.calcCompact .calcBtn{
+    height: 22px;                           /* ← 20~24px 사이 */
+    font-size: 11px;                        /* ← 텍스트 더 작게 */
+    padding: 0 4px;                         /* 좌우 패딩 축소 */
+    border-radius: 4px;
+}
+
+.calcLegacy.calcCompact .calcBtnEq{ height: 22px; }
+
+.calcLegacy .calcTitle{ color:#5f6a77; font-size:14px; }
+.calcLegacy .calcClose{
+    width:20px; height:20px; border:1px solid #aeb7c2; border-radius:3px;
+    background: linear-gradient(#f6f7f9, #e1e5ea);
+    color:#4e5968; font-weight:700; line-height:18px;
+}
+
+
+.calcLegacy .calcDisplay{
+    margin: 8px 8px 6px;
+    height: 46px;
+    padding: 8px 10px;
+    background:#1e2126;
+    color:#ffffff;
+    text-shadow: 0 0 1px rgba(38,255,156,.5);
+    font: 22px/28px ui-monospace, Menlo, Consolas, monospace;
+    border-radius:5px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.45);
+}
+
+/* Legacy keypad */
+.calcLegacy .calcGrid{
+    display: grid;
+    grid-template-columns: repeat(6, minmax(var(--btn-min-w), 1fr));
+    column-gap: var(--gap-x);
+    row-gap: var(--gap-y);
+    padding: 3px 4px 5px;
+}
+.calcLegacy .calcBtn{
+    height: var(--btn-h);
+    font-size: var(--fs);
+    padding: 0 var(--pad-x);
+    border-radius: 4px;
+}
+
+/* 2) gap 완전 제거 + 패딩 최소화 + 칸 폭 고정 */
+.calcLegacy.calcCompact.calcWide .calcGrid{
+    grid-template-columns: repeat(6, 48px);  /* 칸 폭 고정(붙은 느낌) */
+    gap: 0;                                   /* 가로/세로 모두 0 */
+    padding: 2px 3px 3px;                     /* 바깥 여백도 최소화 */
+}
+
+/* 3) 버튼 크기 통일(= 포함) + 내부 여백 제거 */
+.calcLegacy.calcCompact.calcWide .calcBtn,
+.calcLegacy.calcCompact.calcWide .calcBtnEq{
+    box-sizing: border-box;
+    width: 48px;               /* 칸 폭과 동일 */
+    height: 20px;              /* 20~22px 권장 */
+    font-size: 11px;
+    padding: 0;                /* 좌우 패딩 제거 */
+    margin: 0;                 /* 혹시 남아있을 기본 마진 방지 */
+}
+
+/* 컨테이너를 내용 너비에 딱 맞게(가로 여백 제거의 핵심) */
+.calcLegacy.calcCompact.calcWide.calcFlush{
+    width: auto;                 /* var(--calc-w) 고정폭 무시 */
+    inline-size: max-content;    /* 그리드 실제 너비만큼만 */
+}
+
+/* 표시창 좌우 마진 0 */
+.calcFlush .calcDisplay{
+    margin: 6px 0 4px;           /* ⬅︎ 기존 8px 8px 6px 에서 좌우 0 */
+}
+
+/* 키패드 좌우 패딩 0 + 가로 gap 0 */
+.calcFlush .calcGrid{
+    padding: 0 0 6px;            /* 좌우 0 */
+    column-gap: 0;               /* 버튼 사이 가로 간격 0 */
+}
+
+/* ===== Classic skin for Unanswered modal ===== */
+.unansweredClassic{
+    width: 560px;                                   /* 필요시 520~600px로 조절 */
+    max-width: calc(100vw - 40px);
+    border: 8px solid #2d5aa6;                      /* 굵은 파란 테두리 */
+    border-radius: 0;
+    box-shadow: none;                               /* 바깥 그림자 제거 */
+    padding: 10px 10px 12px;
+}
+
+/* 헤더 바 */
+.unansweredClassic .legacyHeader{
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px;
+    background: #eaf2fb;                            /* 연한 하늘색 바 */
+    border-bottom: 1px solid #c7d4e6;
+    margin: 0 0 10px 0;
+}
+
+
+.unansweredClassic .legacyTitle{ font-size: 13px; font-weight: 700; color:#3664b1; }
+.unansweredClassic .legacyDesc { font-size: 13px; font-weight: 700; color:#3664b1; }
+
+/* 헤더 우측 닫기 */
+.unansweredClassic .legacyClose{
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: #000; font-weight: 700; font-size: 12px;
+    padding: 2px 4px; line-height: 1;
+    cursor: pointer;
+}
+
+/* 번호 버튼 영역 */
+.unansweredClassic .legacyGrid{
+    gap: 10px;
+    padding: 10px 6px 4px;
+}
+
+/* 번호 칩 */
+.unansweredClassic .numBtnLegacy{
+    min-width: 40px;
+    border: 1px solid #b7c2d1;
+    border-radius: 6px;
+    color: #1f2a44; font-weight: 700; font-size: 10px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 1px 0 rgba(0,0,0,.05);
+    cursor: pointer;
+}
+.unansweredClassic .numBtnLegacy:hover{
+    background: linear-gradient(#eaf2ff, #dbe9ff);
+    border-color: #7aa2d6;
+}

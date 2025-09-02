@@ -24,43 +24,50 @@ export const CBTStartPage: React.FC = () => {
     const [startDate, setStartDate] = useState<string>(''); // 랜덤문제 시작일자
     const [endDate, setEndDate] = useState<string>(''); // 랜덤문제 종료일자
 
-    /**사용자가 문제 유형, 시험일자, 시작일자, 종료일자를 선택하고
+    /** 추가: 연습/시험 UI 모드 (연습 practice / 시험 exam) */
+    const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('practice');
+
+    /**사용자가 문제 유형, 시험일자, 시작일자, 종료일자, UI 모드를 선택하고
      * 선택한 조건을 쿼리스트링에 담아 CBTTestPage 에 전달하는 함수
      *
-     * - mode 는 필수이며 값은 'start' 또는 'random'
+     * - mode 는 필수이며 값은 'past' 또는 'random'
+     * - ui 는 필수이며 값은 'practice' 또는 'exam'
      * - past mode 라면 selectedDate 를 선택
      * - random mode 라면 startDate, endDate 를 선택
      *
      * @example
-     * selectedMode: past
+     * selectedMode: past, selectedUi: practice
      * selectedDate: 2024/07/21
-     * navigate(`/cbt/test?$mode=past&date=2024/07/21&CertName=자격증명`)
+     * navigate(`/cbt/test?mode=past&date=2024/07/21&ui=practice`)
      *
-     * selectedMode: random
-     * startDate: 2023/03/12
-     * endDate: 2024/07/21
-     * navigate(`/cbt/test?$mode=random&start=2023/03/12&end=2024/07/21&CertName=자격증명`)
+     * selectedMode: random, selectedUi: exam
+     * startDate: 2023/03/12, endDate: 2024/07/21
+     * navigate(`/cbt/test?mode=random&start=2023/03/12&end=2024/07/21&ui=exam`)
      */
     const handleStart = () => {
         if (!selectedMode) return;
 
         const params = new URLSearchParams(location.search);
-        params.set('mode', selectedMode); // 문제 유형(기출문제, 랜덤문제) 값을 params에 추가
+        params.set('mode', selectedMode); // 문제 유형(기출문제, 랜덤문제)
+
+        // UI 모드(연습/시험) 추가
+        params.set('ui', selectedUi);
 
         if (selectedMode === 'past') {
             if (!selectedDate) return alert('시험 일자를 선택해주세요');
-            params.set('date', selectedDate); // 문제 유형이 기출문제인 경우 시험 일자 상태변수 seletedDate에
-                                              // set으로 값 설정 후 params에 date로 추가
+            params.set('date', selectedDate); // 기출 시험 일자
         }
 
         if (selectedMode === 'random') {
             if (!startDate || !endDate) return alert('시작일자와 종료일자를 모두 선택해주세요');
-            params.set('start', startDate); // 문제 유형이 랜덤문제인 경우 시작 일자 값 params에 추가
-            params.set('end', endDate); // 문제 유형이 랜덤문제인 경우 종료 일자 값 params에 추가
+            params.set('start', startDate); // 랜덤 시작
+            params.set('end', endDate);     // 랜덤 종료
         }
 
-        navigate(`/cbt/test?${params.toString()}`); // 위 코드로 인해 만들어진 params를 쿼리스트링으로 사용해
-                                                    // cbt 테스트 페이지로 리다이렉트
+        navigate(`/cbt/test?${params.toString()}`, {
+            state: { ui: selectedUi },
+            replace: false,
+        }); // 쿼리스트링으로 테스트 페이지 이동
     };
 
     return (
@@ -72,7 +79,7 @@ export const CBTStartPage: React.FC = () => {
                 <div
                     className={`${CBTStartStyles.card} ${selectedMode === 'past' ? CBTStartStyles.selected : ''}`}
                     onClick={() => {
-                        setSelectedMode('past'); // 사용자가 기출문제를 선택하면 mode의 상태를 past로 설정
+                        setSelectedMode('past'); // 기출 선택
                         setSelectedDate('');
                         setStartDate('');
                         setEndDate('');
@@ -95,7 +102,7 @@ export const CBTStartPage: React.FC = () => {
                 <div
                     className={`${CBTStartStyles.card} ${selectedMode === 'random' ? CBTStartStyles.selected : ''}`}
                     onClick={() => {
-                        setSelectedMode('random'); // 사용자가 랜덤문제를 선택하면 mode의 상태를 random으로 설정
+                        setSelectedMode('random'); // 랜덤 선택
                         setSelectedDate('');
                         setStartDate('');
                         setEndDate('');
@@ -170,6 +177,33 @@ export const CBTStartPage: React.FC = () => {
                             </div>
                         </>
                     )}
+
+                    {/* 추가: 연습/시험 UI 모드 라디오 */}
+                    <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
+                        <label>화면 모드</label>
+                        <div>
+                            <label style={{ marginRight: 12 }}>
+                                <input
+                                    type="radio"
+                                    name="ui"
+                                    value="practice"
+                                    checked={selectedUi === 'practice'}
+                                    onChange={() => setSelectedUi('practice')}
+                                />{' '}
+                                연습 모드
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="ui"
+                                    value="exam"
+                                    checked={selectedUi === 'exam'}
+                                    onChange={() => setSelectedUi('exam')}
+                                />{' '}
+                                시험 모드
+                            </label>
+                        </div>
+                    </div>
                 </div>
             )}
 

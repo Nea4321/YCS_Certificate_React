@@ -1,0 +1,1 @@
+export { default as PracticeStyles } from "./PracticeStyles.module.css";

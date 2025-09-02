@@ -11,6 +11,9 @@ export const Header: React.FC = () => {
   const location = useLocation()
   const lastScrollY = useRef(0)
 
+  const { pathname, search } = useLocation();
+  const ui = new URLSearchParams(search).get("ui");
+
   // 스크롤 감지 및 헤더 숨기기/보이기
   useEffect(() => {
     const handleScroll = () => {
@@ -47,6 +50,9 @@ export const Header: React.FC = () => {
   }
   // 로그인 화면이면 헤더 없음
   if(location.pathname === "/auth") {return null}
+
+  // 시험 모드 헤더 없음
+  if (pathname.startsWith("/cbt/test") && ui === "exam") {return null}
 
   return (
     <header

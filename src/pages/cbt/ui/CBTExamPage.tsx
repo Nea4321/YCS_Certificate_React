@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { certificateApi } from '@/entities/certificate/api/certificate-api';
 import { Certificate } from '@/entities';
 import { CBTExamStyles } from '../styles';
-import { CategoryFilter } from '@/features/cbt-category-filter/ui/CategoryFilter';
-import { Pagination } from '@/features/cbt-pagination/ui/Pagination';
+import { CategoryFilter } from '@/features/cbt/category-filter/ui/CategoryFilter';
+import { Pagination } from '@/features/cbt/pagination/ui/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { certificateTags } from '@/entities/certificate/model/tags';
 

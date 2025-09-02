@@ -1,0 +1,1 @@
+export { default as ExamStyles } from "./ExamStyles.module.css";

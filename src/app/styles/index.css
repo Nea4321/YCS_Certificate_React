@@ -70,6 +70,14 @@ h1 {
   transition: padding-top 0.3s ease;
 }
 
+/* 시험 모드에서 헤더 여백 없앰 */
+body.examMode .main-content {
+  padding-top: 0;
+}
+body.examMode, html {
+  overflow-x: hidden;
+}
+
 /* 반응형 - 모바일에서는 헤더가 더 작음 */
 @media (max-width: 768px) {
   .main-content {
