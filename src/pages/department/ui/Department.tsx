@@ -15,7 +15,7 @@ import { departmentStyles } from "../styles"
  * @component
  *
  * @example
- * <Route path="/departments/:id" element={<DepartmentPage />} />
+ * <Route path="/departments/:id" element={<Department_Edit />} />
  */
 export const Department = () => {
     const { id } = useParams<{ id: string }>()
