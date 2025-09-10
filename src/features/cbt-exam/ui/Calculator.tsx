@@ -177,7 +177,14 @@ export function Calculator({ onClose }: { onClose: () => void }) {
     );
 
     return (
-        <div className={ExamStyles.calcPanel} role="group" aria-label="계산기">
+        <div className={ExamStyles.calcPanel} role="group" aria-label="계산기"
+             style={{
+                 backgroundImage: "url('/CBTExamView/calc_bg.png')",
+                 backgroundRepeat: "repeat-x",
+                 backgroundPosition: "center",
+                 backgroundSize: "center",
+             }}
+        >
             {/* 제목줄 */}
             <div className={ExamStyles.calcHeader}>
                 <span className={ExamStyles.calcTitle}>계산기</span>

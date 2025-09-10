@@ -11,10 +11,11 @@ import { CBTExamPage } from "@/pages/cbt";
 import { ScrollToTop } from "@/shared";
 import { SearchResultPage } from "@/pages/search"
 import {MainLayout} from "@/shared/layouts";
-import {CBTStartPage} from "@/pages/cbt-start";
-import {CBTTestPage} from "@/pages/cbt-test";
+import {CBTStart} from "@/pages/cbt-start";
+import {CBTTest} from "@/pages/cbt-test";
 import {Logout} from "@/pages/logout/ui";
 import {ProtecteRoute} from "@/app/router/ProtecteRoute.tsx";
+import {ExamResult} from "@/pages/exam-result";
 
 
 export const Router = () => {
@@ -32,8 +33,9 @@ export const Router = () => {
                             <Route path="/departments/:id" element={<DepartmentPage />} />
                             <Route path="/certificate/:id" element={<CertificatePage />} />
                             <Route path="/cbt" element={<CBTExamPage/>} />
-                            <Route path="/cbt/start" element={<CBTStartPage/>} /> {/*문제 유형 결정 페이지*/}
-                            <Route path="/cbt/test" element={<CBTTestPage/>} /> {/* cbt 페이지 */}
+                            <Route path="/cbt/start" element={<CBTStart/>} /> {/*문제 유형 결정 페이지*/}
+                            <Route path="/cbt/test" element={<CBTTest/>} /> {/* cbt 페이지 */}
+                            <Route path="/cbt/result" element={<ExamResult/>} /> {/* cbt 답안 제출 페이지 */}
                             <Route path="/auth" element={<Auth />} />    /// 로그인
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
                             <Route path="/dashboard" element={<DashBoard />} />    /// 마이페이지

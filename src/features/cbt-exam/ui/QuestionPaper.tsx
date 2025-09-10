@@ -1,36 +1,49 @@
 import type { Question } from "@/entities/cbt/model/types";
+import { ExamStyles } from "@/widgets/cbt-exam/styles"
 
 export function QuestionPaper({
-                                  slice, startIdx, answers, setAnswer, fontZoom, styles,
+                                  slice, startIdx, answers, setAnswer, fontZoom,
                               }:{
     slice: Question[]; startIdx:number;
     answers:(number|null)[]; setAnswer:(i:number,v:number|null)=>void;
-    fontZoom:0.75|1|1.25; styles:any;
+    fontZoom:0.75|1|1.25;
 }){
     return (
-        <div className={styles.paper} style={{["--qScaleQ" as any]: fontZoom}}>
+        <div className={ExamStyles.paper} style={{["--qScaleQ" as any]: fontZoom}}>
             {slice.map((q, i) => {
                 const gi = startIdx + i;
                 const groupName = `q-${q.id}`;
                 return (
-                    <div key={q.id} className={styles.qblock}>
-                        <div className={styles.qnum}>{q.id}. {q.text}</div>
-                        <ol className={styles.opts}>
+                    <div key={q.id} className={ExamStyles.qblock}>
+                        <div className={ExamStyles.qnum}>{q.id}. {q.text}</div>
+                        <ol className={ExamStyles.opts}>
                             {q.options.map((opt, idx) => {
                                 const v = idx + 1;
                                 return (
-                                    <li key={v} className={styles.opt}>
-                                        <label className={styles.optLabel}>
+                                    <li key={v} className={ExamStyles.opt}>
+                                        <label className={ExamStyles.optLabel}>
                                             <input
                                                 type="radio"
                                                 name={groupName}
-                                                className={styles.optRadio}
+                                                className={ExamStyles.optRadio}
                                                 checked={answers[gi] === v}
                                                 onChange={() => setAnswer(gi, v)}
                                                 aria-label={`${v}번 보기 선택`}
                                             />
-                                            <span className={`${styles.optImg} ${styles[`optImg${v}`]}`} aria-hidden="true"/>
-                                            <span className={styles.optText}>{opt}</span>
+                                            <span className={`${ExamStyles.optImg} ${ExamStyles[`optImg${v}`]}`}
+                                                  style={{
+                                                      backgroundImage: `url(${
+                                                          answers[gi] === v
+                                                              ? "/CBTExamView/numcheck.png"
+                                                              : `/CBTExamView/num0${v}.png`
+                                                      })`,
+                                                      backgroundRepeat: "no-repeat",
+                                                      backgroundPosition: "center",
+                                                      backgroundSize: "contain",
+                                                  }}
+                                            aria-hidden="true"
+                                            />
+                                            <span className={ExamStyles.optText}>{opt}</span>
                                         </label>
                                     </li>
                                 );

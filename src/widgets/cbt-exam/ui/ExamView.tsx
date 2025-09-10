@@ -1,92 +1,170 @@
-import React, { useState } from "react";
+// widgets/cbt-exam/ui/ExamView.tsx
+import { useState } from "react";
 import { ExamStyles } from "@/widgets/cbt-exam/styles";
 import type { Question } from "@/entities/cbt/model/types";
 import {
-    useExamPaging, useUnanswered, useStickyHeights,
-    ExamHeader, ExamToolbar, QuestionPaper, AnswerSheet, UnansweredModal, FooterBar,
-    LayoutMode
+    useExamPaging,
+    useUnanswered,
+    useStickyHeights,
+    ExamHeader,
+    ExamToolbar,
+    QuestionPaper,
+    AnswerSheet,
+    UnansweredModal,
+    FooterBar,
 } from "@/features/cbt-exam";
+import { SubmitConfirmModal } from "@/features/cbt-exam";
 import { Calculator } from "@/features/cbt-exam";
+import {useNavigate} from "react-router-dom";
 
 export interface ExamViewProps {
     certName: string;
     pageSize: number;
     currentPage: number;
-    setCurrentPage: (p:number)=>void;
-    answers: (number|null)[];
-    setAnswer: (index:number, opt:number|null)=>void;
+    setCurrentPage: (p: number) => void;
+    answers: (number | null)[];
+    setAnswer: (index: number, opt: number | null) => void;
     timer: { leftTime: string; limitMin: number };
     questions: Question[];
-    fontZoom: 0.75|1|1.25;
-    setFontZoom: React.Dispatch<React.SetStateAction<0.75|1|1.25>>;
+    fontZoom: 0.75 | 1 | 1.25;
+    setFontZoom: React.Dispatch<React.SetStateAction<0.75 | 1 | 1.25>>;
 }
 
-export const ExamView: React.FC<ExamViewProps> = ({
-                                                      certName, pageSize, currentPage, setCurrentPage,
-                                                      answers, setAnswer, timer, questions, fontZoom, setFontZoom,
-                                                  }) => {
+export function ExamView({
+                             certName,
+                             pageSize,
+                             currentPage,
+                             setCurrentPage,
+                             answers,
+                             setAnswer,
+                             timer,
+                             questions,
+                             fontZoom,
+                             setFontZoom,
+                         }: ExamViewProps) {
     const { leftTime, limitMin } = timer;
 
+    type LayoutMode = "twoCol" | "narrowSheet" | "oneCol";
     const [layout, setLayout] = useState<LayoutMode>("twoCol");
     const [showUnanswered, setShowUnanswered] = useState(false);
     const [showCalc, setShowCalc] = useState(false);
-
+    const [showConfirm, setShowConfirm] = useState(false);
+    const navigate = useNavigate();
     const { bodyRef, headerRef, footerRef, toolbarRef } = useStickyHeights();
     const { totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion } =
-        useExamPaging(layout, pageSize, currentPage, setCurrentPage, questions.length, questions);
-    const { unanswered, numbers: unansweredNumbers, hasUnanswered } = useUnanswered(answers);
+        useExamPaging(
+            layout,
+            pageSize,
+            currentPage,
+            setCurrentPage,
+            questions.length,
+            questions,
+        );
+
+    const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
+        useUnanswered(answers);
 
     const wrapCls = [
         ExamStyles.examWrap,
         layout === "twoCol" && ExamStyles.layoutTwoCol,
         layout === "narrowSheet" && ExamStyles.layoutTwoColNarrow,
         layout === "oneCol" && ExamStyles.layoutOneCol,
-    ].filter(Boolean).join(" ");
+    ]
+        .filter(Boolean)
+        .join(" ");
+
+    const handleSubmitClick = () => {
+        setShowConfirm(true);
+    };
+
+    const handleSubmitConfirm = () => {
+        setShowConfirm(false);
+        const qs = new URLSearchParams();
+        qs.set("certName", certName);
+        navigate(`/cbt/result?${qs.toString()}`, { replace: true });
+    };
 
     return (
         <div className={wrapCls} style={{ ["--qScale" as any]: fontZoom }}>
             <div className={ExamStyles.examBody} ref={bodyRef}>
-                <ExamHeader certName={certName} limitMin={limitMin} leftTime={leftTime} headerRef={headerRef} styles={ExamStyles} />
+                <ExamHeader
+                    certName={certName}
+                    limitMin={limitMin}
+                    leftTime={leftTime}
+                    headerRef={headerRef}
+                />
 
                 <div className={ExamStyles.paperCol}>
                     <ExamToolbar
-                        fontZoom={fontZoom} setFontZoom={setFontZoom}
-                        layout={layout} setLayout={setLayout} onLayoutChange={onLayoutChange}
-                        totalQuestions={questions.length} unanswered={unanswered}
-                        toolbarRef={toolbarRef} styles={ExamStyles}
+                        fontZoom={fontZoom}
+                        setFontZoom={setFontZoom}
+                        layout={layout}
+                        setLayout={setLayout}
+                        onLayoutChange={onLayoutChange}
+                        totalQuestions={questions.length}
+                        unanswered={unanswered}
+                        toolbarRef={toolbarRef}
                     />
-                    <QuestionPaper slice={currentSlice} startIdx={startIdx} answers={answers} setAnswer={setAnswer} fontZoom={fontZoom} styles={ExamStyles} />
+
+                    <QuestionPaper
+                        slice={currentSlice}
+                        startIdx={startIdx}
+                        answers={answers}
+                        setAnswer={setAnswer}
+                        fontZoom={fontZoom}
+                    />
                 </div>
 
-                <AnswerSheet totalQuestions={questions.length} answers={answers} setAnswer={setAnswer} styles={ExamStyles} />
+                <AnswerSheet
+                    totalQuestions={questions.length}
+                    answers={answers}
+                    setAnswer={setAnswer}
+                />
             </div>
 
             <FooterBar
-                currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage}
-                hasUnanswered={hasUnanswered}
-                onOpenUnanswered={() => setShowUnanswered(true)}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
                 onOpenCalc={() => setShowCalc(true)}
-                footerRef={footerRef} styles={ExamStyles}
+                onOpenUnanswered={() => setShowUnanswered(true)}
+                onSubmitClick={handleSubmitClick}
+                unansweredDisabled={!hasUnanswered}
+                footerRef={footerRef}
             />
 
+            {/* 안 푼 문제 모달 */}
             {showUnanswered && hasUnanswered && (
                 <UnansweredModal
                     numbers={unansweredNumbers}
-                    onSelect={(n)=>{ goToQuestion(n); setShowUnanswered(false); }}
-                    onClose={()=>setShowUnanswered(false)}
-                    styles={ExamStyles}
+                    onSelect={(n) => {
+                        goToQuestion(n);
+                        setShowUnanswered(false);
+                    }}
+                    onClose={() => setShowUnanswered(false)}
                 />
             )}
 
+            {/* 제출 확인 모달 */}
+            {showConfirm && (
+                <SubmitConfirmModal
+                    unansweredCount={unanswered}
+                    onCancel={() => setShowConfirm(false)}
+                    onConfirm={handleSubmitConfirm}
+                />
+            )}
+
+            {/* 계산기 모달 */}
             {showCalc && (
-                <div className={ExamStyles.overlay} onClick={()=>setShowCalc(false)}>
-                    <div className={`${ExamStyles.calcDialog} ${ExamStyles.calcLegacy} ${ExamStyles.calcCompact} 
-                    ${ExamStyles.calcWide} ${ExamStyles.calcFlush}`}
-                         onClick={(e)=>e.stopPropagation()}>
-                        <Calculator onClose={()=>setShowCalc(false)} />
+                <div className={ExamStyles.overlay} onClick={() => setShowCalc(false)}>
+                    <div
+                        className={`${ExamStyles.calcDialog} ${ExamStyles.calcLegacy} ${ExamStyles.calcCompact} ${ExamStyles.calcWide} ${ExamStyles.calcFlush}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Calculator onClose={() => setShowCalc(false)} />
                     </div>
                 </div>
             )}
         </div>
     );
-};
+}

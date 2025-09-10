@@ -11,9 +11,13 @@ interface TestPaginationProps {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
+
     containerClassName?: string;
+    containerStyle?: React.CSSProperties;
     buttonClassName?: string;
+    buttonStyle?: React.CSSProperties;
     pageInfoClassName?: string;
+    pageInfoStyle?: React.CSSProperties;
 }
 
 /**CBT 문제를 페이징하는 컴포넌트
@@ -31,20 +35,24 @@ export const TestPagination: React.FC<TestPaginationProps> = ({
                                                                   totalPages,
                                                                   onPageChange,
                                                                   containerClassName,
+                                                                  containerStyle,
                                                                   buttonClassName,
+                                                                  buttonStyle,
                                                                   pageInfoClassName,
+                                                                  pageInfoStyle,
                                                               }) => {
     return (
-        <div className={containerClassName}>
+        <div className={containerClassName} style={containerStyle}>
             <button
                 className={buttonClassName}
+                style={buttonStyle}
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
             >
                 ◀ 이전
             </button>
 
-            <span className={pageInfoClassName}>
+            <span className={pageInfoClassName} style={pageInfoStyle}>
                 {currentPage}/{totalPages}
             </span>
 
@@ -52,6 +60,7 @@ export const TestPagination: React.FC<TestPaginationProps> = ({
                 className={buttonClassName}
                 onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
+                style={buttonStyle}
             >
                 다음 ▶
             </button>

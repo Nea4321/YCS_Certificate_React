@@ -1,0 +1,108 @@
+/* pages/styles/ExamResultPage.module.css */
+
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    font-family: 'Nanum Gothic', 'Gulim','굴림','Malgun Gothic','맑은 고딕', system-ui, sans-serif;
+}
+
+.panel {
+    width: 720px;
+    margin: 0 auto 18px;
+    background: #f2f2f2;
+    border: 3px solid #2f5fa2;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    padding: 18px 18px 20px;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 6px 14px 6px;
+    color: #2f5fa2;
+}
+.headIcon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+}
+.headText {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: .01em;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #ffffff;
+    border: 1px solid #b8c9e6;
+}
+.table thead th {
+    background: #e9f1ff;
+    border-bottom: 1px solid #cfd9ee;
+    border-right:1px solid #cfd9ee;
+    padding: 8px;
+    font-weight: 800;
+    font-size: 16px;
+}
+.table tbody td {
+    text-align: center;
+    border-bottom: 1px solid #e6eef9;
+    border-right:1px solid #e0e8f7;
+    padding: 4px;
+    font-weight: 700;
+}
+.tdName { font-weight: 800; }
+
+.txtRed {
+    color: #e32020;
+    font-weight: 900;
+    font-size: clamp(20px, 6vw, 35px);
+    line-height: 1.05;
+    letter-spacing: .01em;
+    text-align: center;
+}
+
+.pass {
+    color: #0b9a4d;
+    font-size: 36px;
+    font-weight: 900;
+}
+
+.quote {
+    text-align: center;
+    padding: 18px 0;
+    color: #CE6F6F;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.actionsOutside{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.doneBtn {
+    min-width: 152px;
+    height: 50px;
+    font-family: inherit;
+    font-weight: bold;
+    padding: 0 22px;
+    border: none;
+    border-radius: 28px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #fff;
+    cursor: pointer;
+}
+.doneBtn:active { transform: translateY(.5px); }
+.doneBtn:focus-visible { outline: 2px solid #0b63b0; outline-offset: 2px; }

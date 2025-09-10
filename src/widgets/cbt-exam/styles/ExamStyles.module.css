@@ -55,7 +55,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px 6px;
-    background: #f8fafc url('/public/CBTExamView/header_bg.png') repeat-x left top;
     background-size: auto 100%;
     border-bottom: 5px solid #3664B1;
     margin: 0 0 5px 0;
@@ -85,7 +84,6 @@
 .timerIcon {
     width: 26px;
     height: 26px;
-    background: url('/public/CBTExamView/clock_icon.png') no-repeat center/contain;
     flex: 0 0 auto;
 }
 
@@ -208,13 +206,7 @@
     background-size: contain;
     cursor: pointer;
 }
-.optImg1 { background-image: url('/public/CBTExamView/num01.png'); }
-.optImg2 { background-image: url('/public/CBTExamView/num02.png'); }
-.optImg3 { background-image: url('/public/CBTExamView/num03.png'); }
-.optImg4 { background-image: url('/public/CBTExamView/num04.png'); }
 
-/* 체크 시 체크 마크로 */
-.optRadio:checked + .optImg { background-image: url('/public/CBTExamView/numcheck.png'); }
 
 /* 키보드 포커스 */
 .optRadio:focus-visible + .optImg {
@@ -246,7 +238,6 @@
     padding: 6px 8px;
     border-radius: 2px;
     text-align: center;
-    background: url('/public/CBTExamView/answer_title_bg.png') repeat-x left top;
 }
 
 .sheetRow {
@@ -283,12 +274,6 @@
     background-size: contain;
     cursor: pointer;
 }
-.ansImg1 { background-image: url('/public/CBTExamView/num01_answer.png'); }
-.ansImg2 { background-image: url('/public/CBTExamView/num02_answer.png'); }
-.ansImg3 { background-image: url('/public/CBTExamView/num03_answer.png'); }
-.ansImg4 { background-image: url('/public/CBTExamView/num04_answer.png'); }
-/* 체크 시 공통 체크 이미지 */
-.sheetRadio:checked + .ansImg { background-image: url('/public/CBTExamView/check_answer.png'); }
 
 /* ========= 하단 푸터 ========= */
 .examFooterRow {
@@ -316,7 +301,6 @@
     gap: 4px;
     justify-self: start;
     border: 1px solid #c7cdd6;
-    background: url('/public/CBTExamView/footer_btn.png') no-repeat center center;
     border-radius: 18px;
     padding: 4px 12px;
     font-weight: bold;
@@ -358,7 +342,6 @@
     cursor: pointer;
     font-weight: bold;
     color: #3664b1;
-    background: url('/public/CBTExamView/footer_btn.png')  no-repeat center center;
 }
 
 .footerBtn:disabled { opacity:.5; cursor:not-allowed; }
@@ -367,15 +350,14 @@
 
 .unansweredFooterBtn {
     justify-self: end;
-    border: 1px solid #c7cdd6;
-    background: #fff;
+    border: 1px solid #cfd2d8;
+    background: #cfd2d8;
     border-radius: 18px;
     padding: 4px 12px 4px 12px;
     font-weight: 700;
     font-size: 13px;
     color: #3664b1;
     cursor: pointer;
-    background: url('/public/CBTExamView/footer_btn.png')  no-repeat center center;
     line-height: 1;
     display: inline-flex;
     align-items: center;
@@ -427,7 +409,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: url('/public/CBTExamView/what_icon.png') no-repeat 2px 4px;
 }
 .legacyTitle { font-weight: 700; color: #1f2a44; }
 .legacyDesc  { font-size: 12px; color: #2d3b52; }
@@ -486,7 +467,6 @@
 .calcPanel{
     display:flex;
     flex-direction:column;
-    background: url('/public/CBTExamView/calc_bg.png')  repeat-x center center;
 }
 
 /* Title bar */
@@ -564,9 +544,9 @@
 }
 
 .calcWide{
-    --calc-w: 340px;          /* 패널 더 넓게 */
-    --btn-min-w: 56px;        /* 각 버튼 칸 최소폭 키우기 */
-    --gap-x: 0.5px;           /* 거의 붙은 느낌 */
+    --calc-w: 340px;
+    --btn-min-w: 56px;
+    --gap-x: 0.5px;
 }
 
 
@@ -708,3 +688,140 @@
     background: linear-gradient(#eaf2ff, #dbe9ff);
     border-color: #7aa2d6;
 }
+/* 푸터 오른쪽 버튼 묶음 */
+.footerRight{
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.submitBtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 0 rgba(0,0,0,.06);
+}
+
+.submitIcon{ width:16px; height:16px; }
+
+.submitWarn{
+    width: 720px;
+    height: 360px;
+    display: grid;
+    grid-template-rows: 56px 1fr 50px;
+    background: #f6f7f9;
+    border: 1px solid #cfd6e3;
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.28);
+    overflow: hidden;
+}
+
+/* 상단 경고 바 */
+.submitWarnHead{
+    position: relative;
+    height: 56px;
+    padding: 0 18px;
+    background: #ed145b;
+}
+
+.submitWarnHeadCenter{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.submitWarnIcon{
+    width: 36px;
+    height: 26px;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+}
+
+.submitWarnTitle{
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: #fff;
+    font-size: 26px;
+}
+
+.submitWarnClose{
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: none;
+    background-color: #ED145B;
+    cursor: pointer;
+}
+
+/* 본문 */
+.submitWarnBody{
+    padding: 36px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid #d7dde7;
+}
+
+.submitWarnMsg{
+    margin: 10px 0 62px;
+    font-size: 21px;
+    font-weight: bold;
+    color: #6588C1;
+    line-height: 1.35;
+}
+
+.submitWarnNote{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #FF0000;
+}
+
+/* 하단 버튼 바 */
+.submitWarnFoot{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    align-items: center;
+    padding: 4px 12px;
+    background: #d6d9df;
+    border-top: 1px solid #cdd3de;
+}
+
+.submitWarnBtnYes,
+.submitWarnBtnNo{
+    min-width: 100px;
+    height: 30px;
+    border-radius: 22px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+}
+
+.submitWarnBtnYes{
+    color: #184784;
+}
+
+.submitWarnBtnNo{
+    color: #ffffff;
+}
+
+
