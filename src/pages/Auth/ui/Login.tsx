@@ -92,7 +92,16 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         </svg>
                         Google로 로그인
                     </button>
-
+                    <button
+                        type="button"
+                        onClick={() => handleSocialLogin("naver")}
+                        className={`${authStyles.socialButton} ${authStyles.naverButton}`}
+                    >
+                        <svg className={authStyles.socialIcon} viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M4 4h5.6l4.8 7.2V4H20v16h-5.6l-4.8-7.2V20H4V4z" />
+                        </svg>
+                        네이버로 로그인
+                    </button>
                     <button
                         type="button"
                         onClick={() => handleSocialLogin("github")}
@@ -104,19 +113,7 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         GitHub로 로그인
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => handleSocialLogin("kakao")}
-                        className={`${authStyles.socialButton} ${authStyles.kakaoButton}`}
-                    >
-                        <svg className={authStyles.socialIcon} viewBox="0 0 24 24">
-                            <path
-                                fill="currentColor"
-                                d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3z"
-                            />
-                        </svg>
-                        카카오로 로그인
-                    </button>
+
                 </div>
 
                 <div className={authStyles.signupPrompt}>
