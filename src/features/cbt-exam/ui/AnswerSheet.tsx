@@ -1,9 +1,12 @@
 import { ExamStyles } from "@/widgets/cbt-exam/styles";
 
 export function AnswerSheet({
-                                totalQuestions, answers, setAnswer,
+                                totalQuestions, answers, setAnswer, onJump
                             }:{
-    totalQuestions:number; answers:(number|null)[]; setAnswer:(i:number,v:number|null)=>void;
+    totalQuestions:number;
+    answers:(number|null)[];
+    setAnswer:(i:number,v:number|null)=>void;
+    onJump: (n:number)=>void;
 }){
     return (
         <aside className={ExamStyles.examSheet}>
@@ -19,7 +22,7 @@ export function AnswerSheet({
                 const a = answers[n-1];
                 return (
                     <div key={n} className={ExamStyles.sheetRow}>
-                        <div className={ExamStyles.sheetRowNum}>{n}</div>
+                        <div className={ExamStyles.sheetRowNum} onClick={() => onJump(n)}>{n}</div>
                         <div className={ExamStyles.circleChoices}>
                             {[1, 2, 3, 4].map((v) => (
                                 <label
@@ -31,7 +34,10 @@ export function AnswerSheet({
                                         type="radio"
                                         name={`sheet-${n}`}
                                         checked={a === v}
-                                        onChange={() => setAnswer(n - 1, v)}
+                                        onChange={() => {
+                                            setAnswer(n - 1, v);
+                                            onJump(n);}
+                                    }
                                         className={ExamStyles.sheetRadio}
                                     />
                                     <span

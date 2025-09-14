@@ -257,6 +257,7 @@
     font-weight: 700;
     color: #1f57a6;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .circleChoices { display: flex; gap: 10px; }

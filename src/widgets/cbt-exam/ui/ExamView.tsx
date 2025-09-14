@@ -119,6 +119,7 @@ export function ExamView({
                     totalQuestions={questions.length}
                     answers={answers}
                     setAnswer={setAnswer}
+                    onJump={goToQuestion}
                 />
             </div>
 
