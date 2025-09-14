@@ -7,7 +7,7 @@ export const Navigation = () => {
 
   const location = useLocation()
     // 리덕스에서 이메일 가져옴
-    const email = useSelector((state: RootState) => state.user.userEmail)
+    const name = useSelector((state: RootState) => state.user.userName)
 
 
     const isActivePage = (path: string) => {
@@ -36,9 +36,9 @@ export const Navigation = () => {
         >
             CBT
         </Link>
-        {/* redux에 email 있으면 로그인 버튼 표시
+        {/* redux에 name 있으면 로그인 버튼 표시
             없으면 로그아웃 버튼 표시*/}
-        {!email ? (
+        {!name ? (
         <Link
             to="/auth"
             className={`${navigationStyles.navLink} ${
@@ -55,14 +55,14 @@ export const Navigation = () => {
             </Link>
 
         )}
-        {email && (
+        {name && (
         <Link
             to="/dashboard"
             className={`${navigationStyles.navLink} ${
                 isActivePage("/dashboard") ? navigationStyles.activeLink : ""}`}
 
         >
-            <div>{email}</div>
+            <div>{name}</div>
         </Link>
         )}
 

@@ -281,6 +281,17 @@
   border-color:#02b350;/* hover 시 조금 어둡게 */
 }
 
+.kakaoButton {
+  background-color: #fee500; /* 카카오 노란색 */
+  border-color: #fee500;
+  color: #000; /* 검정 글씨 */
+}
+
+.kakaoButton:hover:not(:disabled) {
+  background-color: #fdd835; /* hover 시 조금 어둡게 */
+  border-color: #fdd835;
+}
+
 /* 회원가입 프롬프트 */
 .signupPrompt {
   text-align: center;
@@ -410,6 +421,11 @@
     background-color: #03C75A;
     border-color: #03C75A;
     color: #fff;
+  }
+  .kakaoButton {
+    background-color: #fee500; /* 카카오 노란색 */
+    border-color: #fee500;
+    color: #000; /* 검정 글씨 */
   }
 
 }
