@@ -25,7 +25,7 @@ export const CBTStartPage: React.FC = () => {
     const [endDate, setEndDate] = useState<string>(''); // 랜덤문제 종료일자
 
     /** 추가: 연습/시험 UI 모드 (연습 practice / 시험 exam) */
-    const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('practice');
+    const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('exam');
 
     /**사용자가 문제 유형, 시험일자, 시작일자, 종료일자, UI 모드를 선택하고
      * 선택한 조건을 쿼리스트링에 담아 CBTTestPage 에 전달하는 함수
@@ -80,7 +80,7 @@ export const CBTStartPage: React.FC = () => {
                     className={`${CBTStartStyles.card} ${selectedMode === 'past' ? CBTStartStyles.selected : ''}`}
                     onClick={() => {
                         setSelectedMode('past'); // 기출 선택
-                        setSelectedDate('');
+                        setSelectedDate(examDates[0]);
                         setStartDate('');
                         setEndDate('');
                     }}
@@ -104,8 +104,8 @@ export const CBTStartPage: React.FC = () => {
                     onClick={() => {
                         setSelectedMode('random'); // 랜덤 선택
                         setSelectedDate('');
-                        setStartDate('');
-                        setEndDate('');
+                        setStartDate(examDates[0]);
+                        setEndDate(examDates[1]);
                     }}
                 >
                     <div className={CBTStartStyles.icon}>🔄</div>
@@ -134,7 +134,6 @@ export const CBTStartPage: React.FC = () => {
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
                             >
-                                <option value="">선택</option>
                                 {examDates.map((date) => (
                                     <option key={date} value={date}>{date}</option>
                                 ))}
@@ -150,10 +149,9 @@ export const CBTStartPage: React.FC = () => {
                                     value={startDate}
                                     onChange={(e) => {
                                         setStartDate(e.target.value);
-                                        setEndDate('');
+                                        setEndDate(e.target.value + 1);
                                     }}
                                 >
-                                    <option value="">선택</option>
                                     {examDates.map((date) => (
                                         <option key={date} value={date}>{date}</option>
                                     ))}
@@ -164,10 +162,9 @@ export const CBTStartPage: React.FC = () => {
                                 <label>종료 일자</label> {/*랜덤문제 선택 시 종료 일자 선택 드롭다운*/}
                                 <select
                                     value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
+                                    onChange={(e) => setEndDate(e.target.value + 1)}
                                     disabled={!startDate}
                                 >
-                                    <option value="">선택</option>
                                     {examDates
                                         .filter((date) => date > startDate)
                                         .map((date) => (
@@ -186,21 +183,21 @@ export const CBTStartPage: React.FC = () => {
                                 <input
                                     type="radio"
                                     name="ui"
-                                    value="practice"
-                                    checked={selectedUi === 'practice'}
-                                    onChange={() => setSelectedUi('practice')}
-                                />{' '}
-                                연습 모드
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="ui"
                                     value="exam"
                                     checked={selectedUi === 'exam'}
                                     onChange={() => setSelectedUi('exam')}
                                 />{' '}
                                 시험 모드
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="ui"
+                                    value="practice"
+                                    checked={selectedUi === 'practice'}
+                                    onChange={() => setSelectedUi('practice')}
+                                />{' '}
+                                연습 모드
                             </label>
                         </div>
                     </div>

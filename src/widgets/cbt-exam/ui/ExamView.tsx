@@ -157,10 +157,11 @@ export function ExamView({
 
             {/* 계산기 모달 */}
             {showCalc && (
-                <div className={ExamStyles.overlay} onClick={() => setShowCalc(false)}>
+                <div className={ExamStyles.overlay} style={{ pointerEvents: 'none' }}>
                     <div
                         className={`${ExamStyles.calcDialog} ${ExamStyles.calcLegacy} ${ExamStyles.calcCompact} ${ExamStyles.calcWide} ${ExamStyles.calcFlush}`}
                         onClick={(e) => e.stopPropagation()}
+                        style={{ pointerEvents: 'auto' }}
                     >
                         <Calculator onClose={() => setShowCalc(false)} />
                     </div>
