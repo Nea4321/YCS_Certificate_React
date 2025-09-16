@@ -144,15 +144,17 @@ export const CBTStartPage: React.FC = () => {
                     {selectedMode === 'random' && (
                         <>
                             <div className={CBTStartStyles.optionRow}>
-                                <label>시작 일자</label> {/*랜덤문제 선택 시 시작 일자 선택 드롭다운*/}
+                                <label>시작 일자</label>
                                 <select
                                     value={startDate}
                                     onChange={(e) => {
-                                        setStartDate(e.target.value);
-                                        setEndDate(e.target.value + 1);
+                                        const val = e.target.value;
+                                        setStartDate(val);
+                                        const i = examDates.indexOf(val);
+                                        setEndDate(examDates[i + 1] ?? '');
                                     }}
                                 >
-                                    {examDates.map((date) => (
+                                    {examDates.slice(0,-1).map((date) => (
                                         <option key={date} value={date}>{date}</option>
                                     ))}
                                 </select>
@@ -162,7 +164,7 @@ export const CBTStartPage: React.FC = () => {
                                 <label>종료 일자</label> {/*랜덤문제 선택 시 종료 일자 선택 드롭다운*/}
                                 <select
                                     value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value + 1)}
+                                    onChange={(e) => setEndDate(e.target.value)}
                                     disabled={!startDate}
                                 >
                                     {examDates
