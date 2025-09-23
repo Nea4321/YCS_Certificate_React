@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import { certificateTags } from "@/entities/certificate"
 import { useNavigate } from "react-router-dom"
 import { TagBadge } from "@/shared/ui/tag"
+import { getTagName } from "@/entities/certificate/model/tagMeta"
 
 /**CertificateCard에 전달되는 props
  *
@@ -43,17 +44,21 @@ export const CertificateCard: React.FC<Props> = ({ cert }) => {
                 </div>
                 {/* 태그 표시 부분 */}
                 <div className={mainStyles.tagBox}>
-                    {(certificateTags[cert.certificate_id] ?? []).slice(0, 3).map((tag) => (
-                        <TagBadge
-                            key={tag}
-                            tag={tag}
-                            onClick={(e) => {
-                                e.stopPropagation();  // 링크 클릭 막기
-                                e.preventDefault();
-                                navigate(`/search?keyword=${encodeURIComponent("#" + tag)}`);
-                            }}
-                        />
-                    ))}
+                    {(certificateTags[cert.certificate_id] ?? [])
+                        .slice(0, 3)
+                        .map((id) => (
+                            <TagBadge
+                                key={id}
+                                id={id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    const name = getTagName(id);
+                                    if (!name) return;
+                                    navigate(`/search?keyword=${encodeURIComponent("#" + name)}`);
+                                }}
+                            />
+                        ))}
                 </div>
             </div>
         </Link>

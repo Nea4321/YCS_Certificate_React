@@ -1,5 +1,5 @@
 import { axiosApi } from "@/shared/api/axios-api.ts";
-import { Certificate, CertData } from '@/entities';
+import type { Certificate, CertData } from "@/entities/certificate/model/types";
 
 export const certificateApi = {
     

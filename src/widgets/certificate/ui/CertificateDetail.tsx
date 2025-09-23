@@ -1,11 +1,11 @@
 import { memo, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import type { CertData } from "@/entities/certificate/model"
+import type { CertData } from "@/entities/certificate/model/types";
 import { certificateDetailStyles } from "../styles"
 import { departmentDetailStyles } from "@/widgets"
 import { certificateApi } from "@/entities"
 import { certificateTags } from "@/entities/certificate"
-import { tagColors } from "@/entities/certificate/model/tagColors"
+import { getTagName, getTagColor } from "@/entities/certificate/model/tagMeta";
 import { useNavigate } from "react-router-dom"
 import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx"
 
@@ -68,7 +68,8 @@ export const CertificateDetail = memo(({ certificate: initialCertificate }: Cert
     }
 
     const { css, html } = processContent(certificate?.contents || "")
-    const tags = certificateTags[initialCertificate.certificate_id] || []
+    const base = certificate ?? initialCertificate;
+    const tagIds = base ? (certificateTags[base.certificate_id] ?? []) : [];
 
 
     return (
@@ -111,16 +112,21 @@ export const CertificateDetail = memo(({ certificate: initialCertificate }: Cert
                 <div className={certificateDetailStyles.category}>{certificate?.infogb}</div>
                 {/* 태그 박스 추가 */}
                 <div className={certificateDetailStyles.tagBox}>
-                    {tags.map(tag => (
-                        <span
-                            key={tag}
-                            className={certificateDetailStyles.tag}
-                            style={{ backgroundColor: tagColors[tag] }}
-                            onClick={() => navigate(`/search?keyword=${encodeURIComponent("#" + tag)}`)} // 🔗 태그 클릭 시 이동
-                        >
-                            #{tag}
-                        </span>
-                    ))}
+                    {tagIds.map((id) => {
+                        const name = getTagName(id);
+                        if (!name) return null;// 메타에 없으면 스킵(안전)
+                        const color = getTagColor(id) ?? "#64748B";// fallback
+                        return (
+                            <span
+                                key={id}
+                                className={certificateDetailStyles.tag}
+                                style={{ backgroundColor: color }}
+                                onClick={() =>
+                                    navigate(`/search?keyword=${encodeURIComponent("#" + name)}`)
+                                }>
+                                #{name}</span>
+                        );
+                    })}
                 </div>
             </div>
 
