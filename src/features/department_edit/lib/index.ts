@@ -1,0 +1,1 @@
+export { DeptEdit } from './DeptEdit'

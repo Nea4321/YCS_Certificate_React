@@ -42,7 +42,7 @@ export const Router = () => {
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}
                         <Route path="/dashboard" element={<ProtecteRoute><DashBoard /></ProtecteRoute>} />     {/* 마이 페이지 */}
-                            <Route path="/department_edit" element={<Department_Edit/>} />
+                            <Route path="/department_edit" element={<Department_Edit/>} />          {/* 학과 수정 페이지 */}
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
