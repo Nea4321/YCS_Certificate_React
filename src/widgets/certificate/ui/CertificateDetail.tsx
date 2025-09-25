@@ -1,12 +1,10 @@
 import { memo, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import type { CertData } from "@/entities/certificate/model"
 import { certificateDetailStyles } from "../styles"
-import { departmentDetailStyles } from "@/widgets"
 import { certificateApi } from "@/entities"
 import { certificateTags } from "@/entities/certificate"
 import { tagColors } from "@/entities/certificate/model/tagColors"
-import { useNavigate } from "react-router-dom"
 import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx"
 
 /**CertificateDetail에 전달할 props
@@ -125,7 +123,7 @@ export const CertificateDetail = memo(({ certificate: initialCertificate }: Cert
             </div>
 
 
-            <section className={departmentDetailStyles.calendarSection}>
+            <section className={certificateDetailStyles.calendarSection}>
                 <h2>자격증 시험 일정</h2>
                 <CalendarWidget certificateName={certificate?.certificate_name || ""} />
             </section>
