@@ -1,24 +1,23 @@
-/* CalendarWidget 전용 스타일 */
 .calendarWidget {
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto; /* 가운데 정렬 */
     transform: scale(0.8);
     transform-origin: top center;
-    margin-bottom: -20%; /* 스케일로 인한 여백 조정 */
+    margin: 0 auto -15%;
 }
+
 .calendarSection {
+    position: relative;
     margin-bottom: 1.6rem;
 }
 
-/* react-calendar 기본 스타일 오버라이드 */
 .calendarWidget :global(.react-calendar) {
     width: 100%;
     border: none;
     font-family: inherit;
-    background: white;
+    background: #fff;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
     padding: 1.5rem;
 }
 
@@ -37,7 +36,7 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color .2s;
     white-space: nowrap;
 }
 
@@ -55,36 +54,38 @@
 .calendarWidget :global(.react-calendar__month-view__weekdays) {
     text-align: center;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: .75rem;
     color: #6b7280;
     text-transform: uppercase;
 }
 
 .calendarWidget :global(.react-calendar__month-view__weekdays__weekday) {
-    padding: 0.75rem 0;
+    padding: .75rem 0;
     border-bottom: 1px solid #f3f4f6;
 }
+
 .calendarWidget :global(.react-calendar__month-view__weekdays__weekday abbr) {
     text-decoration: none;
 }
-/* 핵심 수정: 캘린더 그리드 레이아웃 - 투명한 그리드 선 */
+
 .calendarWidget :global(.react-calendar__month-view__days) {
     display: grid !important;
     grid-template-columns: repeat(7, 1fr) !important;
-    gap: 0px !important; /* gap을 0으로 설정 */
+    gap: 0 !important;
     background-color: transparent !important;
     overflow: hidden;
 }
+
 .calendarWidget :global(.react-calendar__tile) {
-    background: white !important;
+    background: #fff !important;
     border: none !important;
-    padding: 0.5rem 0.25rem !important;
-    font-size: 0.875rem;
+    padding: .5rem .25rem !important;
+    font-size: .875rem;
     color: #374151;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all .2s;
     position: relative;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1/1;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -93,341 +94,149 @@
     width: auto !important;
     height: auto !important;
     overflow: hidden;
-    margin: 0 !important; /* 마진 제거 */
-    /* border-radius는 이제 .calendar-tile--round-left/right 클래스에서 제어 */
+    margin: 0 !important;
 }
+
 .calendarWidget :global(.react-calendar__tile:hover) {
     background-color: #f9fafb !important;
 }
+
 .calendarWidget :global(.react-calendar__tile--active) {
     background-color: #3b82f6 !important;
-    color: white !important;
+    color: #fff !important;
     font-weight: 600;
 }
+
 .calendarWidget :global(.react-calendar__tile--now) {
     font-weight: 700;
     color: #1f2937;
     background-color: #fef3c7 !important;
 }
-.calendarWidget :global(.react-calendar__month-view__days__day--neighboringMonth ){
+
+.calendarWidget :global(.react-calendar__month-view__days__day--neighboringMonth) {
     color: #d1d5db;
     background-color: #f9fafb !important;
 }
-/* 단일 이벤트 스타일 */
-.calendarWidget :global(.calendar-tile-doc-reg) {
-    background-color: rgba(147, 197, 253, 0.4) !important;
-    border: 2px solid #93c5fd !important;
-}
-.calendarWidget :global(.calendar-tile-doc-exam) {
-    background-color: rgba(251, 191, 36, 0.4) !important;
-    border: 2px solid #fbbf24 !important;
-}
-.calendarWidget :global(.calendar-tile-doc-pass) {
-    background-color: rgba(52, 211, 153, 0.4) !important;
-    border: 2px solid #34d399 !important;
-}
-.calendarWidget :global(.calendar-tile-prac-reg) {
-    background-color: rgba(167, 139, 250, 0.4) !important;
-    border: 2px solid #a78bfa !important;
-}
-.calendarWidget :global(.calendar-tile-prac-exam) {
-    background-color: rgba(248, 113, 113, 0.4) !important;
-    border: 2px solid #f87171 !important;
-}
-.calendarWidget :global(.calendar-tile-prac-pass) {
-    background-color: rgba(0, 153, 0, 0.4) !important;
-    border: 2px solid #009900 !important;
-}
-/* 다중 이벤트 조합 스타일 - 가로로 색상 분할 */
+
+.calendarWidget :global(.calendar-tile-doc-reg)   { background-color: rgba(147,197,253,.4) !important; border: 2px solid #93c5fd !important; }
+.calendarWidget :global(.calendar-tile-doc-exam)  { background-color: rgba(251,191,36,.4) !important;  border: 2px solid #fbbf24 !important; }
+.calendarWidget :global(.calendar-tile-doc-pass)  { background-color: rgba(52,211,153,.4) !important;   border: 2px solid #34d399 !important; }
+.calendarWidget :global(.calendar-tile-prac-reg)  { background-color: rgba(167,139,250,.4) !important;  border: 2px solid #a78bfa !important; }
+.calendarWidget :global(.calendar-tile-prac-exam) { background-color: rgba(248,113,113,.4) !important;  border: 2px solid #f87171 !important; }
+.calendarWidget :global(.calendar-tile-prac-pass) { background-color: rgba(0,153,0,.4) !important;      border: 2px solid #009900 !important; }
+
 .calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 50%,
-            rgba(251, 191, 36, 0.6) 50%,
-            rgba(251, 191, 36, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 50%,
+    rgba(251,191,36,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 .calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 50%,
+    rgba(52,211,153,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 .calendarWidget :global(.calendar-tile-doc-exam.calendar-tile-doc-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(251, 191, 36, 0.6) 0%,
-            rgba(251, 191, 36, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(251,191,36,.6) 0 50%,
+    rgba(52,211,153,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 .calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-prac-reg) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 50%,
-            rgba(167, 139, 250, 0.6) 50%,
-            rgba(167, 139, 250, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 50%,
+    rgba(167,139,250,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 .calendarWidget :global(.calendar-tile-doc-exam.calendar-tile-prac-exam) {
-    background: linear-gradient(
-            to right,
-            rgba(251, 191, 36, 0.6) 0%,
-            rgba(251, 191, 36, 0.6) 50%,
-            rgba(248, 113, 113, 0.6) 50%,
-            rgba(248, 113, 113, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(251,191,36,.6) 0 50%,
+    rgba(248,113,113,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 .calendarWidget :global(.calendar-tile-doc-pass.calendar-tile-prac-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(52, 211, 153, 0.6) 0%,
-            rgba(52, 211, 153, 0.6) 50%,
-            rgba(0, 153, 0, 0.6) 50%,
-            rgba(0, 153, 0, 0.6) 100%
-    ) !important;
-    border: 2px solid #666 !important;
-}
-/* 3개 이벤트 조합 */
-.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 33.33%,
-            rgba(251, 191, 36, 0.6) 33.33%,
-            rgba(251, 191, 36, 0.6) 66.66%,
-            rgba(52, 211, 153, 0.6) 66.66%,
-            rgba(52, 211, 153, 0.6) 100%
-    ) !important;
-    border: 2px solid #666 !important;
-}
-.calendarWidget :global(.calendar-tile-prac-reg.calendar-tile-prac-exam.calendar-tile-prac-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(167, 139, 250, 0.6) 0%,
-            rgba(167, 139, 250, 0.6) 33.33%,
-            rgba(248, 113, 113, 0.6) 33.33%,
-            rgba(248, 113, 113, 0.6) 66.66%,
-            rgba(0, 153, 0, 0.6) 66.66%,
-            rgba(0, 153, 0, 0.6) 100%
-    ) !important;
-    border: 2px solid #666 !important;
-}
-/* 4개 이벤트 조합 */
-.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 25%,
-            rgba(251, 191, 36, 0.6) 25%,
-            rgba(251, 191, 36, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 50%,
-            rgba(52, 211, 153, 0.6) 75%,
-            rgba(167, 139, 250, 0.6) 75%,
-            rgba(167, 139, 250, 0.6) 100%
-    ) !important;
-    border: 2px solid #666 !important;
-}
-/* 5개 이벤트 조합 */
-.calendarWidget
-:global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg.calendar-tile-prac-exam ){
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 20%,
-            rgba(251, 191, 36, 0.6) 20%,
-            rgba(251, 191, 36, 0.6) 40%,
-            rgba(52, 211, 153, 0.6) 40%,
-            rgba(52, 211, 153, 0.6) 60%,
-            rgba(167, 139, 250, 0.6) 60%,
-            rgba(167, 139, 250, 0.6) 80%,
-            rgba(248, 113, 113, 0.6) 80%,
-            rgba(248, 113, 113, 0.6) 100%
-    ) !important;
-    border: 2px solid #666 !important;
-}
-/* 6개 이벤트 조합 */
-.calendarWidget
-:global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg.calendar-tile-prac-exam.calendar-tile-prac-pass) {
-    background: linear-gradient(
-            to right,
-            rgba(147, 197, 253, 0.6) 0%,
-            rgba(147, 197, 253, 0.6) 16.66%,
-            rgba(251, 191, 36, 0.6) 16.66%,
-            rgba(251, 191, 36, 0.6) 33.33%,
-            rgba(52, 211, 153, 0.6) 33.33%,
-            rgba(52, 211, 153, 0.6) 50%,
-            rgba(167, 139, 250, 0.6) 50%,
-            rgba(167, 139, 250, 0.6) 66.66%,
-            rgba(248, 113, 113, 0.6) 66.66%,
-            rgba(248, 113, 113, 0.6) 83.33%,
-            rgba(0, 153, 0, 0.6) 83.33%,
-            rgba(0, 153, 0, 0.6) 100%
-    ) !important;
+    background: linear-gradient(to right,
+    rgba(52,211,153,.6) 0 50%,
+    rgba(0,153,0,.6) 50% 100%) !important;
     border: 2px solid #666 !important;
 }
 
-/* 개별 이벤트 위치 클래스에서는 border-radius를 설정하지 않음 */
-.calendarWidget :global(.calendar-tile-doc-reg--single),
-.calendarWidget :global(.calendar-tile-doc-exam--single),
-.calendarWidget :global(.calendar-tile-doc-pass--single),
-.calendarWidget :global(.calendar-tile-prac-reg--single),
-.calendarWidget :global(.calendar-tile-prac-exam--single),
-.calendarWidget :global(.calendar-tile-prac-pass--single),
-.calendarWidget :global(.calendar-tile-doc-reg--start),
-.calendarWidget :global(.calendar-tile-doc-reg--start-continues),
-.calendarWidget :global(.calendar-tile-doc-exam--start),
-.calendarWidget :global(.calendar-tile-doc-exam--start-continues),
-.calendarWidget :global(.calendar-tile-doc-pass--start),
-.calendarWidget :global(.calendar-tile-doc-pass--start-continues),
-.calendarWidget :global(.calendar-tile-prac-reg--start),
-.calendarWidget :global(.calendar-tile-prac-reg--start-continues),
-.calendarWidget :global(.calendar-tile-prac-exam--start),
-.calendarWidget :global(.calendar-tile-prac-exam--start-continues),
-.calendarWidget :global(.calendar-tile-prac-pass--start),
-.calendarWidget :global(.calendar-tile-prac-pass--start-continues),
-.calendarWidget :global(.calendar-tile-doc-reg--middle),
-.calendarWidget :global(.calendar-tile-doc-reg--continues-middle),
-.calendarWidget :global(.calendar-tile-doc-reg--middle-continues),
-.calendarWidget :global(.calendar-tile-doc-reg--continues-through),
-.calendarWidget :global(.calendar-tile-doc-exam--middle),
-.calendarWidget :global(.calendar-tile-doc-exam--continues-middle),
-.calendarWidget :global(.calendar-tile-doc-exam--middle-continues),
-.calendarWidget :global(.calendar-tile-doc-exam--continues-through),
-.calendarWidget :global(.calendar-tile-doc-pass--middle),
-.calendarWidget :global(.calendar-tile-doc-pass--continues-middle),
-.calendarWidget :global(.calendar-tile-doc-pass--middle-continues),
-.calendarWidget :global(.calendar-tile-doc-pass--continues-through),
-.calendarWidget :global(.calendar-tile-prac-reg--middle),
-.calendarWidget :global(.calendar-tile-prac-reg--continues-middle),
-.calendarWidget :global(.calendar-tile-prac-reg--middle-continues),
-.calendarWidget :global(.calendar-tile-prac-reg--continues-through),
-.calendarWidget :global(.calendar-tile-prac-exam--middle),
-.calendarWidget :global(.calendar-tile-prac-exam--continues-middle),
-.calendarWidget :global(.calendar-tile-prac-exam--middle-continues),
-.calendarWidget :global(.calendar-tile-prac-exam--continues-through),
-.calendarWidget :global(.calendar-tile-prac-pass--middle),
-.calendarWidget :global(.calendar-tile-prac-pass--continues-middle),
-.calendarWidget :global(.calendar-tile-prac-pass--middle-continues),
-.calendarWidget :global(.calendar-tile-prac-pass--continues-through),
-.calendarWidget :global(.calendar-tile-doc-reg--end),
-.calendarWidget :global(.calendar-tile-doc-reg--continues-end),
-.calendarWidget :global(.calendar-tile-doc-exam--end),
-.calendarWidget :global(.calendar-tile-doc-exam--continues-end),
-.calendarWidget :global(.calendar-tile-doc-pass--end),
-.calendarWidget :global(.calendar-tile-doc-pass--continues-end),
-.calendarWidget :global(.calendar-tile-prac-reg--end),
-.calendarWidget :global(.calendar-tile-prac-reg--continues-end),
-.calendarWidget :global(.calendar-tile-prac-exam--end),
-.calendarWidget :global(.calendar-tile-prac-exam--continues-end),
-.calendarWidget :global(.calendar-tile-prac-pass--end),
-.calendarWidget :global(.calendar-tile-prac-pass--continues-end) {
-    /* 이 클래스들에서는 border-radius를 설정하지 않고, round-left/right 클래스에 위임 */
+.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass) {
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 33.33%,
+    rgba(251,191,36,.6) 33.33% 66.66%,
+    rgba(52,211,153,.6) 66.66% 100%) !important;
+    border: 2px solid #666 !important;
+}
+.calendarWidget :global(.calendar-tile-prac-reg.calendar-tile-prac-exam.calendar-tile-prac-pass) {
+    background: linear-gradient(to right,
+    rgba(167,139,250,.6) 0 33.33%,
+    rgba(248,113,113,.6) 33.33% 66.66%,
+    rgba(0,153,0,.6) 66.66% 100%) !important;
+    border: 2px solid #666 !important;
+}
+
+.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg) {
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 25%,
+    rgba(251,191,36,.6) 25% 50%,
+    rgba(52,211,153,.6) 50% 75%,
+    rgba(167,139,250,.6) 75% 100%) !important;
+    border: 2px solid #666 !important;
+}
+.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg.calendar-tile-prac-exam) {
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 20%,
+    rgba(251,191,36,.6) 20% 40%,
+    rgba(52,211,153,.6) 40% 60%,
+    rgba(167,139,250,.6) 60% 80%,
+    rgba(248,113,113,.6) 80% 100%) !important;
+    border: 2px solid #666 !important;
+}
+.calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam.calendar-tile-doc-pass.calendar-tile-prac-reg.calendar-tile-prac-exam.calendar-tile-prac-pass) {
+    background: linear-gradient(to right,
+    rgba(147,197,253,.6) 0 16.66%,
+    rgba(251,191,36,.6) 16.66% 33.33%,
+    rgba(52,211,153,.6) 33.33% 50%,
+    rgba(167,139,250,.6) 50% 66.66%,
+    rgba(248,113,113,.6) 66.66% 83.33%,
+    rgba(0,153,0,.6) 83.33% 100%) !important;
+    border: 2px solid #666 !important;
+}
+
+
+
+.calendarWidget :global([class*="calendar-tile-"][class*="--"]) {
     border-radius: unset !important;
     border-left: unset !important;
     border-right: unset !important;
 }
 
-/* 새로운 클래스: 모서리를 둥글게 처리 */
-/* 필기접수 시작 부분 */
-.calendarWidget :global(.calendar-tile--round-left-doc-reg) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #93c5fd !important;
-}
+.calendarWidget :global(.calendar-tile--round-left-doc-reg)   { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #93c5fd !important; }
+.calendarWidget :global(.calendar-tile--round-right-doc-reg)  { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #93c5fd !important; }
 
-/* 필기접수 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-doc-reg) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #93c5fd !important;
-}
+.calendarWidget :global(.calendar-tile--round-left-doc-exam)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #fbbf24 !important; }
+.calendarWidget :global(.calendar-tile--round-right-doc-exam) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #fbbf24 !important; }
 
-/* 필기시험 시작 부분 */
-.calendarWidget :global(.calendar-tile--round-left-doc-exam) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #fbbf24 !important; /* 파랑 */
-}
+.calendarWidget :global(.calendar-tile--round-left-doc-pass)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #34d399 !important; }
+.calendarWidget :global(.calendar-tile--round-right-doc-pass) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #34d399 !important; }
 
-/* 필기시험 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-doc-exam) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #fbbf24 !important;
-}
+.calendarWidget :global(.calendar-tile--round-left-prac-reg)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #a78bfa !important; }
+.calendarWidget :global(.calendar-tile--round-right-prac-reg) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #a78bfa !important; }
 
-.calendarWidget :global(.calendar-tile--round-left-doc-pass) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #34d399 !important; /* 파랑 */
-}
+.calendarWidget :global(.calendar-tile--round-left-prac-exam) { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #f87171 !important; }
+.calendarWidget :global(.calendar-tile--round-right-prac-exam){ border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #f87171 !important; }
 
-/* 필기시험 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-doc-pass) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #34d399 !important;
-}
+.calendarWidget :global(.calendar-tile--round-left-prac-pass) { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #009900 !important; }
+.calendarWidget :global(.calendar-tile--round-right-prac-pass){ border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #009900 !important; }
 
-.calendarWidget :global(.calendar-tile--round-left-prac-reg) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #a78bfa !important; /* 파랑 */
-}
-
-/* 필기시험 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-prac-reg) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #a78bfa !important;
-}
-
-.calendarWidget :global(.calendar-tile--round-left-prac-exam) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #f87171 !important; /* 파랑 */
-}
-
-/* 필기시험 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-prac-exam) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #f87171 !important;
-}
-
-.calendarWidget :global(.calendar-tile--round-left-prac-pass) {
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
-    border-left: 2px solid #009900 !important; /* 파랑 */
-}
-
-/* 필기시험 끝 부분 */
-.calendarWidget :global(.calendar-tile--round-right-prac-pass) {
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
-    border-right: 2px solid #009900 !important;
-}
-
-
-/* 타일 내용 스타일 - 더 넓은 공간과 큰 글씨 */
 .tileContent {
     position: absolute;
     bottom: 3px;
     left: 3px;
     right: 3px;
-    top: 22px; /* 날짜 표시 공간 확보 */
+    top: 22px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -441,7 +250,7 @@
     overflow: hidden;
 }
 .certificateName {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255,255,255,.95);
     padding: 2px 4px;
     border-radius: 3px;
     font-weight: 600;
@@ -450,119 +259,65 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.7rem; /* 글씨 크기 증가 */
+    font-size: .7rem;
     line-height: 1.2;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 .moreEvents {
-    font-size: 0.55rem;
+    font-size: .55rem;
     color: #6b7280;
     font-weight: 600;
     margin-top: 2px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255,255,255,.9);
     padding: 1px 3px;
     border-radius: 2px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-/* 범례 섹션 */
-.legendSection {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-}
-.legendTitle {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0 0 1rem 0;
-}
-.legendGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-}
-.legendItem {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.legendColor {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    flex-shrink: 0;
-    border: 2px solid;
-}
-.legendColorDocReg {
-    border-color: #93c5fd;
-    background-color: rgba(147, 197, 253, 0.3);
-}
-.legendColorDocExam {
-    border-color: #fbbf24;
-    background-color: rgba(251, 191, 36, 0.3);
-}
-.legendColorDocPass {
-    border-color: #34d399;
-    background-color: rgba(52, 211, 153, 0.3);
-}
-.legendColorPracReg {
-    border-color: #a78bfa;
-    background-color: rgba(167, 139, 250, 0.3);
-}
-.legendColorPracExam {
-    border-color: #f87171;
-    background-color: rgba(248, 113, 113, 0.3);
-}
-.legendColorPracPass {
-    border-color: #009900;
-    background-color: rgba(0, 153, 0, 0.3);
-}
-/* 반응형 디자인 */
-@media (max-width: 1200px) {
-    .legendGrid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-@media (max-width: 768px) {
-    .calendarWidget {
-        transform: scale(0.9);
-        margin-bottom: -10%;
-    }
-    .legendGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .calendarWidget .react-calendar {
-        padding: 1rem;
-    }
-    .certificateName {
-        font-size: 0.6rem;
-        padding: 1px 2px;
-    }
-    .calendarWidget .react-calendar__navigation button {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
-    }
-}
-@media (max-width: 480px) {
-    .calendarWidget {
-        transform: scale(1);
-        margin-bottom: 0;
-    }
-    .certificateName {
-        font-size: 0.55rem;
-    }
+    border: 1px solid rgba(0,0,0,.1);
 }
 
-/* 자격증 선택 버튼 스타일 추가 */
+.calendarWrapper {
+    transition: max-height .35s ease-in-out;
+    overflow: hidden;
+    max-height: 1000px;
+}
+
+.calendarWrapper.collapsed {
+    max-height: 380px;
+}
+
+.expandIconWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.expandIconButton {
+    background-color: #fff;
+    border: none;
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6B7280;
+    transition: all .2s ease;
+}
+
+.expandIconButton:hover {
+    background-color: #F3F4F6;
+    color: #111827;
+    transform: translateY(-2px);
+}
+
 .certificateSelector {
-    background: white;
+    background: #fff;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
     margin-bottom: 1.5rem;
 }
 
@@ -576,18 +331,18 @@
 .certificateButtons {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: .75rem;
 }
 
 .certificateButton {
-    padding: 0.5rem 1rem;
+    padding: .5rem 1rem;
     border: 2px solid #e5e7eb;
-    background: white;
+    background: #fff;
     color: #374151;
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all .2s ease;
     white-space: nowrap;
 }
 
@@ -599,7 +354,70 @@
 .certificateButtonActive {
     border-color: #3b82f6 !important;
     background-color: #3b82f6 !important;
-    color: white !important;
+    color: #fff !important;
 }
 
+.legendSection {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    margin: 20px 0 2rem;
+}
 
+.legendTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem 0;
+}
+
+.legendGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.legendColor {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 2px solid;
+}
+
+.legendColorDocReg  { border-color:#93c5fd; background-color: rgba(147,197,253,.3); }
+.legendColorDocExam { border-color:#fbbf24; background-color: rgba(251,191,36,.3); }
+.legendColorDocPass { border-color:#34d399; background-color: rgba(52,211,153,.3); }
+.legendColorPracReg { border-color:#a78bfa; background-color: rgba(167,139,250,.3); }
+.legendColorPracExam{ border-color:#f87171; background-color: rgba(248,113,113,.3); }
+.legendColorPracPass{ border-color:#009900; background-color: rgba(0,153,0,.3); }
+
+@media (max-width: 1200px) {
+    .legendGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .calendarWidget {
+        transform: scale(0.9);
+        margin-bottom: -10%;
+    }
+    .legendGrid { grid-template-columns: repeat(2, 1fr); }
+    .calendarWidget .react-calendar { padding: 1rem; }
+    .certificateName { font-size: .6rem; padding: 1px 2px; }
+    .calendarWidget .react-calendar__navigation button {
+        font-size: .9rem;
+        padding: .4rem .8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendarWidget { transform: scale(1); margin-bottom: 0; }
+    .certificateName { font-size: .55rem; }
+}
