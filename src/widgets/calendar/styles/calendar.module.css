@@ -283,7 +283,7 @@
 }
 
 .calendarWrapper.collapsed {
-    max-height: 380px;
+    max-height: 270px;
 }
 
 .expandIconWrapper {
@@ -298,6 +298,7 @@
     background-color: #fff;
     border: none;
     padding: 6px;
+    margin-bottom: 15px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
