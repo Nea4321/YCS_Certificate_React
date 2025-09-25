@@ -170,7 +170,7 @@ export function Calculator({ onClose }: { onClose: () => void }) {
                             variant === "eq"  ? ExamStyles.calcBtnEq  : ""
             }`}
             onClick={onClick}
-            aria-label={ariaLabel ?? (typeof label === "string" ? label : undefined)}
+            aria-label={ariaLabel ?? undefined}
         >
             {label}
         </button>

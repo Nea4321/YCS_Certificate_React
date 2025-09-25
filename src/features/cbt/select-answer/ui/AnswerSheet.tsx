@@ -11,7 +11,8 @@ import { PracticeStyles } from "@/widgets/cbt-practice/styles";
 interface AnswerSheetProps {
     totalQuestions: number;
     answers: (number | null)[];
-    onSelect: (num: number, opt: number) => void;
+    setAnswer: (index: number, opt: number | null) => void;
+    onJump: (questionNumber: number) => void;
 }
 
 /**CBT 문제 페이지의 우측 답안지 컴포넌트
@@ -32,31 +33,45 @@ interface AnswerSheetProps {
 export const AnswerSheet: React.FC<AnswerSheetProps> = ({
                                                             totalQuestions,
                                                             answers,
-                                                            onSelect,
+                                                            setAnswer,
+                                                            onJump, // onSelect -> onJump
                                                         }) => (
     <div className={PracticeStyles.answerArea}>
-        <h3 className={PracticeStyles.answerTitle}>답안지</h3>
-        <div className={PracticeStyles.answerGrid}>
-            {Array.from({ length: totalQuestions }, (_, i) => i + 1).map((num) => (
-                <div key={num} className={PracticeStyles.answerRow}>
-                    <span>{String(num).padStart(2, "0")}.</span> {/*생성된 답안지의 번호는 두자리 폼(padStart(2, '0')*/}
-                    {[1, 2, 3, 4].map((opt) => (// map으로 radio 버튼 1,2,3,4 반복 생성
-                                                                // opt = 선택지 번호(1~4)
-                        <label key={opt}>
-                            <input
-                                type="radio"
-                                name={`a${num}`}
-                                checked={answers[num - 1] === opt} // num: 문제 번호
-                                onChange={() => onSelect(num, opt)}
-                            />
-                            {opt}
-                        </label>
-                    ))}
-                </div>
-            ))}
+        <div className={PracticeStyles.answerSheetContent}>
+            <h3 className={PracticeStyles.answerTitle}>답안지</h3>
+            <div className={PracticeStyles.answerGrid}>
+                {Array.from({ length: totalQuestions }, (_, i) => i + 1).map((num) => (
+                    <div
+                        key={num}
+                        className={PracticeStyles.answerRow}
+                        // 💡 행 전체를 클릭하면 onJump 호출
+                        onClick={() => onJump(num)}
+                    >
+                        <div className={PracticeStyles.answerNumber}>{String(num).padStart(2, "0")}</div>
+                        <div className={PracticeStyles.answerOptions}>
+                            {[1, 2, 3, 4].map((opt) => (
+                                <label key={opt} onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                        type="radio"
+                                        name={`a${num}`}
+                                        checked={answers[num - 1] === opt}
+                                        onChange={() => {
+                                            setAnswer(num - 1, opt);
+                                            onJump(num);
+                                        }}
+                                    />
+                                    <span>{opt}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-        <button className={PracticeStyles.submitBtn} disabled>
-            채점하기
-        </button>
+        <div className={PracticeStyles.submitBtnWrapper}>
+            <button className={PracticeStyles.submitBtn}>
+                채점하기
+            </button>
+        </div>
     </div>
 );

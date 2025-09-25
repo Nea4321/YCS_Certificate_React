@@ -1,5 +1,4 @@
-// widgets/cbt-exam/ui/ExamView.tsx
-import { useState } from "react";
+import React, { useState } from "react";
 import { ExamStyles } from "@/widgets/cbt-exam/styles";
 import type { Question } from "@/entities/cbt/model/types";
 import {

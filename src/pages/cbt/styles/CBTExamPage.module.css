@@ -5,7 +5,7 @@
 }
 .contentCard,
 .examContainer {
-    max-width: 1080px;
+    max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 16px;
@@ -20,12 +20,27 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.cbtCategoryGrid {
+.cbtCategoryGrid,
+.categoryExpandedGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 8px;
-    margin: 20px 0 24px;
 }
+
+.categoryExpandedGrid {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0;
+    transition: max-height 0.1s ease-in-out, opacity 0.1s ease-in-out, margin-top 0.1s ease-in-out;
+}
+
+.categoryExpandedGrid.expanded {
+    margin-top: 8px; /* 펼쳐졌을 때 윗줄과의 간격 */
+    max-height: 1000px; /* 충분한 최대 높이 설정 */
+    opacity: 1;
+}
+
 
 .categoryCard {
     display: grid;
@@ -51,7 +66,6 @@
     background-color: #f9fafb;
     border-color: #93c5fd;
     box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-    transform: translateY(-1px);
 }
 
 .selected {
@@ -59,6 +73,41 @@
     border-color: #1e40af;
     color: #ffffff;
     box-shadow: none;
+}
+
+.selected:hover {
+    background-color: #1e40af;
+}
+
+.categoryFilterContainer {
+    margin: 20px 0 24px;
+    position: relative;
+}
+
+/* 💡 아이콘 버튼을 감싸는 래퍼 스타일 */
+.expandIconWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+/* 💡 새로운 아이콘 버튼 스타일 */
+.expandIconButton {
+    background-color: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 50%; /* 원형 버튼 */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6B7280; /* 아이콘 색상 */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.expandIconButton:hover {
+    background-color: #F3F4F6; /* 호버 시 은은한 배경색 */
+    color: #111827; /* 호버 시 아이콘 색상 진하게 */
 }
 
 .categoryName {
@@ -170,4 +219,89 @@
     background-color: #111;
     color: white;
     border-color: #111;
+}
+@media (max-width: 768px) {
+    /* 페이지 여백 축소 */
+    .pageBackground {
+        padding: 16px;
+    }
+    .contentCard {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    .cbtTitle {
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+
+    /* 카테고리 필터: 3열 그리드 */
+    .cbtCategoryGrid,
+    .categoryExpandedGrid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));  /* ✅ 3개/줄 */
+        gap: 8px;
+    }
+
+    .categoryCard {
+        height: 36px;          /* 살짝 낮춰서 3열 안정화 */
+        padding: 0 8px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+
+    /* 펼치기/접기 버튼 간격 */
+    .expandIconWrapper {
+        margin-top: 8px;
+    }
+    .expandIconButton { padding: 6px; }
+
+    /* 결과 개수 문구 */
+    .cbtCountInfo {
+        margin-top: 16px;
+        font-size: 16px;
+    }
+    .cbtCountInfo strong { font-size: 16px; }
+
+    /* 자격증 카드 그리드: 2열 */
+    .cbtExamGrid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));  /* ✅ 2개/줄 */
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .cbtExamCard {
+        padding: 16px;
+        min-height: 150px;
+        border-radius: 10px;
+    }
+
+    .examTitle {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    .examCategory {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .cbtStartButton {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+
+    /* 페이지네이션: 버튼 작게 + 줄바꿈 허용 */
+    .pagination {
+        gap: 6px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    .pageButton {
+        padding: 6px 10px;
+        min-width: 36px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
 }

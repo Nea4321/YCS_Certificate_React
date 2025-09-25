@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '@/features/certificate/ui/CertificateCategorySlider.css';
-import { originalCategories} from "@/entities/certificate/lib/slidesData.ts";
+import { originalCategories } from "@/entities/certificate/lib/slidesData.ts";
 
 
 /**무한 슬라이더를 위해 만든 가상 슬라이더를 추가한 배열*/
@@ -22,45 +22,50 @@ const categories = [
  *   @component
  */
 export const CertificateCategorySlider: React.FC = () => {
-    const initialSlidesLength = originalCategories.length; // 원본 슬라이드 개수 (예: 3개)
+    const initialSlidesLength = originalCategories.length;
 
-    // currentIndex는 categories 배열에서 실제 첫 번째 슬라이드 (originalCategories[0])의 인덱스에서 시작합니다.
-    // categories 배열 구조: [가상2, 가상1, 원본0, 원본1, 원본2, 가상0, 가상1]
-
-    const [currentIndex, setCurrentIndex] = useState(2); // 현재 슬라이더
-    const [isAnimating, setIsAnimating] = useState(false); // 애니메이션 중인지 여부
+    const [currentIndex, setCurrentIndex] = useState(2);
+    const [isAnimating, setIsAnimating] = useState(false);
     const sliderTrackRef = useRef<HTMLDivElement>(null);
 
+    const [slideWidthPct, setSlideWidthPct] = useState(45);
 
-    const slideWidthPercentage = 50;
-    const centerOffsetPercentage = (100 - slideWidthPercentage) / 2;
-
-    // 애니메이션이 끝나면 끝에 도달했는지 확인하고 원본 인덱스(2)로 점프하여 순환
     useEffect(() => {
-        if (isAnimating) {
-            const onTransitionEnd = () => {
-                if (currentIndex === initialSlidesLength + 2) {
-                    setIsAnimating(false);
-                    setCurrentIndex(2); // 첫 번째 슬라이드로 정확히 이동
-                } else if (currentIndex === 1) {
-                    setIsAnimating(false);
-                    setCurrentIndex(initialSlidesLength + 1); // 마지막 슬라이드로 정확히 이동
-                } else {
-                    setIsAnimating(false); // 일반적으로 애니메이션 종료
-                }
-            };
-
-            const currentRef = sliderTrackRef.current;
-            if (currentRef) {
-                currentRef.addEventListener('transitionend', onTransitionEnd, { once: true });
+        const update = () => {
+            const w = window.innerWidth;
+            if (w <= 768) {
+                setSlideWidthPct(100);   // 모바일
+            } else if (w <= 1024) {
+                setSlideWidthPct(80);    // 태블릿
+            } else if (w <= 1440) {
+                setSlideWidthPct(60);    // 작은 데스크탑
+            } else {
+                setSlideWidthPct(45);    // 큰 데스크탑
             }
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
 
-            return () => {
-                if (currentRef) {
-                    currentRef.removeEventListener('transitionend', onTransitionEnd);
-                }
-            };
-        }
+    const centerOffsetPct = slideWidthPct === 100 ? 0 : (100 - slideWidthPct) / 2;
+
+    useEffect(() => {
+        if (!isAnimating) return;
+        const onTransitionEnd = () => {
+            if (currentIndex === initialSlidesLength + 2) {
+                setIsAnimating(false);
+                setCurrentIndex(2);
+            } else if (currentIndex === 1) {
+                setIsAnimating(false);
+                setCurrentIndex(initialSlidesLength + 1);
+            } else {
+                setIsAnimating(false);
+            }
+        };
+        const el = sliderTrackRef.current;
+        el?.addEventListener('transitionend', onTransitionEnd, { once: true });
+        return () => el?.removeEventListener('transitionend', onTransitionEnd);
     }, [isAnimating, currentIndex, initialSlidesLength]);
 
 
@@ -89,22 +94,23 @@ export const CertificateCategorySlider: React.FC = () => {
                 className="slider-track"
                 ref={sliderTrackRef}
                 style={{
-                    transform: `translateX(calc(-${currentIndex * slideWidthPercentage}% + ${centerOffsetPercentage}%))`,
-                    transition: isAnimating ? 'transform 0.1s ease' : 'none'
+                    transform:
+                        slideWidthPct === 100
+                            ? `translateX(-${currentIndex * 100}%)` // 모바일: 한 장 꽉 차게
+                            : `translateX(calc(-${currentIndex * slideWidthPct}% + ${centerOffsetPct}%))`,
+                    transition: isAnimating ? 'transform 0.25s ease' : 'none',
                 }}
             >
                 {/* categories 배열을 매핑하여 슬라이드 렌더링 */}
                 {categories.map((category, index) => (
                     <div
-
-                        className={`slide ${index === currentIndex && index > 1 && index < categories.length - 2 ? 'active' : ''}`}
+                        className={`slide ${index === currentIndex && index > 1 && index < categories.length - 2}`}
                         key={`${category.title}-${index}`}
                     >
                         <h3>{category.title}</h3>
                         <ol>
-                            {/* 각 카테고리의 아이템들을 목록으로 렌더링 */}
                             {category.items.map((item, i) => (
-                                <li key={i}>{item}</li> // 아이템의 고유성을 위해 i 사용 (간단한 경우)
+                                <li key={i}>{item}</li>
                             ))}
                         </ol>
                     </div>
@@ -114,5 +120,3 @@ export const CertificateCategorySlider: React.FC = () => {
         </div>
     );
 };
-
-export default CertificateCategorySlider;

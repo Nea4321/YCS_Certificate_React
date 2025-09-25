@@ -1,156 +1,295 @@
 /* 전체 래퍼 */
 .testWrapper {
     display: flex;
-    align-items: flex-start;
-    background-color: #f0f4fa;
-    gap: 0;
+    background-color: #f8f9fa; /* 더 부드러운 배경색 */
+    min-height: 100vh;
 }
 
 /* 왼쪽 문제 영역 */
 .questionArea {
     flex: 1;
-    min-height: 100vh;
-    padding: 24px 32px;
+    padding: 0; /* 내부에서 패딩 관리 */
+}
+
+.testContent {
+    max-width: 900px;
+    margin: 2rem auto; /* 상하 여백 및 중앙 정렬 */
+    padding: 0 1rem;
 }
 
 /* 오른쪽 답안지 영역 */
 .answerArea {
-    width: 300px;
+    width: 320px; /* 너비 살짝 조정 */
     position: sticky;
-    top: 80px;
-    align-self: flex-start;
-    padding: 24px 16px;
+    top: 0;
+    height: 100vh; /* 화면 높이에 꽉 차게 */
     background-color: #ffffff;
-    border-left: 1px solid #ddd;
-    box-shadow: -4px 0 8px rgba(0,0,0,0.03);
-    height: fit-content;
+    border-left: 1px solid #e9ecef;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column; /* 내부 요소 세로 정렬 */
+    transition: width 0.3s ease; /* 너비 변경 애니메이션 (선택 사항) */
 }
 
-/* 시험 제목 */
+
+/* --- 시험 정보 섹션 --- */
 .testTitle {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #111;
+    font-size: 2.25rem; /* 36px */
+    font-weight: 800; /* 더 두껍게 */
+    margin-bottom: 0.5rem;
+    color: #212529;
+    letter-spacing: -0.5px;
 }
 
-/* 시험 정보 */
 .testInfo {
-    font-size: 15px;
-    color: #333;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    display: flex;
+    gap: 1.5rem; /* 항목 간 간격 */
+    font-size: 0.95rem; /* 15px */
+    color: #495057;
+    margin-bottom: 2.5rem; /* 40px */
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+.testInfo p strong {
+    color: #343a40;
+    margin-right: 0.5rem;
 }
 
-/* 문제 카드 */
+
+/* --- 문제 카드 섹션 --- */
 .questionCard {
     background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    padding: 20px 24px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    padding: 1.75rem 2rem; /* 28px 32px */
+    margin-bottom: 1.5rem; /* 24px */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.questionCard:focus-within {
+    border-color: #845ef7; /* 포커스 시 테두리 색상 변경 */
+    box-shadow: 0 6px 20px rgba(132, 94, 247, 0.1);
 }
 
-/* 문제 제목 */
 .questionHeader {
-    font-size: 16px;
+    font-size: 1.25rem; /* 20px */
     font-weight: 700;
-    color: #222;
-    margin-bottom: 12px;
+    color: #845ef7; /* 포인트 색상 */
+    margin-bottom: 1rem;
 }
 
-/* 문제 설명 */
 .questionText {
-    font-size: 15px;
-    color: #444;
-    margin-bottom: 16px;
+    font-size: 1.125rem; /* 18px */
+    color: #343a40;
+    margin-bottom: 2rem; /* 32px */
+    line-height: 1.7;
 }
 
-/* 선택지 */
+/* 선택지 (보기) */
 .choices {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.75rem; /* 12px */
 }
 
 .choiceItem {
-    font-size: 14px;
-    color: #333;
+    font-size: 1rem; /* 16px */
+    color: #495057;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem; /* 14px 20px */
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.choiceItem:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+/* 커스텀 라디오 버튼 */
+.choiceItem input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #adb5bd;
+    border-radius: 50%;
+    margin: 0;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.choiceItem input[type="radio"]:checked {
+    background-color: #845ef7;
+    border-color: #845ef7;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+}
+.choiceItem input[type="radio"]:checked + span {
+    font-weight: 600;
+    color: #212529;
 }
 
-/* 답안지 */
+
+/* --- 답안지 섹션 --- */
+.answerSheetContent {
+    padding: 2rem 1.5rem; /* 32px 24px */
+    flex-grow: 1;
+    overflow-y: auto; /* 내용이 길어지면 스크롤 */
+
+    /* For Webkit browsers (Chrome, Safari, Edge) */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* For Firefox */
+    scrollbar-width: none;
+
+    /* For IE/Edge (legacy) */
+    -ms-overflow-style: none;
+}
+
 .answerTitle {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
     text-align: center;
-    color: #222;
+    color: #212529;
 }
 
 .answerGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
+    /* 💡 가로 스크롤 대신 세로 그리드로 변경 */
+    display: grid;
+    /* 💡 화면 너비에 따라 2~3개의 열을 유동적으로 표시 */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px; /* 항목 간의 간격 */
+    padding: 8px;
+    overflow-y: auto; /* 내용이 길어지면 세로 스크롤 */
 }
 
 .answerRow {
     display: flex;
+    flex-direction: column; /* 문제 번호와 선택지를 세로로 배치 */
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #444;
+    padding: 12px 8px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.answerNumber {
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.answerOptions {
+    display: flex;
+    gap: 6px;
+}
+
+.answerOptions label {
+    font-size: 0.875rem;
+}
+/* 커스텀 라디오 버튼 (답안지용) */
+.answerOptions input[type="radio"] {
+    display: none; /* 숨김 */
+}
+.answerOptions span {
+    display: flex;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.answerOptions input[type="radio"]:checked + span {
+    background-color: #845ef7;
+    border-color: #845ef7;
+    color: white;
+    font-weight: 600;
 }
 
 /* 채점 버튼 */
+.submitBtnWrapper {
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
+}
+
 .submitBtn {
     display: block;
     width: 100%;
-    background-color: #3b82f6;
+    background-color: #845ef7; /* 포인트 색상 */
     color: white;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 600;
+    padding: 1rem; /* 16px */
+    font-size: 1.125rem; /* 18px */
+    font-weight: 700;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    opacity: 1;
+    transition: all 0.2s ease;
+}
+.submitBtn:hover {
+    background-color: #7048e8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(132, 94, 247, 0.3);
+}
+.submitBtn:disabled {
+    background-color: #ced4da;
     cursor: not-allowed;
-    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
 }
 
+
+/* --- 페이지네이션 섹션 --- */
 .paginationControls {
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* 양쪽 끝으로 */
     align-items: center;
-    gap: 12px;
-    margin-top: 24px;
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
 }
 
 .pageButton {
-    background-color: #3b82f6;
+    background-color: #845ef7;
     color: #fff;
     font-weight: 600;
-    padding: 8px 16px;
+    padding: 0.75rem 2rem; /* 12px 32px */
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s ease;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .pageButton:hover:not(:disabled) {
-    background-color: #2563eb;
+    background-color: #7048e8;
+    transform: translateY(-2px);
 }
 
 .pageButton:disabled {
-    background-color: #ccc;
+    background-color: #e9ecef;
+    color: #adb5bd;
     cursor: not-allowed;
+    transform: none;
 }
 
 .pageStatus {
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
+    font-size: 1.125rem;
+    color: #343a40;
+    font-weight: 600;
 }
+

@@ -1,14 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { PracticeStyles } from "@/widgets/cbt-practice/styles";
+import { usePracticePaging } from "@/features/cbt-exam/model/usePracticePaging";
 import { Header } from "@/shared/ui/header/Header";
 import { QuestionCard } from "@/features/cbt/question/ui/QuestionCard";
 import { AnswerSheet } from "@/features/cbt/select-answer/ui/AnswerSheet";
 import { TestPagination } from "@/features/cbt/test-pagination/ui/TestPagination";
 
-/** 연습 모드 전용 뷰
- *
- * 단일 책임: 연습 화면 UI만 렌더링
- */
 export interface PracticeViewProps {
     certName: string;
     modeLabel: string;
@@ -36,12 +33,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                                                               start,
                                                               end,
                                                           }) => {
-    const startIdx = (currentPage - 1) * pageSize;
-    const totalPages = Math.ceil(totalQuestions / pageSize);
 
-    const nums = useMemo(
-        () => Array.from({ length: pageSize }, (_, i) => startIdx + i + 1).filter((n) => n <= totalQuestions),
-        [startIdx, pageSize, totalQuestions]
+    const { totalPages, currentQuestionNumbers, goToQuestion } = usePracticePaging(
+        pageSize,
+        currentPage,
+        setCurrentPage,
+        totalQuestions
     );
 
     return (
@@ -58,15 +55,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                         {start && end && <p><strong>출제 범위:</strong> {start} ~ {end}</p>}
                     </div>
 
-                    {nums.map((n) => (
-                        <QuestionCard
-                            key={n}
-                            number={n}
-                            text={`문제 ${n} 내용`}
-                            options={["보기1", "보기2", "보기3", "보기4"]}
-                            selectedAnswer={answers[n - 1]}
-                            onSelect={(opt) => setAnswer(n - 1, opt)}
-                        />
+                    {currentQuestionNumbers.map((questionIndex) => (
+                        <div key={questionIndex + 1} id={`question-${questionIndex + 1}`}>
+                            <QuestionCard
+                                number={questionIndex + 1}
+                                text={`문제 ${questionIndex + 1} 내용`}
+                                options={["보기1", "보기2", "보기3", "보기4"]}
+                                selectedAnswer={answers[questionIndex]}
+                                onSelect={(opt) => setAnswer(questionIndex, opt)}
+                            />
+                        </div>
                     ))}
 
                     <TestPagination
@@ -83,7 +81,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <AnswerSheet
                 totalQuestions={totalQuestions}
                 answers={answers}
-                onSelect={(num, opt) => setAnswer(num - 1, opt)}
+                setAnswer={setAnswer}
+                onJump={goToQuestion}
             />
         </div>
     );

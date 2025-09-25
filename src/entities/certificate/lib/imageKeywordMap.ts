@@ -1,7 +1,7 @@
 export const imageKeywordMap: Record<string, string> = {
     '정보처리': 'https://www.gklibrarykor.com/wp-content/uploads/2023/10/프로그래밍_코딩-설명.jpg',
-    '건축': '//i.namu.wiki/i/t2io7chOq8-ABLPdKcrT_E33XLdYbLqkbyZHpjss8lDmNmQ2SGTsGCWvNW8pd4yuR2fqbnPDWx6nSLcVuq7DKdwrCOv3Ha38W-ydPv3kQAY8QEjKv2Ihluel5IY43JTvd1L0JBtvQc1CP7YMisJMzQ.webp',
-    '건설': '//i.namu.wiki/i/t2io7chOq8-ABLPdKcrT_E33XLdYbLqkbyZHpjss8lDmNmQ2SGTsGCWvNW8pd4yuR2fqbnPDWx6nSLcVuq7DKdwrCOv3Ha38W-ydPv3kQAY8QEjKv2Ihluel5IY43JTvd1L0JBtvQc1CP7YMisJMzQ.webp',
+    '건축': 'https://www.adobe.com/kr/products/firefly/discover/media_1a29113bfbaef033f22f1a52c9f9ee20c664c2ab8.jpeg',
+    '건설': 'https://d2k8i5ah8p7h3l.cloudfront.net/news/photo/202402/111207_97089_3115.jpg',
     '기계': 'https://pimg.mk.co.kr/meet/neds/2018/07/image_readtop_2018_463585_15323796613398026.jpg',
     '전기': 'https://www.lgcns.com/wp-content/uploads/2021/11/99DFC14C5B0BDD8D16.png',
     '토목': 'https://gangsan21.com/wp-content/uploads/2022/04/construction-site-1-scaled.jpg',

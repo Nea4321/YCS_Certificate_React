@@ -1,130 +1,170 @@
-/* 슬라이더 전체 컨테이너 */
 .slider-wrapper {
     position: relative;
-    margin: 3% 0 2% 0;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 0 40px; /* 좌우 여백을 추가하여 디자인을 넓게 */
+    padding: 2rem 0;
+    background-color: #f8f9fa;
 }
 
-/* 슬라이드 트랙 (가로 슬라이드용) */
 .slider-track {
     display: flex;
-    transition: transform 0.5s ease-out; /* 부드럽고 자연스러운 애니메이션 */
+    gap: 2rem;
+    padding: 0 1rem;
+    align-items: stretch;
 }
 
-/* 기본 슬라이드 스타일 */
 .slide {
-    flex: 0 0 50%; /* 슬라이드 너비 50% */
-    opacity: 0.6; /* 비활성 슬라이드는 반투명 */
-    transform: scale(0.95); /* 비활성 슬라이드는 작게 */
-    padding: 20px;
-    border-radius: 15px;
-    background-color: #f9f9f9; /* 기본 배경색 */
-    border: 2px solid #ddd; /* 슬라이드 간 구분을 위한 경계선 */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 입체감 있는 그림자 */
-    box-sizing: border-box;
-    text-align: center;
-    z-index: 1; /* 기본적으로 다른 슬라이드 위에 표시 */
-    transition: transform 0.5s ease, opacity 0.4s ease, box-shadow 0.4s ease; /* 더 부드러운 전환 */
+    flex: 0 0 40%;
+    padding: 2rem;
+    margin: 0 10px;
+    border-radius: 16px;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+    text-align: left;
+    transition: transform .4s ease, opacity .4s ease, filter .4s ease;
 }
 
-/* 현재 중심 슬라이드 강조 */
-.slide.active {
-    opacity: 1; /* 활성 슬라이드는 완전 불투명 */
-    transform: scale(1); /* 활성 슬라이드는 원래 크기 */
-    background-color: #ffffff; /* 중심 슬라이드 배경색 */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* 그림자 효과 강화 */
-    z-index: 2; /* 활성 슬라이드는 가장 위에 표시 */
-}
-
-.slide:not(.active) {
-    opacity: 0.6; /* 비활성 슬라이드는 반투명 */
-    transform: scale(0.95); /* 비활성 슬라이드는 약간 작게 */
-    transition: transform 0.4s ease, opacity 0.4s ease;
-}
-
-/* 좌/우 슬라이드는 흐릿하게 */
-.slide.prev,
-.slide.next {
-    opacity: 0.4; /* 비활성화된 슬라이드들 */
-    transform: scale(0.9); /* 비활성 슬라이드는 약간 작게 */
-}
-
-/* 제목 스타일 */
 .slide h3 {
-    font-size: 1.4rem;
-    margin-bottom: 20px;
-    color: #333; /* 제목 색상 */
-    font-weight: 600;
-    letter-spacing: 1px; /* 글자 간격 */
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #212529;
+    font-weight: 700;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #6c63ff;
+    display: inline-block;
 }
 
-/* 항목 목록 */
 .slide ol {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 두 열로 나누기 */
-    gap: 15px; /* 항목 간 간격 */
-    padding-left: 0; /* 기본 여백 없애기 */
-    margin: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2rem;
+    padding-left: 0;
+    list-style: none;
     counter-reset: item;
 }
 
 .slide ol li {
     font-size: 1rem;
-    margin-left: 8px;
-    color: #555; /* 항목 텍스트 색상 */
+    color: #495057;
     display: flex;
-    align-items: center; /* 숫자와 텍스트를 수평 정렬 */
+    align-items: center;
+    line-height: 1.6;
 }
 
 .slide ol li::before {
-    content: counter(item) ". "; /* 숫자 앞에 점 추가 */
-    counter-increment: item; /* 리스트 번호 증가 */
-    margin-right: 8px; /* 숫자와 항목 사이의 간격을 살짝 좁힘 */
-    font-weight: 600; /* 숫자 강조 */
-    color: #333; /* 숫자 색상 */
+    content: counter(item);
+    counter-increment: item;
+    margin-right: 12px;
+    font-weight: 700;
+    color: #fff;
+    background-color: #6c63ff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
 }
 
-/* 슬라이더 좌우 버튼 */
 .slider-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(108, 99, 255, 0.9); /* 기본 버튼 색상 */
-    color: white;
-    border: none;
-    border-radius: 50%; /* 원형 버튼 */
+    background-color: #fff;
+    color: #6c63ff;
+    border: 1px solid #e9ecef;
+    border-radius: 50%;
     width: 50px;
     height: 50px;
-    font-size: 2rem; /* 아이콘 크기 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 1.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+    z-index: 20;
+    box-shadow: 0 4px 10px rgba(0,0,0,.1);
+    transition: all .3s ease;
 }
-
-/* 버튼 호버 효과 */
 .slider-arrow:hover {
-    background-color: #5a52d4; /* 호버 시 색상 변화 */
-    transform: translateY(-50%) scale(1.1); /* 약간 커지는 효과 */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 효과 증가 */
+    background-color: #6c63ff;
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+.slider-arrow.left { left: 5%; }
+.slider-arrow.right { right: 5%; }
+
+@media (max-width: 768px) {
+    .slider-wrapper {
+        width: 100vw;
+        padding: 0;
+        display: block;
+        justify-content: unset;
+        align-items: unset;
+    }
+
+    .slider-track {
+        gap: 0;
+        padding: 0;
+        justify-content: flex-start;
+    }
+
+    .slide {
+        flex: 0 0 100%;
+        min-width: 100%;
+        margin: 0;
+        padding: 1.25rem;
+        box-sizing: border-box;
+        border-radius: 12px;
+    }
+
+    .slide h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .slide ol { grid-template-columns: 1fr; gap: .6rem; padding-left: 40px; }
+
+    .slider-arrow {
+        width: 40px; height: 40px; font-size: 1.2rem;
+    }
+    .slider-arrow.left  { left: 8px; }
+    .slider-arrow.right { right: 8px; }
 }
 
-/* 왼쪽 버튼 */
-.slider-arrow.left {
-    left: 10px;
+@media (min-width: 769px) and (max-width: 1024px) {
+    .slider-wrapper {
+        display: flex;
+    }
+    .slider-track {
+        gap: 0;
+        padding: 0;
+    }
+    .slide {
+        flex: 0 0 80%;
+        margin: 0;
+        padding: 1.5rem;
+        box-sizing: border-box;
+    }
+    .slide ol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 2rem;
+    }
+
+    .slide ol li {
+        box-sizing: border-box;
+    }
+
+    .slide ol li:nth-child(odd) {
+        transform: translateX(150px);
+    }
+
+    .slide ol li:nth-child(even) {
+        transform: translateX(100px);
+    }
+
 }
 
-/* 오른쪽 버튼 */
-.slider-arrow.right {
-    right: 10px;
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .slider-track { gap: 0; padding: 0; }
+    .slide { flex: 0 0 60%; margin: 0; padding: 1.75rem; }
 }
+

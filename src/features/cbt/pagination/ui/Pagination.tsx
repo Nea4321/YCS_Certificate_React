@@ -1,5 +1,5 @@
 import React from 'react';
-import CBTExamStyles from '@/pages/cbt/styles/CBTExamPage.module.css'; // 스타일 임포트
+import CBTExamStyles from '@/pages/cbt/styles/CBTExamPage.module.css';
 
 /**Pagination에 전달하는 props
  *
