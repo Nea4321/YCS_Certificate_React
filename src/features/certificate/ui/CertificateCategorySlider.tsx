@@ -49,6 +49,7 @@ export const CertificateCategorySlider: React.FC = () => {
     }, []);
 
     const centerOffsetPct = slideWidthPct === 100 ? 0 : (100 - slideWidthPct) / 2;
+    const isMobile = slideWidthPct === 100;
 
     useEffect(() => {
         if (!isAnimating) return;
@@ -102,20 +103,31 @@ export const CertificateCategorySlider: React.FC = () => {
                 }}
             >
                 {/* categories 배열을 매핑하여 슬라이드 렌더링 */}
-                {categories.map((category, index) => (
-                    <div
-                        className={`slide ${index === currentIndex && index > 1 && index < categories.length - 2}`}
-                        key={`${category.title}-${index}`}
-                    >
-                        <h3>{category.title}</h3>
-                        <ol>
-                            {category.items.map((item, i) => (
-                                <li key={i}>{item}</li>
-                            ))}
-                        </ol>
-                    </div>
-                ))}
+                {categories.map((category, index) => {
+                    // 제목에 'TOP 숫자'가 들어가면 모바일에서만 'TOP 5'로 치환
+                    const displayTitle = isMobile
+                        ? category.title.replace(/TOP\s*\d+/i, 'TOP 5')
+                        : category.title;
+
+                    // 모바일이면 모든 카드 항목을 5개로 제한, 아니면 원본 유지
+                    const displayItems = isMobile ? category.items.slice(0, 5) : category.items;
+
+                    return (
+                        <div
+                            className={`slide ${index === currentIndex && index > 1 && index < categories.length - 2}`}
+                            key={`${category.title}-${index}`}
+                        >
+                            <h3>{displayTitle}</h3>
+                            <ol>
+                                {displayItems.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                ))}
+                            </ol>
+                        </div>
+                    );
+                })}
             </div>
+
             <button onClick={handleNext} className="slider-arrow right">{'>'}</button>
         </div>
     );
