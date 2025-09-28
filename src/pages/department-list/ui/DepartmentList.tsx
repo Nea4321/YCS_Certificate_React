@@ -1,7 +1,9 @@
 import { departmentApi } from "@/entities/department/api"
-import { DepartmentListSection } from "@/features/department/ui"
+import { DepartmentListSection_edit } from "@/features/department_edit"
 import { useDataFetching } from "@/shared/hooks";
 import { deptListStyles } from "../styles";
+import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
+import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
 
 /**학과 목록 접근 컴포넌트*/
 export const DepartmentList = () => {
@@ -20,6 +22,9 @@ export const DepartmentList = () => {
     const { data, loading, error, refetch } = useDataFetching({
         fetchFn:departmentApi.getDeptList
     })
+
+    const {handleOpen,isopen,handleClose,name} = useEditSectionButton()
+
 
     // 데이터가 없을 때의 처리
     /**현재 상태(로딩,에러,데이터없음,정상)에 따라 UI 렌더링
@@ -55,13 +60,20 @@ export const DepartmentList = () => {
             )
         }
 
-        return (
+        return (<>
             <div className={deptListStyles.facultyList}>
                 {
                 data.map((dept) => (
-                    <DepartmentListSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
+                    <DepartmentListSection_edit
+                        key={`${dept.parent_type}-${dept.parent_id}`}
+                        department={dept}
+                        onAdd={handleOpen}
+                    />
                 ))}
             </div>
+
+            { <DepartmentEditSection facultyDefault={name} departmentOptions={[{ name: "aa", majors: ["b", "c"] }]} isopen={isopen} onClose={handleClose} /> }
+            </>
         )
     }
 

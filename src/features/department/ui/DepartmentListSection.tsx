@@ -19,7 +19,7 @@ interface DepartmentCardProps {
  * @component
  *
  * @example
- * <DepartmentListSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
+ * <DepartmentListSection_edit key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
  */
 export const DepartmentListSection = memo(({ department }: DepartmentCardProps) => {
     return (

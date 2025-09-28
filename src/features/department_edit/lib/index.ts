@@ -1,1 +1,1 @@
-export { DeptEdit } from './DeptEdit'
+export {cn} from './utils'

@@ -1,1 +1,1 @@
-export { DepartmentEditPage } from "./DepartmentEditPage.tsx"
+export { DepartmentList } from "./DepartmentList"
