@@ -613,3 +613,7 @@ export const certificateTags: Record<number, string[]> = {
     612: ["해양"], // 수산물품질관리사
     613: ["농업", "보험"], // 손해평가사
 };
+
+export function getTagsForCert(id?: number | null): string[] {
+    return (id && certificateTags[id]) ? certificateTags[id] : [];
+}

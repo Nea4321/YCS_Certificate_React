@@ -19,6 +19,7 @@ import {ProtecteRoute} from "@/app/router/ProtecteRoute.tsx";
 import {ExamResult} from "@/pages/exam-result";
 
 
+
 export const Router = () => {
     return (
         <BrowserRouter>
@@ -41,7 +42,7 @@ export const Router = () => {
                             <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}
-                        <Route path="/dashboard" element={<ProtecteRoute><DashBoard /></ProtecteRoute>} />     {/* 마이 페이지 */}
+                            <Route path="/dashboard" element={<ProtecteRoute><DashBoard /></ProtecteRoute>} />     {/* 마이 페이지 */}
                             <Route path="/department_edit" element={<Department_Edit/>} />
                             {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
