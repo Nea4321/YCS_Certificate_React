@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { deptListStyles } from "@/pages";
 import { useEditSectionButton } from "@/features/department_edit/model/useEditSectionButton.tsx";
+import {departmentEditStyles} from "@/pages/department_edit";
 
 interface AddDepartmentModalProps {
     facultyDefault?: string;
-    departmentOptions?: { name: string; majors: string[] }[];
+    departmentOptions?: { name: string[]}[];
     isopen: boolean;
     onClose?: () => void;
 }
@@ -23,10 +23,20 @@ export const DepartmentEditSection = ({
         setFaculty("");
     };
 
+    const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedName = e.target.value;
+        if (!selectedName) return;
+
+        // 이미 같은 학과가 추가되어 있으면 중복 추가 안 함
+        const exists = departments.some((dep) => dep.name === selectedName);
+        if (!exists) {
+            setDepartments([...departments, { name: selectedName, majors: [] }]);
+        }
+    };
+
     const {
         handleSave,
         handleAddDepartment,
-        handleDepartmentChange,
         handleMajorChange,
         handleAddMajor,
     } = useEditSectionButton();
@@ -34,24 +44,31 @@ export const DepartmentEditSection = ({
     if (!isopen) return null;
 
     return (
-        <div className={`${deptListStyles.facultyItem} ${deptListStyles.addForm}`}>
+        <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>
             <h3>새 학부/학과/전공 추가</h3>
 
             {/* ✅ 학부명: 기본값이 있으면 select, 없으면 input */}
             {facultyDefault ? (
                 <div>
-                    <label>학부명</label>
+                    <label style={{ display: "block", marginBottom: "4px" }}>학부명</label>
                     <select
                         value={faculty}
                         onChange={(e) => setFaculty(e.target.value)}
-                        className={deptListStyles.selectBox}
+                        className={departmentEditStyles.selectBox}
                     >
                         <option value="">{facultyDefault || "학부 선택"}</option>
-                        {departmentOptions.map((dep, i) => (
-                            <option key={i} value={dep.name}>
-                                {dep.name}
-                            </option>
-                        ))}
+                    </select>
+                    <label style={{ display: "block", marginBottom: "4px" }}>학과명</label>
+                    <select onChange={handleDepartmentChange} defaultValue="">
+                        <option value="">학과 선택</option>
+
+                        {departmentOptions.map((deptObj, i) =>
+                            deptObj.name.map((n, j) => (
+                                <option key={`${i}-${j}`} value={n}>
+                                    {n}
+                                </option>
+                            ))
+                        )}
                     </select>
                 </div>
             ) : (
@@ -60,12 +77,12 @@ export const DepartmentEditSection = ({
                     placeholder="학부 명"
                     value={faculty}
                     onChange={(e) => setFaculty(e.target.value)}
-                    className={!faculty ? deptListStyles.transparentPlaceholder : ""}
+                    className={!faculty ? departmentEditStyles.transparentPlaceholder : ""}
                 />
             )}
 
             {departments.map((dep, i) => (
-                <div key={i} className={deptListStyles.departmentBlock}>
+                <div key={i} className={departmentEditStyles.departmentBlock}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <input
                             type="text"
@@ -79,7 +96,7 @@ export const DepartmentEditSection = ({
                         />
                         {/* ✅ 학과 삭제 버튼 */}
                         <button
-                            className={` ${deptListStyles.deleteButton}`}
+                            className={` ${departmentEditStyles.deleteButton}`}
                             onClick={() => {
                                 const newDepartments = departments.filter((_, idx) => idx !== i);
                                 setDepartments(newDepartments);
@@ -113,7 +130,7 @@ export const DepartmentEditSection = ({
                                 />
                                 {/* ✅ 전공 삭제 버튼 */}
                                 <button
-                                    className={`${deptListStyles.deleteButton}`}
+                                    className={`${departmentEditStyles.deleteButton}`}
                                     onClick={() => {
                                         const newDepartments = [...departments];
                                         newDepartments[i].majors = newDepartments[i].majors.filter(
@@ -129,7 +146,7 @@ export const DepartmentEditSection = ({
 
                     {dep.name && (
                         <button
-                            className={deptListStyles.addMinorButton}
+                            className={departmentEditStyles.addMinorButton}
                             onClick={() => {
                                 const newDepartments = [...departments];
                                 newDepartments[i].majors.push("");
@@ -144,18 +161,18 @@ export const DepartmentEditSection = ({
 
             {/* 학과 추가 버튼 */}
             <button
-                className={deptListStyles.addDepartmentButton}
+                className={departmentEditStyles.addDepartmentButton}
                 onClick={() => setDepartments([...departments, { name: "", majors: [] }])}
             >
                 학과 추가
             </button>
 
 
-            <div className={deptListStyles.formActions}>
-                <button className={deptListStyles.saveButton} onClick={handleSave}>
+            <div className={departmentEditStyles.formActions}>
+                <button className={departmentEditStyles.saveButton} onClick={handleSave}>
                     저장
                 </button>
-                <button className={deptListStyles.cancelButton} onClick={Close}>
+                <button className={departmentEditStyles.cancelButton} onClick={Close}>
                     취소
                 </button>
             </div>

@@ -1,1 +1,1 @@
-export { DepartmentList } from "./DepartmentList"
+export { DepartmentList_edit } from "./DepartmentList_edit.tsx"

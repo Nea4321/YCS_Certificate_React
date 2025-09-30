@@ -1,1 +1,1 @@
-export { default as departmentStyles } from "./department_edit.module.css"
+export { default as departmentEditStyles } from "./department_edit.module.css"

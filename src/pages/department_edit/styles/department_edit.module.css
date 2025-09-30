@@ -1,204 +1,318 @@
-/* ----------------- 메인 컨테이너 ----------------- */
+/* 메인 컨테이너 */
 .container {
-    min-height: 100vh;
-    background-color: var(--background-color);
-    padding: 0;
-    margin: 0;
-    font-family: sans-serif;
-}
-
-/* ----------------- 페이지 헤더 ----------------- */
-.header {
-    background-color: var(--surface-color);
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 4px var(--shadow-color);
-}
-
-.headerInner {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
+}
+.header {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 1rem;
 }
 
 .title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-/* ----------------- 페이지 본문 ----------------- */
-.body {
-    max-width: 1200px;
-    margin: 24px auto;
-    padding: 0 16px;
-}
-
-/* ----------------- 카드 ----------------- */
-.card {
-    background-color: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 1px 3px var(--shadow-color);
-}
-
-.cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.cardTitle {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0 0 4px 0;
-}
-
-.cardDesc {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-/* ----------------- 섹션 리스트 ----------------- */
-.sectionList {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-/* ----------------- 데이터 없음 ----------------- */
-.emptyCard {
+    flex: 1;
     text-align: center;
-    padding: 48px 16px;
+}
+
+/* 학부 리스트 */
+.facultyList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 20px;
+}
+
+.facultyItem {
+    flex: 1;
+    min-width: 300px;
     background-color: var(--surface-color);
     border-radius: 8px;
-    border: 1px solid var(--border-color);
     box-shadow: 0 2px 4px var(--shadow-color);
-    margin-top: 16px;
+    padding: 15px;
+    transition: transform 0.2s ease;
 }
 
-.emptyText {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 16px;
+.facultyItem:hover {
+    transform: translateY(-5px);
 }
 
-/* ----------------- 버튼 ----------------- */
-.backButton,
-.modalCloseButton {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease;
-}
-
-.backButton:hover,
-.modalCloseButton:hover {
-    background-color: var(--button-hover);
-}
-
-/* ----------------- 모달 ----------------- */
-.modalOverlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+.facultyName {
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 16px;
-}
-
-.modalCard {
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-.modalHeader {
-    display: flex;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color);
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--secondary-color);
+    margin-bottom: 10px;
 }
 
-.modalTitle {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0;
-}
 
-.modalForm {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* ----------------- 드래그 아이템 ----------------- */
-.draggableItem {
-    padding: 8px;
-    border-radius: 6px;
-    border: 2px dashed var(--border-color);
-    cursor: move;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: box-shadow 0.2s;
-}
-
-.draggableItem:hover {
-    box-shadow: 0 2px 6px var(--shadow-color);
-}
-
-/* 드래그 아이템 색상 */
-.facultyItem {
-    background-color: #dbeafe; /* blue-100 */
-    color: #1e40af; /* blue-800 */
+/* 학과 리스트 */
+.departmentList {
+    list-style: none;
+    padding: 0;
 }
 
 .departmentItem {
-    background-color: #d1fae5; /* green-100 */
-    color: #065f46; /* green-800 */
+    margin: 5px 0;
 }
 
-.majorItem {
-    background-color: #ede9fe; /* purple-100 */
-    color: #5b21b6; /* purple-800 */
+.departmentItem_edit {
+    padding: 8px 12px;
+    display: inline-block; /* 줄바꿈 허용 + 크기 조절 가능 */
+    color: var(--primary-color);
 }
 
-/* ----------------- 반응형 ----------------- */
-@media (max-width: 768px) {
-    .headerInner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
+.departmentLink {
+    display: block;
+    padding: 8px 12px;
+    color: var(--primary-color);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
 
-    .title {
-        font-size: 1.5rem;
-    }
+.departmentLink:hover {
+    background-color: var(--hover-color);
+}
 
-    .body {
-        padding: 0 12px;
-    }
+/* 로딩 스피너 */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
 
-    .card {
-        padding: 12px;
-    }
+.loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
 
-    .modalCard {
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 에러 상태 */
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: #e74c3c;
+    background-color: #fdf3f2;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.retryButton {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+    background-color: var(--button-hover);
+}
+
+/* 추가 폼 컨테이너 */
+.departmentBlock {
+    margin-bottom: 1rem; /* 학과끼리 간격 */
+}
+
+.majorBlock {
+    margin-left: 20px; /* ✅ 학과보다 안쪽으로 들여쓰기 */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 전공 입력칸 간격 */
+}
+
+.addForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px var(--shadow-color);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* 제목 */
+.addForm h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* input 공통 */
+.addForm input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--secondary-color, #ccc);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.addForm input[type="text"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* 학과/전공 블럭 */
+.departmentBlock {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.departmentBlock input {
+    margin-bottom: 6px;
+}
+
+/* 버튼들 */
+.addForm button {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 8px;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+.iconButton:hover {
+    color: #000;
+}
+
+.addButton {
+    background: var(--primary-color, #2563eb);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.actionButtons {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.deleteButton {
+    background-color: #f87171; /* 빨간색 */
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #dc2626; /* 진한 빨강 */
+}
+
+/* 전공 추가, 학과 추가 */
+.addMinorButton,
+.addDepartmentButton {
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 6px;
+}
+
+.addMinorButton:hover,
+.addDepartmentButton:hover {
+    background-color: var(--button-hover, #1e40af);
+}
+
+/* 저장/취소 버튼 그룹 */
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.saveButton {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.saveButton:hover {
+    background-color: #27ae60;
+}
+
+.cancelButton {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancelButton:hover {
+    background-color: #c0392b;
+}
+
+/* 빈 상태 */
+.emptyState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .container {
         max-width: 100%;
+        padding: 15px;
+    }
+
+    .facultyItem {
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .facultyList {
+        flex-direction: column;
+    }
+
+    .facultyItem {
+        min-width: 100%;
+    }
+
+    .departmentLink {
+        padding: 12px; /* 터치 영역 확대 */
     }
 }

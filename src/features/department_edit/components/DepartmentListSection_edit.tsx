@@ -1,8 +1,8 @@
 import {memo, useState} from "react"
 import type { DeptList } from "@/entities/department/model"
-import { deptListStyles } from "@/pages/department-list/styles"
 import {Check, Edit, Trash, X} from "lucide-react";
 import {useButton} from "@/features/department_edit/model";
+import {departmentEditStyles} from "@/pages/department_edit";
 
 /**DepartmentListSection에 전달되는 props
  *
@@ -30,29 +30,29 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
     const {handleSave_edit, handleDelete} = useButton()
 
   return (
-    <ul className={deptListStyles.facultyItem}>
-        <div className={deptListStyles.facultyName}>
+    <ul className={departmentEditStyles.facultyItem}>
+        <div className={departmentEditStyles.facultyName}>
           <span>
             {department.parent_name} ({department.parent_type})
           </span>
             <button
-                className={deptListStyles.addButton}
+                className={departmentEditStyles.addButton}
                 onClick={() =>  onAdd?.(department.parent_name)}
             >
                 + 추가
             </button>
             <button
-                className={deptListStyles.iconButton}
+                className={departmentEditStyles.iconButton}
                 onClick={() => handleDelete(department.parent_id,department.parent_type)}
                 aria-label="삭제">
                 <Trash size={16} />
             </button>
         </div>
 
-      <div className={deptListStyles.departmentList}>
+      <div className={departmentEditStyles.departmentList}>
           {department.child.map((child) => (
-              <li key={`${child.child_type}-${child.child_id}`} className={deptListStyles.departmentItem}>
-                  <div className={deptListStyles.actionButtons}>
+              <li key={`${child.child_type}-${child.child_id}`} className={departmentEditStyles.departmentItem}>
+                  <div className={departmentEditStyles.actionButtons}>
                       {editingId === child.child_id ? ( // 현재 수정중인 항목만 input 노출
                           <div>
                               <input
@@ -69,11 +69,11 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                           </div>
                       ) : (
                           <div>
-                              <span className={deptListStyles.departmentItem_edit}>
+                              <span className={departmentEditStyles.departmentItem_edit}>
                                 {child.child_name}
                               </span>
                                   <button
-                                      className={deptListStyles.iconButton}
+                                      className={departmentEditStyles.iconButton}
                                       onClick={() => {
                                           setEditingId(child.child_id);
                                           setEditValue(child.child_name); // 기존 값 미리 채워주기
@@ -87,7 +87,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
 
                   {/* 삭제 아이콘 버튼 */}
                   <button
-                      className={deptListStyles.iconButton}
+                      className={departmentEditStyles.iconButton}
                       onClick={() => handleDelete(child.child_id,child.child_type)}
                       aria-label="삭제">
                       <Trash size={16} />

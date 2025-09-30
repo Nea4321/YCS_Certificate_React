@@ -1,10 +1,12 @@
 import { departmentApi } from "@/entities/department/api"
-import { DepartmentListSection } from "@/features/department/ui"
+import { DepartmentListSection_edit } from "@/features/department_edit"
 import { useDataFetching } from "@/shared/hooks";
-import { deptListStyles } from "../styles";
+import { departmentEditStyles } from "../styles";
+import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
+import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
 
 /**학과 목록 접근 컴포넌트*/
-export const DepartmentList = () => {
+export const DepartmentList_edit = () => {
 
     /**학과 데이터를 가져오고 로딩, 에러, 재요청 기능을 제공하는 hooks
      * - 해당 학과의 id를 숫자로 변환하고 departmentApi.getDeptList에 전달하고
@@ -21,6 +23,9 @@ export const DepartmentList = () => {
         fetchFn:departmentApi.getDeptList
     })
 
+    const {handleOpen,isopen,handleClose,name,departments_name} = useEditSectionButton()
+
+
     // 데이터가 없을 때의 처리
     /**현재 상태(로딩,에러,데이터없음,정상)에 따라 UI 렌더링
      *
@@ -29,8 +34,8 @@ export const DepartmentList = () => {
     const renderContent = () => {
         if (loading) {
             return (
-                <div className={deptListStyles.loading}>
-                    <div className={deptListStyles.loadingSpinner}></div>
+                <div className={departmentEditStyles.loading}>
+                    <div className={departmentEditStyles.loadingSpinner}></div>
                     <p>데이터를 불러오는 중입니다...</p>
                 </div>
             )
@@ -38,9 +43,9 @@ export const DepartmentList = () => {
 
         if (error) {
             return (
-                <div className={deptListStyles.error}>
+                <div className={departmentEditStyles.error}>
                     <p>오류: {error}</p>
-                    <button className={deptListStyles.retryButton} onClick={() => void refetch()}>
+                    <button className={departmentEditStyles.retryButton} onClick={() => void refetch()}>
                         다시 시도
                     </button>
                 </div>
@@ -49,21 +54,29 @@ export const DepartmentList = () => {
 
         if (data.length === 0) {
             return (
-                <div className={deptListStyles.emptyState}>
+                <div className={departmentEditStyles.emptyState}>
                     <p>표시할 학과 정보가 없습니다.</p>
                 </div>
             )
         }
 
-        return (
-            <div className={deptListStyles.facultyList}>
-                {
-                    data.map((dept) => (
-                        <DepartmentListSection key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
-                    ))}
-            </div>
+        return (<>
+                <div className={departmentEditStyles.facultyList}>
+                    {
+                        data.map((dept) => (
+                            <DepartmentListSection_edit
+                                key={`${dept.parent_type}-${dept.parent_id}`}
+                                department={dept}
+                                onAdd={handleOpen}
+                            />
+                        ))}
+                </div>
+
+                { <DepartmentEditSection facultyDefault={name} departmentOptions={[{ name: ["a","b"]}]} isopen={isopen} onClose={handleClose} /> }
+            </>
         )
     }
 
     return <div className="department-list-container">{renderContent()}</div>
 }
+
