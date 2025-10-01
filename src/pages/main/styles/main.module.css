@@ -1,109 +1,137 @@
-.container {
-    min-height: 100vh;
-    background-color: var(--background-color);
-}
-
-.gridContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 170px); /* 카드 고정 너비 */
-    gap: 30px;
-    padding: 30px;
-    justify-content: center; /* 가운데 정렬 */
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
+/* Card Container */
 .certificateCard {
-    width: 170px;
-    height: 185px;
+    width: 100%;
+    max-width: 220px; /* 카드 최대 너비 살짝 키움 */
+    height: auto;
+    min-height: 250px; /* 최소 높이 더 확보 */
+
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px; /* 모서리를 더 둥글게 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07); /* 그림자 더 선명하게 */
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); /* 부드러운 전환 곡선 */
     cursor: pointer;
-}
-
-.certificateLink {
-    text-decoration: none;
-    color: inherit;
-    display: block;
+    position: relative;
+    border: 1px solid transparent; /* 기본 테두리 숨김 */
 }
 
 .certificateCard:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px) scale(1.03); /* 호버 시 더 극적인 움직임 */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18); /* 호버 시 그림자 훨씬 강조 */
+    border-color: #6c63ff; /* 호버 시 테두리 색상 변경 */
 }
 
+/* Link 내부 텍스트 및 이미지 색상 */
+.certificateLink {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Image Box */
 .cardImageBox {
     width: 100%;
-    height: 120px;
-    background-color: #f3f3f3;
+    height: 130px; /* 이미지 영역 높이 유지 */
+    background-color: #f0f4f8; /* 더욱 부드러운 배경색 */
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    position: relative;
 }
 
 .cardImage {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease; /* 이미지 확대 전환 부드럽게 */
+}
+
+.certificateCard:hover .cardImage {
+    transform: scale(1.1); /* 카드 호버 시 이미지 더 크게 확대 */
 }
 
 .cardImagePlaceholder {
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-.cardTextBox {
+    font-size: 1rem;
+    color: #adb5bd; /* 플레이스홀더 색상 조정 */
+    display: flex;
+    flex-direction: column; /* 아이콘과 텍스트 세로 정렬 */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     text-align: center;
     padding: 10px;
 }
+.cardImagePlaceholder svg {
+    margin-bottom: 8px; /* 아이콘 아래 여백 */
+    color: #aeb4bd; /* 아이콘 색상 */
+}
+
+/* Text Box */
+.cardTextBox {
+    text-align: left;
+    padding: 18px 18px 15px; /* 패딩 조정 */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
 
 .cardTitle {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
+    font-size: 1.15rem; /* 제목 폰트 크기 더 키움 */
+    font-weight: 700;
+    color: #343a40;
+    margin: 0 0 10px 0; /* 제목 아래 여백 */
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 2줄까지만 표시 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 3.2em; /* 2줄을 위한 최소 높이 보장 */
 }
 
-/* 반응형 디자인 */
-@media (max-width: 1000px) {
-    .gridContainer {
-        max-width: 800px; /* 4개 들어갈 수 있는 너비 */
-    }
+/* Tag Box */
+.tagBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* 태그 사이 간격 확장 */
+    margin-top: auto;
+    padding-top: 10px; /* 태그 위 여백 */
 }
 
-@media (max-width: 800px) {
-    .gridContainer {
-        max-width: 600px; /* 3개 들어갈 수 있는 너비 */
-        gap: 15px;
-        padding: 20px;
-    }
+.tagButton {
+    font-size: 0.8rem; /* 태그 폰트 크기 조정 */
+    font-weight: 600; /* 태그 글자 두껍게 */
+    padding: 6px 12px; /* 태그 패딩 조정 */
+    border-radius: 25px; /* 더 둥글게 */
+    color: #fff;
+    background-color: #6c757d; /* 기본 태그 배경색 */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 태그에도 그림자 */
 }
 
-@media (max-width: 600px) {
-    .gridContainer {
-        max-width: 380px; /* 2개 들어갈 수 있는 너비 */
-        gap: 15px;
-        padding: 15px;
-    }
+.tagButton:hover {
+    opacity: 0.9;
+    transform: translateY(-2px); /* 호버 시 살짝 떠오르는 효과 */
 }
 
-@media (max-width: 400px) {
-    .gridContainer {
-        grid-template-columns: 1fr;
-        max-width: 200px; /* 1개만 들어갈 수 있는 너비 */
-        gap: 15px;
-    }
-
-    .certificateCard {
-        width: 100%;
-        max-width: 170px;
-        margin: 0 auto;
-    }
+/* Grid Container for overall layout */
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 더 넓은 최소 너비 */
+    gap: 30px; /* 카드 간 간격 확대 */
+    padding: 50px; /* 전체 패딩 확대 */
+    justify-content: center;
+    max-width: 1200px; /* 전체 컨테이너 최대 너비 확장 */
+    margin: auto; /* 상하 여백 및 가운데 정렬 */
 }
 
 .tagBox {
@@ -120,4 +148,62 @@
     padding: 2px 6px;     /* 안쪽 여백 ↓ */
     border-radius: 8px;   /* 둥근 모서리 유지 */
     white-space: nowrap;  /* 태그 이름 줄바꿈 방지 */
+}
+
+/* 호버 시 Glow 효과 */
+.certificateCard::before, .certificateCard::after {
+    content: "";
+    position: absolute;
+    left: -2px; top: -2px;
+    background: linear-gradient(45deg, #6c63ff, #ff6b6b, #feca57, #48dbfb, #6c63ff);
+    background-size: 400%;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    z-index: -1;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    animation:-glow 20s linear infinite;
+}
+
+.certificateCard:hover::before {
+    opacity: 1;
+}
+
+.certificateCard:hover .cardTitle {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .gridContainer {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 12px;
+        max-width: none;
+    }
+
+    .certificateCard {
+        max-width: none;
+        width: 100%;
+        min-height: 210px;
+        border-radius: 14px;
+    }
+
+    .cardImageBox {
+        height: 100px;
+    }
+
+    .cardTitle {
+        font-size: 0.95rem;
+        -webkit-line-clamp: 2;
+        min-height: 2.8em;
+    }
+
+    .tagBox {
+        gap: 6px;
+        padding: 6px 0 8px;
+    }
 }

@@ -51,6 +51,17 @@ export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
           >
             학과별 자격증
           </Link>
+
+          <Link
+              to="/cbt"
+              className={`${mobileMenuStyles.mobileNavLink} ${
+                  isActivePage("/cbt") ? mobileMenuStyles.activeLink : ""
+              }`}
+              onClick={handleLinkClick}
+          >
+            CBT
+          </Link>
+
           {!email ? (
           <Link
               to="/auth"

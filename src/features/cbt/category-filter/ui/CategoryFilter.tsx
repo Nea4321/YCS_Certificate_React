@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import CBTExamStyles from '@/pages/cbt/styles/CBTExamPage.module.css';
 import { certificateTags } from '@/entities/certificate/model/tags.ts';
 import { getTagName } from "@/entities/certificate/model/tagMeta";
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 /**CategoryFilter에 전달되는 props
  *
@@ -40,19 +41,89 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         return ['전체', ...Array.from(s).sort((a, b) => a.localeCompare(b, 'ko'))];
     }, []);
 
+    const [isExpanded, setIsExpanded] = useState(false);
+
+
+    const gridRef = useRef<HTMLDivElement>(null);
+    const [cols, setCols] = useState(3); // 기본값: 모바일에서 3열 가정
+
+    useLayoutEffect(() => {
+        const updateCols = () => {
+            const el = gridRef.current;
+            if (!el) return;
+            const style = getComputedStyle(el);
+            const count = style.gridTemplateColumns.split(' ').filter(Boolean).length;
+            if (count > 0) setCols(count);
+        };
+        updateCols();
+
+        const ro = new ResizeObserver(updateCols);
+        if (gridRef.current) ro.observe(gridRef.current);
+        window.addEventListener('resize', updateCols);
+        return () => {
+            ro.disconnect();
+            window.removeEventListener('resize', updateCols);
+        };
+    }, []);
+
+    /**열 수에 따라 초기 노출 개수 결정
+     * - 데스크탑(열≥4): 8개로 꽉 채움
+     * - 모바일(열=3): 9개로 꽉 채움
+     */
+    const initialCount =
+        cols >= 4 ? 8 : cols === 3 ? 9 : cols === 2 ? 6 : 8;
+
+    const shown = Math.min(initialCount, categories.length);
+    const initialTags = categories.slice(0, shown);
+    const additionalTags = categories.slice(shown);
+
     return (
-        <div className={CBTExamStyles.cbtCategoryGrid}>
-            {categories.map((name) => (
-                <button
-                    key={name}
-                    className={`${CBTExamStyles.categoryCard} ${
-                        selectedCategory === name ? CBTExamStyles.selected : ''
+        <div className={CBTExamStyles.categoryFilterContainer}>
+            <div ref={gridRef} className={CBTExamStyles.cbtCategoryGrid}>
+                {initialTags.map(name => (
+                    <button
+                        key={name}
+                        className={`${CBTExamStyles.categoryCard} ${
+                            selectedCategory === name ? CBTExamStyles.selected : ''
+                        }`}
+                        onClick={() => setSelectedCategory(name)}
+                    >
+                        <div className={CBTExamStyles.categoryName}>{name}</div>
+                    </button>
+                ))}
+            </div>
+
+            {additionalTags.length > 0 && (
+                <div
+                    className={`${CBTExamStyles.categoryExpandedGrid} ${
+                        isExpanded ? CBTExamStyles.expanded : ''
                     }`}
-                    onClick={() => setSelectedCategory(name)}
                 >
-                    <div className={CBTExamStyles.categoryName}>{name}</div>
-                </button>
-            ))}
+                    {additionalTags.map(name => (
+                        <button
+                            key={name}
+                            className={`${CBTExamStyles.categoryCard} ${
+                                selectedCategory === name ? CBTExamStyles.selected : ''
+                            }`}
+                            onClick={() => setSelectedCategory(name)}
+                        >
+                            <div className={CBTExamStyles.categoryName}>{name}</div>
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {additionalTags.length > 0 && (
+                <div className={CBTExamStyles.expandIconWrapper}>
+                    <button
+                        className={CBTExamStyles.expandIconButton}
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        aria-label={isExpanded ? '카테고리 접기' : '카테고리 펼치기'}
+                    >
+                        {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

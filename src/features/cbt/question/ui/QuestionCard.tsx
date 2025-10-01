@@ -56,7 +56,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                         // idx + 1: 보기(radio 버튼) 번호(1~4)
                         onChange={() => onSelect(idx + 1)}
                     />
-                    {idx + 1}. {opt}
+                    <span>{idx + 1}. {opt}</span>
                 </label>
             ))}
         </div>
