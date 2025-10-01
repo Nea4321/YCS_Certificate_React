@@ -13,8 +13,9 @@ export function QuestionPaper({
             {slice.map((q, i) => {
                 const gi = startIdx + i;
                 const groupName = `q-${q.id}`;
+                const questionNo = gi + 1;
                 return (
-                    <div key={q.id} className={ExamStyles.qblock}>
+                    <div key={q.id} id={`q-${questionNo}`} className={ExamStyles.qblock}>
                         <div className={ExamStyles.qnum}>{q.id}. {q.text}</div>
                         <ol className={ExamStyles.opts}>
                             {q.options.map((opt, idx) => {
