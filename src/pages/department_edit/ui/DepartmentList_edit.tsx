@@ -23,7 +23,7 @@ export const DepartmentList_edit = () => {
         fetchFn:departmentApi.getDeptList
     })
 
-    const {handleOpen,isopen,handleClose,name,departments_name} = useEditSectionButton()
+    const {handleOpen,isopen,handleClose,name} = useEditSectionButton()
 
 
     // 데이터가 없을 때의 처리

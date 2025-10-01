@@ -35,10 +35,7 @@ export const DepartmentEditSection = ({
     };
 
     const {
-        handleSave,
-        handleAddDepartment,
-        handleMajorChange,
-        handleAddMajor,
+        handleSave        
     } = useEditSectionButton();
 
     if (!isopen) return null;

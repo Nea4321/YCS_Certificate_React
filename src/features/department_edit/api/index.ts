@@ -1,1 +1,0 @@
-export { departmentApi } from '../api/department.ts'
