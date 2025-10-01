@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import CBTExamStyles from '@/pages/cbt/styles/CBTExamPage.module.css';
 import { certificateTags } from '@/entities/certificate/model/tags.ts';
+import { getTagName } from "@/entities/certificate/model/tagMeta";
 
 /**CategoryFilter에 전달되는 props
  *
@@ -30,7 +31,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
      */
     const categories = useMemo<string[]>(() => {
         const s = new Set<string>();
-        Object.values(certificateTags).forEach((arr) => arr.forEach((t) => s.add(t)));
+        Object.values(certificateTags).forEach((arr) =>
+            arr.forEach((id) => {
+                const name = getTagName(id); // 숫자 ID → 태그 이름으로 변환
+                if (name) s.add(name);
+            })); // 문자열 수집 -> ID를 이름으로 바꿔서 수집
+        // 기존 코드 Object.values(certificateTags).forEach((arr) => arr.forEach((t) => s.add(t)));
         return ['전체', ...Array.from(s).sort((a, b) => a.localeCompare(b, 'ko'))];
     }, []);
 

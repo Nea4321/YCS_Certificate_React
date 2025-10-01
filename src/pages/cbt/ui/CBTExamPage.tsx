@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { certificateApi } from '@/entities/certificate/api/certificate-api';
-import { Certificate } from '@/entities';
+import { Certificate } from "@/entities/certificate/model/types";
 import { CBTExamStyles } from '../styles';
 import { CategoryFilter } from '@/features/cbt/category-filter/ui/CategoryFilter';
 import { Pagination } from '@/features/cbt/pagination/ui/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { certificateTags } from '@/entities/certificate/model/tags';
+import { getTagName } from "@/entities/certificate/model/tagMeta";
 
 /**certificate 모델에 tag 필드를 덧붙임*/
 type UICertificate = Certificate & { tags: string[] };
@@ -36,7 +37,11 @@ export const CBTExamPage: React.FC = () => {
             .then((data: Certificate[]) => {
                 const withTags: UICertificate[] = data.map(cert => ({
                     ...cert,
-                    tags: certificateTags[cert.certificate_id] ?? []
+                    /* tags: certificateTags[cert.certificate_id] ?? [] */
+                    /* number[] → name(string)[] 로 변환 (UI 하위 호환 유지) */
+                    tags: (certificateTags[cert.certificate_id] ?? [])
+                        .map((id) => getTagName(id))
+                        .filter((v): v is string => !!v),
                 }));
                 setCertificates(withTags);
             })

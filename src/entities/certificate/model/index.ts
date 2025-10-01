@@ -1,3 +1,3 @@
-export type * from './types'
-export { certificateTags } from "./tags"
-export { tagColors } from "./tagColors"
+export type { Certificate, CertData } from "./types";
+export { certificateTags } from "./tags";
+export * from "./tagMeta";
