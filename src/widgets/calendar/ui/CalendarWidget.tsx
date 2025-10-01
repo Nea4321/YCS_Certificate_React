@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useRef, useLayoutEffect} from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { calendarStyles } from "@/widgets/calendar/";
 import { allEvents, deptCertUrlMap, certUrlMap, type ExamEvent } from "@/features/calendar/examData2";
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { flushSync } from "react-dom";
 
 /** CalendarWidget에 전달되는 props
  *
@@ -37,11 +38,135 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
 
     const departmentCertificates = getDepartmentCertificates();
 
+    const measuredRef = useRef<{monthKey: string; rowTop: number} | null>(null);
+    const [viewReady, setViewReady] = useState(false);
+
+    const sameMonth = (a: Date, b: Date) =>
+        a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+
+
+    useEffect(() => {
+        // mount 직후 한 틱 미뤄서 viewReady 플래그 ON
+        // (react-calendar 내부 마크업이 그려진 다음을 보장)
+        const id = requestAnimationFrame(() => setViewReady(true));
+        return () => cancelAnimationFrame(id);
+    }, []);
+
+    const [visibleMonth, setVisibleMonth] = useState(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    );
+
+    const calRef = useRef<HTMLDivElement>(null);
+
+    const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
+
+    useLayoutEffect(() => {
+        if (!viewReady) return;
+
+        const root = calRef.current;
+        if (!root) return;
+
+        const days = root.querySelector('.react-calendar__month-view__days') as HTMLElement | null;
+        if (!days) return;
+
+        const tiles = Array.from(days.querySelectorAll('.react-calendar__tile')) as HTMLElement[];
+        if (!tiles.length) return;
+
+        // activeStartDate가 반영된 달(visibleMonth)이 완전히 그려진 뒤 측정
+        const raf = requestAnimationFrame(() => {
+            const monthStart = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1);
+            const sameMonth = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+
+            const today = new Date();
+            const baseDate = sameMonth(today, monthStart)
+                ? today
+                : (sameMonth(currentDate, monthStart) ? currentDate : monthStart);
+
+            const isNeighbor = (el: Element) =>
+                el.classList.contains('react-calendar__month-view__days__day--neighboringMonth');
+
+            let targetTile: HTMLElement | null = null;
+            for (const tile of tiles) {
+                if (isNeighbor(tile)) continue;
+                const abbr = tile.querySelector('abbr');
+                const dayNum = abbr?.textContent?.trim();
+                if (dayNum && Number(dayNum) === baseDate.getDate()) {
+                    targetTile = tile;
+                    break;
+                }
+            }
+            if (!targetTile) {
+                targetTile = tiles.find(t => Number(t.querySelector('abbr')?.textContent?.trim() || -1) === baseDate.getDate()) || tiles[0];
+            }
+
+            const rowTop = targetTile.offsetTop - days.offsetTop;
+            const rowHeight = targetTile.offsetHeight;
+            const rowBottom = days.scrollHeight - (rowTop + rowHeight);
+
+            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth()}`;
+            const prev = measuredRef.current;
+            if (prev && prev.monthKey === monthKey && prev.rowTop === rowTop && !isExpanded) return;
+            measuredRef.current = { monthKey, rowTop };
+
+            if (!isExpanded) {
+                const clip = `inset(${Math.max(0, rowTop)}px 0 ${Math.max(0, rowBottom)}px)`;
+
+                if (days.style.clipPath !== clip) {
+                    days.style.clipPath = clip;
+                    days.style.setProperty('-webkit-clip-path', clip);
+
+                    days.style.transform = `translateY(-${rowTop}px)`;
+                    days.style.willChange = 'clip-path, transform';
+                    days.style.overflow = 'hidden';
+                }
+            } else {
+                if (days.style.clipPath) {
+                    days.style.clipPath = '';
+                    days.style.removeProperty('-webkit-clip-path');
+
+                    days.style.transform = '';
+                    days.style.willChange = '';
+                    days.style.overflow = '';
+                }
+            }
+        });
+
+        return () => cancelAnimationFrame(raf);
+    }, [isExpanded, visibleMonth, currentDate, selectedCertificate, viewReady]);
+
+
     useEffect(() => {
         if (dept_map_id !== undefined && departmentCertificates.length > 0 && selectedCertificate === null) {
             setSelectedCertificate(departmentCertificates[0]);
         }
     }, [dept_map_id, departmentCertificates, selectedCertificate]);
+
+    const log = (...args: unknown[]) =>
+        console.log("%c[Calendar]", "color:#0ea5e9;font-weight:700;", ...args);
+
+    useEffect(() => {
+        if (!isExpanded) {
+            const today = new Date();
+            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth()+1}`;
+
+            console.groupCollapsed(
+                "%c[Calendar] collapse → maybe snap to today",
+                "color:#6b7280;font-weight:600;"
+            );
+            log("isExpanded:", isExpanded);
+            log("visibleMonth:", monthKey, "currentDate:", currentDate.toDateString());
+            log("today:", today.toDateString());
+
+            if (!sameMonth(visibleMonth, today)) {
+                log("➡️ snapping to today");
+                setCurrentDate(today);
+                setVisibleMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+            } else {
+                log("⏭️ already on today's month — no snap");
+            }
+            console.groupEnd();
+        }
+    }, [isExpanded, visibleMonth, currentDate]);
 
     /** 사용자가 클릭한 캘린더 타일 날짜를 'YYYY-MM-DD' 형식으로 변환하여 반환하는 함수
      *
@@ -217,7 +342,7 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
                 </div>
             )}
 
-            <div className={`${calendarStyles.calendarWrapper} ${!isExpanded ? calendarStyles.collapsed : ''}`}>
+            <div ref={calRef} className={`${calendarStyles.calendarWrapper} ${!isExpanded ? calendarStyles.collapsed : ''}`}>
                 <Calendar
                     value={currentDate}
                     onChange={(value) => setCurrentDate(value as Date)}
@@ -225,7 +350,18 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
                     tileContent={tileContent}
                     locale="ko-KR"
                     formatDay={(_locale, date) => date.getDate().toString()}
+                    activeStartDate={visibleMonth} // ★ 우리가 보여줄 달을 직접 고정
+                    onActiveStartDateChange={({ activeStartDate }) => {
+                        if (activeStartDate) {
+                            const next = startOfMonth(activeStartDate);
+                            console.groupCollapsed("%c[Calendar] onActiveStartDateChange", "color:#6b7280;font-weight:600;");
+                            console.log("%c[Calendar]", "color:#0ea5e9;font-weight:700;", "→", next.toDateString());
+                            console.groupEnd();
+                            setVisibleMonth(next);
+                        }
+                    }}
                     showNeighboringMonth={true}
+                    showNavigation={isExpanded}
                     next2Label={null}
                     prev2Label={null}
                     nextLabel="다음 >"
@@ -265,8 +401,23 @@ export function CalendarWidget({ certificateName, dept_map_id }: CalendarProps) 
             <div className={calendarStyles.expandIconWrapper}>
                 <button
                     className={calendarStyles.expandIconButton}
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    aria-label={isExpanded ? '달력 접기' : '달력 펼치기'}
+                    onClick={() => {
+                        setIsExpanded(prev => {
+                            const next = !prev;
+                            // next === false → "접기"로 바뀌는 순간
+                            if (!next) {
+                                const today = new Date();
+
+                                    // 먼저 오늘로 이동을 "동기"로 반영
+                                    flushSync(() => {
+                                        setCurrentDate(today);                    // value도 오늘
+                                        setVisibleMonth(startOfMonth(today));     // 보여줄 달도 오늘
+                                    });
+
+                            }
+                            return next;
+                        });
+                    }}
                 >
                     {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
                 </button>

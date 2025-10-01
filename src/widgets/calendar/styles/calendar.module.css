@@ -4,11 +4,13 @@
     transform: scale(0.8);
     transform-origin: top center;
     margin: 0 auto -15%;
+    padding-bottom: 20px;
 }
 
 .calendarSection {
     position: relative;
     margin-bottom: 1.6rem;
+
 }
 
 .calendarWidget :global(.react-calendar) {
@@ -283,7 +285,7 @@
 }
 
 .calendarWrapper.collapsed {
-    max-height: 260px;
+    max-height: 190px;
 }
 
 .expandIconWrapper {
