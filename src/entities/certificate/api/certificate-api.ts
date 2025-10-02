@@ -2,7 +2,7 @@
 import { axiosApi } from '@/shared/api/axios-api';
 import type { Certificate, CertData } from "@/entities/certificate/model/types";
 import type { ScheduleEventsDto } from '@/entities/certificate/model/types';
- // CertData export 되어있어야 합니다.
+// CertData export 되어있어야 합니다.
 
 export const certificateApi = {
     // 자격증 리스트 (기존)
