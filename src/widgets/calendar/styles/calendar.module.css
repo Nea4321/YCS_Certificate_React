@@ -5,11 +5,6 @@
     transform-origin: top center;
     margin: 0 auto -15%;
     padding-bottom: 20px;
-}
-
-.calendarSection {
-    position: relative;
-    margin-bottom: 1.6rem;
 
 }
 
@@ -120,12 +115,18 @@
     background-color: #f9fafb !important;
 }
 
-.calendarWidget :global(.calendar-tile-doc-reg)   { background-color: rgba(147,197,253,.4) !important; border: 2px solid #93c5fd !important; }
-.calendarWidget :global(.calendar-tile-doc-exam)  { background-color: rgba(251,191,36,.4) !important;  border: 2px solid #fbbf24 !important; }
-.calendarWidget :global(.calendar-tile-doc-pass)  { background-color: rgba(52,211,153,.4) !important;   border: 2px solid #34d399 !important; }
-.calendarWidget :global(.calendar-tile-prac-reg)  { background-color: rgba(167,139,250,.4) !important;  border: 2px solid #a78bfa !important; }
-.calendarWidget :global(.calendar-tile-prac-exam) { background-color: rgba(248,113,113,.4) !important;  border: 2px solid #f87171 !important; }
-.calendarWidget :global(.calendar-tile-prac-pass) { background-color: rgba(0,153,0,.4) !important;      border: 2px solid #009900 !important; }
+.calendarWidget :global(.calendar-tile-doc-reg) {
+    background-color: rgba(147, 197, 253, .4) !important;
+    border-top: 2px solid #93c5fd !important;
+    border-bottom: 2px solid #93c5fd !important;
+    border-left: none !important; /* 좌측 테두리 제거 */
+    border-right: none !important; /* 우측 테두리 제거 */
+}
+.calendarWidget :global(.calendar-tile-doc-exam)  { background-color: rgba(251,191,36,.4) !important;  border-top: 2px solid #fbbf24 !important; border-bottom: 2px solid #fbbf24 !important; border-left: none !important; border-right: none !important; }
+.calendarWidget :global(.calendar-tile-doc-pass)  { background-color: rgba(52,211,153,.4) !important;   border-top: 2px solid #34d399 !important; border-bottom: 2px solid #34d399 !important; border-left: none !important; border-right: none !important; }
+.calendarWidget :global(.calendar-tile-prac-reg)  { background-color: rgba(167,139,250,.4) !important;  border-top: 2px solid #a78bfa !important; border-bottom: 2px solid #a78bfa !important; border-left: none !important; border-right: none !important; }
+.calendarWidget :global(.calendar-tile-prac-exam) { background-color: rgba(248,113,113,.4) !important;  border-top: 2px solid #f87171 !important; border-bottom: 2px solid #f87171 !important; border-left: none !important; border-right: none !important; }
+.calendarWidget :global(.calendar-tile-prac-pass) { background-color: rgba(0,153,0,.4) !important;      border-top: 2px solid #009900 !important; border-bottom: 2px solid #009900 !important; border-left: none !important; border-right: none !important; }
 
 .calendarWidget :global(.calendar-tile-doc-reg.calendar-tile-doc-exam) {
     background: linear-gradient(to right,
@@ -207,30 +208,18 @@
     border: 2px solid #666 !important;
 }
 
-
-
-.calendarWidget :global([class*="calendar-tile-"][class*="--"]) {
-    border-radius: unset !important;
-    border-left: unset !important;
-    border-right: unset !important;
-}
-
 .calendarWidget :global(.calendar-tile--round-left-doc-reg)   { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #93c5fd !important; }
-.calendarWidget :global(.calendar-tile--round-right-doc-reg)  { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #93c5fd !important; }
-
 .calendarWidget :global(.calendar-tile--round-left-doc-exam)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #fbbf24 !important; }
-.calendarWidget :global(.calendar-tile--round-right-doc-exam) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #fbbf24 !important; }
-
 .calendarWidget :global(.calendar-tile--round-left-doc-pass)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #34d399 !important; }
-.calendarWidget :global(.calendar-tile--round-right-doc-pass) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #34d399 !important; }
-
 .calendarWidget :global(.calendar-tile--round-left-prac-reg)  { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #a78bfa !important; }
-.calendarWidget :global(.calendar-tile--round-right-prac-reg) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #a78bfa !important; }
-
 .calendarWidget :global(.calendar-tile--round-left-prac-exam) { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #f87171 !important; }
-.calendarWidget :global(.calendar-tile--round-right-prac-exam){ border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #f87171 !important; }
-
 .calendarWidget :global(.calendar-tile--round-left-prac-pass) { border-top-left-radius: 8px !important; border-bottom-left-radius: 8px !important; border-left: 2px solid #009900 !important; }
+
+.calendarWidget :global(.calendar-tile--round-right-doc-reg)  { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #93c5fd !important; }
+.calendarWidget :global(.calendar-tile--round-right-doc-exam) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #fbbf24 !important; }
+.calendarWidget :global(.calendar-tile--round-right-doc-pass) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #34d399 !important; }
+.calendarWidget :global(.calendar-tile--round-right-prac-reg) { border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #a78bfa !important; }
+.calendarWidget :global(.calendar-tile--round-right-prac-exam){ border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #f87171 !important; }
 .calendarWidget :global(.calendar-tile--round-right-prac-pass){ border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important; border-right: 2px solid #009900 !important; }
 
 .tileContent {
@@ -285,7 +274,7 @@
 }
 
 .calendarWrapper.collapsed {
-    max-height: 190px;
+    max-height: 200px;
 }
 
 .expandIconWrapper {
