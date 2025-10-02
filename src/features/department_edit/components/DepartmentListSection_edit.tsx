@@ -1,7 +1,7 @@
 import {memo, useState} from "react"
 import type { DeptList } from "@/entities/department/model"
 import {Check, Edit, Trash, X} from "lucide-react";
-import {useButton} from "@/features/department_edit/model";
+// import {useButton} from "@/features/department_edit/model";
 import {departmentEditStyles} from "@/pages/department_edit";
 
 /**DepartmentListSection에 전달되는 props
@@ -27,7 +27,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
 
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editValue, setEditValue] = useState(""); // 수정 값
-    const {handleSave_edit, handleDelete} = useButton()
+    // const {handleSave_edit, handleDelete} = useButton()
 
   return (
     <ul className={departmentEditStyles.facultyItem}>
@@ -43,7 +43,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
             </button>
             <button
                 className={departmentEditStyles.iconButton}
-                onClick={() => handleDelete(department.parent_id,department.parent_type)}
+                // onClick={() => handleDelete(department.parent_id,department.parent_type)}
                 aria-label="삭제">
                 <Trash size={16} />
             </button>
@@ -60,7 +60,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
                               />
-                              <button onClick={() => handleSave_edit(child.child_id, child.child_type, editValue)}>
+                              <button /*onClick={() => handleSave_edit(child.child_id, child.child_type, editValue)}*/>
                                   <Check size={16} /> 확인
                               </button>
                               <button onClick={() => setEditingId(null)}>
@@ -88,7 +88,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                   {/* 삭제 아이콘 버튼 */}
                   <button
                       className={departmentEditStyles.iconButton}
-                      onClick={() => handleDelete(child.child_id,child.child_type)}
+                      // onClick={() => handleDelete(child.child_id,child.child_type)}
                       aria-label="삭제">
                       <Trash size={16} />
                   </button>

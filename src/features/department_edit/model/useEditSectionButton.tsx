@@ -42,17 +42,17 @@ export const useEditSectionButton=() =>{
 
     };
 
-    const handleDepartmentChange = (index: number, name: string) => {
-
-    };
-
-    const handleAddMajor = (depIndex: number) => {
-
-    };
-
-    const handleMajorChange = (depIndex: number, majorIndex: number, name: string) => {
-
-    };
+    // const handleDepartmentChange = (index: number, name: string) => {
+    //
+    // };
+    //
+    // const handleAddMajor = (depIndex: number) => {
+    //
+    // };
+    //
+    // const handleMajorChange = (depIndex: number, majorIndex: number, name: string) => {
+    //
+    // };
 
     const handleSave = () => {
 
@@ -66,8 +66,8 @@ export const useEditSectionButton=() =>{
         handleClose,
         handleSave,
         handleAddDepartment,
-        handleDepartmentChange,
-        handleMajorChange,
-        handleAddMajor,
+        // handleDepartmentChange,
+        // handleMajorChange,
+        // handleAddMajor,
     }
 }
