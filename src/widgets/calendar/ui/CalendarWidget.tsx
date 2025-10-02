@@ -47,9 +47,34 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
         new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     );
 
+
     const calRef = useRef<HTMLDivElement>(null);
 
     const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
+
+    useEffect(() => {
+        if (!isExpanded) {
+            const today = new Date();
+            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth() + 1}`;
+
+            console.groupCollapsed(
+                "%c[Calendar] collapse → maybe snap to today",
+                "color:#6b7280;font-weight:600;"
+            );
+            log("isExpanded:", isExpanded);
+            log("visibleMonth:", monthKey, "currentDate:", currentDate.toDateString());
+            log("today:", today.toDateString());
+
+            if (!sameMonth(visibleMonth, today)) {
+                log("➡️ snapping to today");
+                setCurrentDate(today);
+                setVisibleMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+            } else {
+                log("⏭️ already on today's month — no snap");
+            }
+            console.groupEnd();
+        }
+    }, [isExpanded, visibleMonth, currentDate]);
 
     useLayoutEffect(() => {
         if (!viewReady) return;
@@ -133,29 +158,7 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
     const log = (...args: unknown[]) =>
         console.log("%c[Calendar]", "color:#0ea5e9;font-weight:700;", ...args);
 
-    useEffect(() => {
-        if (!isExpanded) {
-            const today = new Date();
-            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth() + 1}`;
 
-            console.groupCollapsed(
-                "%c[Calendar] collapse → maybe snap to today",
-                "color:#6b7280;font-weight:600;"
-            );
-            log("isExpanded:", isExpanded);
-            log("visibleMonth:", monthKey, "currentDate:", currentDate.toDateString());
-            log("today:", today.toDateString());
-
-            if (!sameMonth(visibleMonth, today)) {
-                log("➡️ snapping to today");
-                setCurrentDate(today);
-                setVisibleMonth(new Date(today.getFullYear(), today.getMonth(), 1));
-            } else {
-                log("⏭️ already on today's month — no snap");
-            }
-            console.groupEnd();
-        }
-    }, [isExpanded, visibleMonth, currentDate]);
 
     // ✅ 월 키 & 월별 이벤트 수 (디버깅에 사용)
     const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
