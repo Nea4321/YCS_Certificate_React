@@ -30,7 +30,6 @@ interface CalendarProps {
 export function CalendarWidget({ events, loading, certName }: CalendarProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
-    const measuredRef = useRef<{monthKey: string; rowTop: number} | null>(null);
     const [viewReady, setViewReady] = useState(false);
     const sameMonth = (a: Date, b: Date) =>
         a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
@@ -55,22 +54,9 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
     useEffect(() => {
         if (!isExpanded) {
             const today = new Date();
-            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth() + 1}`;
-
-            console.groupCollapsed(
-                "%c[Calendar] collapse → maybe snap to today",
-                "color:#6b7280;font-weight:600;"
-            );
-            log("isExpanded:", isExpanded);
-            log("visibleMonth:", monthKey, "currentDate:", currentDate.toDateString());
-            log("today:", today.toDateString());
-
             if (!sameMonth(visibleMonth, today)) {
-                log("➡️ snapping to today");
                 setCurrentDate(today);
                 setVisibleMonth(new Date(today.getFullYear(), today.getMonth(), 1));
-            } else {
-                log("⏭️ already on today's month — no snap");
             }
             console.groupEnd();
         }
@@ -90,47 +76,51 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
 
         // activeStartDate가 반영된 달(visibleMonth)이 완전히 그려진 뒤 측정
         const raf = requestAnimationFrame(() => {
+            const isNeighbor = (el: Element) =>
+                el.classList.contains('react-calendar__month-view__days__day--neighboringMonth');
+
             const monthStart = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1);
             const sameMonth = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
-
             const today = new Date();
             const baseDate = sameMonth(today, monthStart)
                 ? today
                 : (sameMonth(currentDate, monthStart) ? currentDate : monthStart);
 
-            const isNeighbor = (el: Element) =>
-                el.classList.contains('react-calendar__month-view__days__day--neighboringMonth');
-
+// (1) 기준 타일 찾기
             let targetTile: HTMLElement | null = null;
-            for (const tile of tiles) {
-                if (isNeighbor(tile)) continue;
-                const abbr = tile.querySelector('abbr');
+            for (const t of tiles) {
+                if (isNeighbor(t)) continue;
+                const abbr = t.querySelector('abbr');
                 const dayNum = abbr?.textContent?.trim();
                 if (dayNum && Number(dayNum) === baseDate.getDate()) {
-                    targetTile = tile;
+                    targetTile = t;
                     break;
                 }
             }
-            if (!targetTile) {
-                targetTile = tiles.find(t => Number(t.querySelector('abbr')?.textContent?.trim() || -1) === baseDate.getDate()) || tiles[0];
-            }
+            if (!targetTile) targetTile = tiles.find(t => !isNeighbor(t)) ?? tiles[0];
 
-            const rowTop = targetTile.offsetTop - days.offsetTop;
-            const rowHeight = targetTile.offsetHeight;
-            const rowBottom = days.scrollHeight - (rowTop + rowHeight);
+// (2) 행 인덱스/행 높이/총 행수 계산 (transform과 무관)
+            const tileIndex = tiles.indexOf(targetTile);
+            const rowIdx = Math.max(0, Math.floor(tileIndex / 7));
 
-            const monthKey = `${visibleMonth.getFullYear()}-${visibleMonth.getMonth()}`;
-            const prev = measuredRef.current;
-            if (prev && prev.monthKey === monthKey && prev.rowTop === rowTop && !isExpanded) return;
-            measuredRef.current = {monthKey, rowTop};
+// 이 높이는 한 번만 읽으면 됨 (행 전체가 같은 높이)
+            const sampleTile = tiles.find(t => !isNeighbor(t)) ?? tiles[0];
+            const rowHeight = Math.round(sampleTile.getBoundingClientRect().height);
 
+// 일부 달은 5주/6주가 다르므로 실제 행 수 계산
+            const totalRows = Math.ceil(tiles.length / 7);
+
+// (3) 고정 수식으로 rowTop/rowBottom 결정
+            const rowTop = rowIdx * rowHeight;
+            const rowBottom = totalRows * rowHeight - (rowTop + rowHeight);
+
+// (4) 스타일 적용
             if (!isExpanded) {
-                const clip = `inset(${Math.max(0, rowTop)}px 0 ${Math.max(0, rowBottom)}px)`;
+                const clip = `inset(${rowTop}px 0 ${Math.max(0, rowBottom)}px)`;
 
                 if (days.style.clipPath !== clip) {
                     days.style.clipPath = clip;
                     days.style.setProperty('-webkit-clip-path', clip);
-
                     days.style.transform = `translateY(-${rowTop}px)`;
                     days.style.willChange = 'clip-path, transform';
                     days.style.overflow = 'hidden';
@@ -139,7 +129,6 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
                 if (days.style.clipPath) {
                     days.style.clipPath = '';
                     days.style.removeProperty('-webkit-clip-path');
-
                     days.style.transform = '';
                     days.style.willChange = '';
                     days.style.overflow = '';
@@ -154,11 +143,6 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
     if (loading) {
         return <div className={calendarStyles.loading}>일정을 불러오는 중...</div>;
     }
-
-    const log = (...args: unknown[]) =>
-        console.log("%c[Calendar]", "color:#0ea5e9;font-weight:700;", ...args);
-
-
 
     // ✅ 월 키 & 월별 이벤트 수 (디버깅에 사용)
     const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
@@ -188,12 +172,12 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
         (events ?? []).filter(ev => isDateInRange(date, ev.startdate, ev.enddate));
 
 
+
     /** 특정 날짜에 해당하는 자격증 시험 일정을 반환한다
      *
      * @param {Date} date - 검사할 Date 객체
      * @returns 해당 날짜에 포함된 ExamEvent 배열 내용
      */
-
         // 타일 클래스 이름 적용
     const tileClassName = ({ date, view }: { date: Date; view: string }) => {
             if (view !== 'month') return null;
@@ -263,9 +247,6 @@ export function CalendarWidget({ events, loading, certName }: CalendarProps) {
                     onActiveStartDateChange={({activeStartDate}) => {
                         if (activeStartDate) {
                             const next = startOfMonth(activeStartDate);
-                            console.groupCollapsed("%c[Calendar] onActiveStartDateChange", "color:#6b7280;font-weight:600;");
-                            console.log("%c[Calendar]", "color:#0ea5e9;font-weight:700;", "→", next.toDateString());
-                            console.groupEnd();
                             setVisibleMonth(next);
                         }
                     }}

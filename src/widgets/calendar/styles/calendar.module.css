@@ -414,3 +414,8 @@
     .calendarWidget { transform: scale(1); margin-bottom: 0; }
     .certificateName { font-size: .55rem; }
 }
+
+.calendarWrapper.collapsed :global(.react-calendar__month-view__days__day--neighboringMonth) {
+    pointer-events: none;
+    cursor: not-allowed;
+}

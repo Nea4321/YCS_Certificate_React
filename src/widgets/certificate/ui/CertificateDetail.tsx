@@ -8,7 +8,6 @@ import {getTagName, getTagColor } from "@/entities/certificate/model/tagMeta";
 import { CalendarWidget } from '@/widgets/calendar/ui/CalendarWidget';
 import { certificateTags } from "@/entities/certificate"
 import type { UiEvent } from '@/features/calendar/adapters';
-import {certificateStyles} from "@/pages";
 
 interface CertificateDetailProps {
     certificate?: CertData | null;
@@ -96,7 +95,7 @@ export const CertificateDetail = memo(
                     </div>
                 </div>
 
-                <section className={certificateStyles.calendarSection}>
+                <section className={certificateDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
                     <CalendarWidget events={calendarEvents} loading={calendarLoading} certName={certName || undefined} />
                 </section>
