@@ -10,7 +10,7 @@ import type {
     ExamEventDto,
     ExamEventTypeBE,
 } from '@/entities/certificate/model/types';
-import type { UiEvent, UiEventType } from '@/features/calendar/adapters';
+import type { UiEvent, UiEventType } from '@/features/calendar/model/adapters.ts';
 
 const mapType = (t: ExamEventTypeBE): UiEventType =>
     t === 'DOC_REG'   ? 'doc-reg'
