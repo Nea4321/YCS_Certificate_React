@@ -12,6 +12,7 @@ interface CalendarWidgetProps {
     events?: UiEvent[];
     loading?: boolean;
     certName?: string;
+    dept_map_id?: number;
 }
 
 export function CalendarWidget({ events = [], loading, certName }: CalendarWidgetProps) {
