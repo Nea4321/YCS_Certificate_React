@@ -4,13 +4,15 @@ import {departmentEditStyles} from "@/pages/department_edit";
 
 interface AddDepartmentModalProps {
     facultyDefault?: string;
-    departmentOptions?: { name: string[]}[];
+    parentType?: string
+    departmentOptions?: string[];
     isopen: boolean;
     onClose?: () => void;
 }
 
 export const DepartmentEditSection = ({
                                           facultyDefault,
+                                          parentType = "faculty",
                                           departmentOptions = [],
                                           isopen,
                                           onClose,
@@ -22,6 +24,7 @@ export const DepartmentEditSection = ({
         setDepartments([]);
         setFaculty("");
     };
+    console.log("targetParent:", departmentOptions);
 
     const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedName = e.target.value;
@@ -34,6 +37,13 @@ export const DepartmentEditSection = ({
         }
     };
 
+
+    const addMinor = (deptIndex: number) => {
+        const newDepartments = [...departments];
+        newDepartments[deptIndex].majors.push("");
+        setDepartments(newDepartments);
+    };
+
     const {
         handleSave        
     } = useEditSectionButton();
@@ -43,9 +53,8 @@ export const DepartmentEditSection = ({
     return (
         <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>
             <h3>새 학부/학과/전공 추가</h3>
-
-            {/* ✅ 학부명: 기본값이 있으면 select, 없으면 input */}
-            {facultyDefault ? (
+            {parentType === "faculty" ? (
+            facultyDefault ? (
                 <div>
                     <label style={{ display: "block", marginBottom: "4px" }}>학부명</label>
                     <select
@@ -58,14 +67,11 @@ export const DepartmentEditSection = ({
                     <label style={{ display: "block", marginBottom: "4px" }}>학과명</label>
                     <select onChange={handleDepartmentChange} defaultValue="">
                         <option value="">학과 선택</option>
-
-                        {departmentOptions.map((deptObj, i) =>
-                            deptObj.name.map((n, j) => (
-                                <option key={`${i}-${j}`} value={n}>
-                                    {n}
-                                </option>
-                            ))
-                        )}
+                        {departmentOptions?.map((dept, i) => (
+                            <option key={i} value={dept}>
+                                {dept}
+                            </option>
+                        ))}
                     </select>
                 </div>
             ) : (
@@ -76,7 +82,13 @@ export const DepartmentEditSection = ({
                     onChange={(e) => setFaculty(e.target.value)}
                     className={!faculty ? departmentEditStyles.transparentPlaceholder : ""}
                 />
-            )}
+            )
+            ) : (<div>
+                <label style={{ display: "block", marginBottom: "4px" }}>학과명</label>
+                <select onChange={handleDepartmentChange} defaultValue="">
+                    <option value="">{facultyDefault || "학과 선택"}</option>
+                </select>
+            </div>)}
 
             {departments.map((dep, i) => (
                 <div key={i} className={departmentEditStyles.departmentBlock}>
@@ -144,11 +156,7 @@ export const DepartmentEditSection = ({
                     {dep.name && (
                         <button
                             className={departmentEditStyles.addMinorButton}
-                            onClick={() => {
-                                const newDepartments = [...departments];
-                                newDepartments[i].majors.push("");
-                                setDepartments(newDepartments);
-                            }}
+                            onClick={()=> addMinor(i)}
                         >
                             전공 추가
                         </button>
@@ -157,12 +165,23 @@ export const DepartmentEditSection = ({
             ))}
 
             {/* 학과 추가 버튼 */}
+            {parentType === "faculty" ? (
             <button
                 className={departmentEditStyles.addDepartmentButton}
                 onClick={() => setDepartments([...departments, { name: "", majors: [] }])}
             >
                 학과 추가
             </button>
+            ): (<button
+                className={departmentEditStyles.addMinorButton}
+                onClick={()=> {
+                    setDepartments([...departments, { name: facultyDefault ?? "", majors: [] }]);
+                    addMinor(departments.length - 1)
+                }
+            }
+            >
+                전공 추가
+            </button>)}
 
 
             <div className={departmentEditStyles.formActions}>

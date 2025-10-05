@@ -5,10 +5,12 @@ import {departmentApi} from "@/entities";
 export const useEditSectionButton=() =>{
     const [isopen, setIsopen] = useState<boolean>(false)
     const [name, setName] = useState<string>("")
+    const [type, setType] = useState<string>("")
     const [departments_name, setDepartments] = useState<string[]>([]);
     const { data } = useDataFetching({
         fetchFn:departmentApi.getDepartList_edit
     })
+    console.log("data",data)
 
     // const { data: DeptMap, error: DeptMapError } = useDataFetching({
     //     fetchFn:departmentApi.getDeptMap
@@ -23,12 +25,13 @@ export const useEditSectionButton=() =>{
     //     fetchFn:departmentApi.getMajor
     // })
 
-    const handleOpen = (parent_name:string) => {
+    const handleOpen = (parent_name:string, parent_type:string) => {
           setIsopen(true);
           setName(parent_name)
-            const targetParent = data.find(faculty => faculty.faculty_name === name);
+          setType(parent_type)
+            const targetParent = data.find(faculty => faculty.facultyName === parent_name);
         if (targetParent) {
-            setDepartments(targetParent.department_name); // string[] 그대로 저장
+            setDepartments(targetParent.departments); // string[] 그대로 저장
         } else {
             setDepartments([]);
         }
@@ -60,6 +63,7 @@ export const useEditSectionButton=() =>{
 
     return{
         name,
+        type,
         handleOpen,
         isopen,
         departments_name,

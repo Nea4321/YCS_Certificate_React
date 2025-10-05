@@ -1,8 +1,8 @@
 import {memo, useState} from "react"
 import type { DeptList } from "@/entities/department/model"
 import {Check, Edit, Trash, X} from "lucide-react";
-// import {useButton} from "@/features/department_edit/model";
 import {departmentEditStyles} from "@/pages/department_edit";
+import {useButton} from "@/features/department_edit/model";
 
 /**DepartmentListSection에 전달되는 props
  *
@@ -10,7 +10,7 @@ import {departmentEditStyles} from "@/pages/department_edit";
  */
 interface DepartmentCardProps {
   department: DeptList
-    onAdd?: (name: string) => void
+    onAdd?: (name: string, type: string) => void
 }
 
 /**학과 목록 페이지 컴포넌트
@@ -27,7 +27,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
 
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editValue, setEditValue] = useState(""); // 수정 값
-    // const {handleSave_edit, handleDelete} = useButton()
+     const {handleSave_edit, handleDelete} = useButton()
 
   return (
     <ul className={departmentEditStyles.facultyItem}>
@@ -37,13 +37,13 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
           </span>
             <button
                 className={departmentEditStyles.addButton}
-                onClick={() =>  onAdd?.(department.parent_name)}
+                onClick={() =>  onAdd?.(department.parent_name, department.parent_type)}
             >
                 + 추가
             </button>
             <button
                 className={departmentEditStyles.iconButton}
-                // onClick={() => handleDelete(department.parent_id,department.parent_type)}
+                 onClick={() => handleDelete(department.parent_id,department.parent_type)}
                 aria-label="삭제">
                 <Trash size={16} />
             </button>
@@ -77,6 +77,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                                       onClick={() => {
                                           setEditingId(child.child_id);
                                           setEditValue(child.child_name); // 기존 값 미리 채워주기
+                                          // handleSave_edit(editingId,editValue,"");
                                       }}
                                       aria-label="수정"
                                   >
@@ -88,9 +89,10 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                   {/* 삭제 아이콘 버튼 */}
                   <button
                       className={departmentEditStyles.iconButton}
-                      // onClick={() => handleDelete(child.child_id,child.child_type)}
+                      onClick={() => handleDelete(child.child_id,child.child_type)}
                       aria-label="삭제">
                       <Trash size={16} />
+
                   </button>
               </div>
 

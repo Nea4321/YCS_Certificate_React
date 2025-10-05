@@ -1,9 +1,12 @@
 import { DepartmentList_edit } from "./ui"
 import { departmentEditStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
+import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
+import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
 
 export const Department_Edit = () => {
     const navigate = useNavigate();
+    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton()
 
     return (
         <div className={departmentEditStyles.container}>
@@ -16,10 +19,16 @@ export const Department_Edit = () => {
                     뒤로가기
                 </button>
                 <h1 className={departmentEditStyles.title}>학과 목록</h1>
-                <button className={departmentEditStyles.addButton}>+ 추가</button>
+                <button
+                    className={departmentEditStyles.addButton}
+                    onClick={() => handleOpen("","faculty")}
+                >
+                    + 추가
+                </button>
             </div>
 
             <DepartmentList_edit />
+            { <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} isopen={isopen} onClose={handleClose} /> }
         </div>
     )
 }

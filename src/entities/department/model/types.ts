@@ -47,7 +47,7 @@ export interface DeptMapData{
 }
 
 export interface FacultywithDepartment {
-  faculty_name: string
-  department_name: string[]
+  facultyName: string
+  departments: string[]
 }
 

@@ -23,7 +23,7 @@ export const DepartmentList_edit = () => {
         fetchFn:departmentApi.getDeptList
     })
 
-    const {handleOpen,isopen,handleClose,name} = useEditSectionButton()
+    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton()
 
 
     // 데이터가 없을 때의 처리
@@ -72,7 +72,7 @@ export const DepartmentList_edit = () => {
                         ))}
                 </div>
 
-                { <DepartmentEditSection facultyDefault={name} departmentOptions={[{ name: ["a","b"]}]} isopen={isopen} onClose={handleClose} /> }
+                { <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} isopen={isopen} onClose={handleClose} /> }
             </>
         )
     }
