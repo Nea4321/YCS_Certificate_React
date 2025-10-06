@@ -27,7 +27,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
 
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editValue, setEditValue] = useState(""); // 수정 값
-     const {handleSave_edit, handleDelete} = useButton()
+     const {handleDelete} = useButton()
 
   return (
     <ul className={departmentEditStyles.facultyItem}>
