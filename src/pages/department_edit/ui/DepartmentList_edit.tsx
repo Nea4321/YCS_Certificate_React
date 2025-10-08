@@ -4,6 +4,7 @@ import { useDataFetching } from "@/shared/hooks";
 import { departmentEditStyles } from "../styles";
 import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
 import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
+import {Popup} from "@/shared/popup";
 
 /**학과 목록 접근 컴포넌트*/
 export const DepartmentList_edit = () => {
@@ -71,8 +72,9 @@ export const DepartmentList_edit = () => {
                             />
                         ))}
                 </div>
-
-                { <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} isopen={isopen} onClose={handleClose} /> }
+                <Popup isOpen={isopen}>
+                 <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} />
+                </Popup>
             </>
         )
     }

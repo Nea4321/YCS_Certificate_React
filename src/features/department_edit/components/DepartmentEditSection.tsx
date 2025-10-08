@@ -6,7 +6,6 @@ interface AddDepartmentModalProps {
     facultyDefault?: string;
     parentType?: string
     departmentOptions?: string[];
-    isopen: boolean;
     onClose?: () => void;
 }
 
@@ -14,7 +13,6 @@ export const DepartmentEditSection = ({
                                           facultyDefault,
                                           parentType = "faculty",
                                           departmentOptions = [],
-                                          isopen,
                                           onClose,
                                       }: AddDepartmentModalProps) => {
     const [faculty, setFaculty] = useState(facultyDefault || "");
@@ -47,8 +45,6 @@ export const DepartmentEditSection = ({
     const {
         handleSave        
     } = useEditSectionButton();
-
-    if (!isopen) return null;
 
     return (
         <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>

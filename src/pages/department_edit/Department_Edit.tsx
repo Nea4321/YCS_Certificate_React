@@ -3,6 +3,7 @@ import { departmentEditStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
 import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
+import {Popup} from "@/shared/popup";
 
 export const Department_Edit = () => {
     const navigate = useNavigate();
@@ -28,7 +29,10 @@ export const Department_Edit = () => {
             </div>
 
             <DepartmentList_edit />
-            { <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} isopen={isopen} onClose={handleClose} /> }
+
+            <Popup isOpen={isopen}>
+             <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} />
+            </Popup>
         </div>
     )
 }
