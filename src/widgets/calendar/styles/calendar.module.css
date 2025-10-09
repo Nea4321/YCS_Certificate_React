@@ -94,6 +94,19 @@
     margin: 0 !important;
 }
 
+.calendarWidget :global(.react-calendar__year-view .react-calendar__year-view__months),
+.calendarWidget :global(.react-calendar__decade-view .react-calendar__decade-view__years),
+.calendarWidget :global(.react-calendar__century-view .react-calendar__century-view__decades) {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+/* 상위 뷰 타일 높이/정렬(원하면 조절) */
+.calendarWidget :global(.react-calendar__year-view .react-calendar__tile),
+.calendarWidget :global(.react-calendar__decade-view .react-calendar__tile),
+.calendarWidget :global(.react-calendar__century-view .react-calendar__tile) {
+    font-weight: 600;
+}
 .calendarWidget :global(.react-calendar__tile:hover) {
     background-color: #f9fafb !important;
 }
@@ -270,7 +283,7 @@
 .calendarWrapper {
     transition: max-height .35s ease-in-out;
     overflow: hidden;
-    max-height: 1000px;
+    max-height: 900px;
 }
 
 .calendarWrapper.collapsed {
