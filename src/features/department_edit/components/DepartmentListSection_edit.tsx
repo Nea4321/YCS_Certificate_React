@@ -11,6 +11,7 @@ import {useButton} from "@/features/department_edit/model";
 interface DepartmentCardProps {
   department: DeptList
     onAdd?: (name: string, type: string) => void
+    refetch?: () => void
 }
 
 /**학과 목록 페이지 컴포넌트
@@ -23,12 +24,12 @@ interface DepartmentCardProps {
  * @example
  * <DepartmentListSection_edit key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
  */
-export const DepartmentListSection_edit = memo(({ department, onAdd }: DepartmentCardProps) => {
+export const DepartmentListSection_edit = ({ department, onAdd, refetch }: DepartmentCardProps) => {
 
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editingType, setEditingType] = useState<string | null>(null);
     const [editValue, setEditValue] = useState(""); // 수정 값
-     const {handleDelete,handleSave_edit} = useButton()
+     const {handleDelete,handleSave_edit} = useButton(refetch)
 
   return (
     <ul className={departmentEditStyles.facultyItem}>
@@ -44,7 +45,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
             </button>
             <button
                 className={departmentEditStyles.iconButton}
-                 onClick={() => handleDelete(department.parent_id,department.parent_name,department.parent_type)}
+                 onClick={() => handleDelete(department.parent_id,department.parent_type,department.parent_name)}
                 aria-label="삭제">
                 <Trash size={16} />
             </button>
@@ -61,7 +62,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
                               />
-                              <button onClick={() => handleSave_edit(editingId,editValue,editingType)}>
+                              <button onClick={() => handleSave_edit(editingId,editingType,editValue)}>
                                   <Check size={16} /> 확인
                               </button>
                               <button onClick={() => setEditingId(null)}>
@@ -90,7 +91,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
                   {/* 삭제 아이콘 버튼 */}
                   <button
                       className={departmentEditStyles.iconButton}
-                      onClick={() => handleDelete(child.child_id,child.child_name,child.child_type)}
+                      onClick={() => handleDelete(child.child_id,child.child_type,child.child_name)}
                       aria-label="삭제">
                       <Trash size={16} />
 
@@ -104,7 +105,7 @@ export const DepartmentListSection_edit = memo(({ department, onAdd }: Departmen
 
 
   )
-})
+}
 
 // 디버깅을 위한 displayName 추가
 DepartmentListSection_edit.displayName = "DepartmentListSection_edit"

@@ -5,10 +5,12 @@ import { departmentEditStyles } from "../styles";
 import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
 import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
 import {Popup} from "@/shared/popup";
+import {useDispatch} from "react-redux";
+import {setFaculty_Department} from "@/shared/slice";
 
 /**학과 목록 접근 컴포넌트*/
 export const DepartmentList_edit = () => {
-
+    const dispatch = useDispatch()
     /**학과 데이터를 가져오고 로딩, 에러, 재요청 기능을 제공하는 hooks
      * - 해당 학과의 id를 숫자로 변환하고 departmentApi.getDeptList에 전달하고
      *   해당 학과의 데이터를 API에 비동기 요청
@@ -24,7 +26,15 @@ export const DepartmentList_edit = () => {
         fetchFn:departmentApi.getDeptList
     })
 
-    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton()
+    const { data: abc } = useDataFetching({
+        fetchFn:departmentApi.getDepartList_edit,
+    })
+    dispatch(setFaculty_Department(abc))
+    console.log("daaaaaaa",data)
+    console.log("asad",abc)
+
+
+    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(refetch)
 
 
     // 데이터가 없을 때의 처리
@@ -69,11 +79,12 @@ export const DepartmentList_edit = () => {
                                 key={`${dept.parent_type}-${dept.parent_id}`}
                                 department={dept}
                                 onAdd={handleOpen}
+                                refetch={refetch}
                             />
                         ))}
                 </div>
                 <Popup isOpen={isopen}>
-                 <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} />
+                 <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} refetch={refetch} />
                 </Popup>
             </>
         )

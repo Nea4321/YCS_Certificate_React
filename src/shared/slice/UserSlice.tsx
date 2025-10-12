@@ -4,6 +4,7 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
     userName: '',
     userEmail: '',
+    userRole: '',
     socialType: "NORMAL",
     tokenExp: null
 };
@@ -35,6 +36,7 @@ export const userSlice = createSlice({
         state.userName = ''
         state.userEmail = ''
         state.socialType = ''
+            state.userRole= ''
             state.tokenExp = null}
     }
 })

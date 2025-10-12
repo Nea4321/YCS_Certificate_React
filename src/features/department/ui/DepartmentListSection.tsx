@@ -21,7 +21,7 @@ interface DepartmentCardProps {
  * @example
  * <DepartmentListSection_edit key={`${dept.parent_type}-${dept.parent_id}`} department={dept} />
  */
-export const DepartmentListSection = memo(({ department }: DepartmentCardProps) => {
+export const DepartmentListSection = ({ department }: DepartmentCardProps) => {
     return (
         <ul className={deptListStyles.facultyItem}>
             <div className={deptListStyles.facultyName}>
@@ -40,7 +40,7 @@ export const DepartmentListSection = memo(({ department }: DepartmentCardProps) 
             </div>
         </ul>
     )
-})
+}
 
 // 디버깅을 위한 displayName 추가
 DepartmentListSection.displayName = "DepartmentListSection"

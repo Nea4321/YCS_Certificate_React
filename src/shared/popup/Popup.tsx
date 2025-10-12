@@ -5,10 +5,13 @@ interface PopupProps {
     children: React.ReactNode;
 }
 
+/**
+ * @example <Popup> <팝업으로 표시할 컴포넌트> </Popup>
+ * */
 export const Popup = ({ isOpen, children }: PopupProps) => {
     if (!isOpen) return null;
 
-    // 💡 Portal로 body 밑에 직접 렌더링 (부모 영향 X)
+
     return (
         <div style={{
             position: "fixed",

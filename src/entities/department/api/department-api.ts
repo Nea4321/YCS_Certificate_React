@@ -8,8 +8,8 @@ export const departmentApi = {
     return response.data
   },
 
-  getDepartment: async (signal?: AbortSignal): Promise<Department> => {
-    const response = await axiosApi.get<Department>("/api/dept/department", { signal })
+  getDepartment: async (signal?: AbortSignal): Promise<Department[]> => {
+    const response = await axiosApi.get<Department[]>("/api/dept/department", { signal })
     return response.data
   },
 

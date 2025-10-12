@@ -7,6 +7,7 @@ interface AddDepartmentModalProps {
     parentType?: string
     departmentOptions?: string[];
     onClose?: () => void;
+    refetch?: () => void;
 }
 
 export const DepartmentEditSection = ({
@@ -14,8 +15,9 @@ export const DepartmentEditSection = ({
                                           parentType = "faculty",
                                           departmentOptions = [],
                                           onClose,
+                                            refetch,
                                       }: AddDepartmentModalProps) => {
-    const [faculty, setFaculty] = useState(facultyDefault || "");
+    const [faculty, setFaculty] = useState("");
     const [departments, setDepartments] = useState<{ name: string; majors: string[] }[]>([]);
     const Close = () => {
         onClose?.();
@@ -35,16 +37,13 @@ export const DepartmentEditSection = ({
         }
     };
 
-
     const addMinor = (deptIndex: number) => {
         const newDepartments = [...departments];
         newDepartments[deptIndex].majors.push("");
         setDepartments(newDepartments);
     };
 
-    const {
-        handleSave        
-    } = useEditSectionButton();
+    const {handleSave} = useEditSectionButton(refetch);
 
     return (
         <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>
@@ -112,7 +111,7 @@ export const DepartmentEditSection = ({
                     </div>
 
                     {/* 전공 */}
-                    {dep.name &&
+                    {
                         dep.majors.map((m, j) => (
                             <div
                                 key={j}
@@ -149,14 +148,14 @@ export const DepartmentEditSection = ({
                             </div>
                         ))}
 
-                    {dep.name && (
+                    {
                         <button
                             className={departmentEditStyles.addMinorButton}
                             onClick={()=> addMinor(i)}
                         >
                             전공 추가
                         </button>
-                    )}
+                    }
                 </div>
             ))}
 
@@ -168,7 +167,7 @@ export const DepartmentEditSection = ({
             >
                 학과 추가
             </button>
-            ): (<button
+            ) : (<button
                 className={departmentEditStyles.addMinorButton}
                 onClick={()=> {
                     setDepartments([...departments, { name: facultyDefault ?? "", majors: [] }]);
@@ -181,7 +180,7 @@ export const DepartmentEditSection = ({
 
 
             <div className={departmentEditStyles.formActions}>
-                <button className={departmentEditStyles.saveButton} onClick={handleSave}>
+                <button className={departmentEditStyles.saveButton} onClick={()=>handleSave(faculty,departments)}>
                     저장
                 </button>
                 <button className={departmentEditStyles.cancelButton} onClick={Close}>

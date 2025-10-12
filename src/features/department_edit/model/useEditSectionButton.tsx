@@ -1,35 +1,35 @@
 import {useState} from "react";
-import {useDataFetching} from "@/shared";
-import {departmentApi} from "@/entities";
+import {useSelector} from "react-redux";
+import {RootState} from "@/app/store";
+import axios from "axios";
 
-export const useEditSectionButton=() =>{
+// 전공 DTO
+interface DepartmentCreateDTO {
+    name: string;
+    majors: string[];
+}
+
+// 학부 DTO
+interface FacultyCreateRequestDTO {
+    facultyName: string;
+    department: DepartmentCreateDTO[];
+}
+
+export const useEditSectionButton=(refetch: (() => void) | undefined)  =>{
     const [isopen, setIsopen] = useState<boolean>(false)
     const [name, setName] = useState<string>("")
     const [type, setType] = useState<string>("")
     const [departments_name, setDepartments] = useState<string[]>([]);
-    const { data } = useDataFetching({
-        fetchFn:departmentApi.getDepartList_edit
-    })
-    console.log("data",data)
+    const faculty = useSelector((state:RootState)=> state.faculty?.list ??[])
 
-    // const { data: DeptMap, error: DeptMapError } = useDataFetching({
-    //     fetchFn:departmentApi.getDeptMap
-    // })
-    // const { data: Faculty, error: FacultyError } = useDataFetching({
-    //     fetchFn:departmentApi.getFaculty
-    // })
-    // const { data: Department, error: DepartmentError } = useDataFetching({
-    //     fetchFn:departmentApi.getDepartment
-    // })
-    // const { data: Major, error: MajorError } = useDataFetching({
-    //     fetchFn:departmentApi.getMajor
-    // })
+
 
     const handleOpen = (parent_name:string, parent_type:string) => {
           setIsopen(true);
           setName(parent_name)
           setType(parent_type)
-            const targetParent = data.find(faculty => faculty.facultyName === parent_name);
+
+            const targetParent = faculty.find(f => f.facultyName === parent_name)
         if (targetParent) {
             setDepartments(targetParent.departments); // string[] 그대로 저장
         } else {
@@ -57,8 +57,20 @@ export const useEditSectionButton=() =>{
     //
     // };
 
-    const handleSave = () => {
+    const handleSave = async (faculty: string, departments: { name: string; majors: string[] }[]) => {
+        console.log("faculty,department", faculty, departments);
+        const result = confirm("저장 하시겠습니까?")
+        const payload: FacultyCreateRequestDTO = {
+            facultyName: faculty,         // string
+            department: departments       // DepartmentCreateDTO[]
+        };
 
+        if (result) {
+            const response = await axios.post('/api/dept/create', payload);
+            console.log(response)
+            refetch?.()
+        } else { console.log("컷")
+        }
     };
 
     return{
