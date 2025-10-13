@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import {useState, useEffect, useRef, useCallback} from "react";
 import type { UiEvent } from '@/features/calendar/model/adapters';
 import * as dateUtils from '@/shared/lib/date';
 import { Calendar } from '@/shared/ui/calendar/ui/Calendar';
@@ -7,6 +7,8 @@ import { getTileClassName, getTileContent } from '@/features/calendar/ui/tile';
 import { useCalendarAnimation } from '@/features/calendar/model/useCalendarAnimation';
 import { CalendarToggleButton } from '@/features/calendar/ui/CalendarToggleButton';
 import { calendarStyles } from "@/widgets/calendar/";
+import {useCollapseToMonth} from "@/features/calendar";
+import {CalView} from "@/features/calendar/model/useCollapseToMonth.ts";
 
 interface CalendarWidgetProps {
     events?: UiEvent[];
@@ -20,7 +22,15 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const [visibleMonth, setVisibleMonth] = useState(dateUtils.startOfMonth(new Date()));
     const [viewReady, setViewReady] = useState(false);
+    const [view, setView] = useState<CalView>('month');
     const calRef = useRef<HTMLDivElement>(null);
+
+    const handleViewChange = useCallback(
+        ({ view }: { view: CalView }) => {
+            if (isExpanded) setView(view as CalView);
+        },
+        [isExpanded]
+    );
 
     useEffect(() => {
         const id = requestAnimationFrame(() => setViewReady(true));
@@ -37,7 +47,17 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
         }
     }, [isExpanded, visibleMonth]);
 
-    useCalendarAnimation({ calRef, isExpanded, visibleMonth, currentDate, viewReady });
+    useCollapseToMonth({
+        isExpanded,
+        view,
+        setView,
+        value: currentDate,
+        setVisibleMonth,
+        startOfMonth: dateUtils.startOfMonth,
+        restorePrevOnExpand: false,
+    });
+
+    useCalendarAnimation({ calRef, isExpanded, viewReady });
 
     const tileClassName = getTileClassName(events);
     const tileContent = getTileContent(events, certName);
@@ -54,17 +74,19 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
     return (
         <div className={calendarStyles.calendarWidget}>
             <div style={{fontSize: 12, color: '#6b7280', marginBottom: 8}}>
-                {certName ? `자격증: ${certName}` : '자격증'} · 이 달의 이벤트: {monthEvents.length}건
+                {certName ? `자격증: ${certName}` : '자격증'} · {currentDate.getMonth() + 1}월의 이벤트: {monthEvents.length}건
             </div>
 
             <div ref={calRef} className={`${calendarStyles.calendarWrapper} ${!isExpanded ? calendarStyles.collapsed : ''}`}>
                 <Calendar
-                    value={currentDate}
+                    value={currentDate ?? undefined}
                     onChange={v => setCurrentDate(v as Date)}
                     activeStartDate={visibleMonth}
                     onActiveStartDateChange={({ activeStartDate }) => {
                         if (activeStartDate) setVisibleMonth(dateUtils.startOfMonth(activeStartDate));
                     }}
+                    view={view}
+                    onViewChange={handleViewChange}
                     isExpanded={isExpanded}
                     tileClassName={tileClassName}
                     tileContent={tileContent}

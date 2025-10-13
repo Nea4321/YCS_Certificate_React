@@ -40,6 +40,7 @@
     padding: 25px;
     box-shadow: 0 2px 4px var(--shadow-color);
     margin-bottom: 30px;
+    max-height: 1000px;
 }
 
 .descriptionSection h2,

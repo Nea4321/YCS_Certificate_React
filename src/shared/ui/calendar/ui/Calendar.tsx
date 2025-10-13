@@ -1,9 +1,12 @@
 import BaseCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import type { CalendarProps as BaseCalendarProps } from "react-calendar";
+import {CalView} from "@/features/calendar/model/useCollapseToMonth.ts";
 
 interface CalendarProps extends BaseCalendarProps {
     isExpanded: boolean;
+    view?: CalView;
+    onViewChange?: (payload: { view: CalView }) => void;
 }
 
 const navigationLabel = ({ date, view }: { date: Date; view: string }) =>
@@ -14,6 +17,9 @@ export function Calendar({ isExpanded, ...props }: CalendarProps) {
         <BaseCalendar
             {...props}
             locale="ko-KR"
+            view={props.view}
+            onViewChange={props.onViewChange as any}
+            minDetail={isExpanded ? undefined : 'month'}
             showNavigation={isExpanded}
             formatDay={(_loc, d) => d.getDate().toString()}
             showNeighboringMonth
