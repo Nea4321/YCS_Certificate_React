@@ -18,6 +18,7 @@ export const useButton= (refetch: (() => void) | undefined) =>{
         const result = confirm("정말 삭제하시겠습니까?")
         if (result) {
             const response = await axios.post('/api/dept/delete', { id,type,value });
+            console.log(response);
         }
         else {
             //console.log(`${id} 삭제됨`);

@@ -7,7 +7,8 @@ import {Popup} from "@/shared/popup";
 
 export const Department_Edit = () => {
     const navigate = useNavigate();
-    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton()
+    const none = () =>{}
+    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(none)
 
     return (
         <div className={departmentEditStyles.container}>

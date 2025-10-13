@@ -1,4 +1,4 @@
-import {memo, useState} from "react"
+import { useState} from "react"
 import type { DeptList } from "@/entities/department/model"
 import {Check, Edit, Trash, X} from "lucide-react";
 import {departmentEditStyles} from "@/pages/department_edit";

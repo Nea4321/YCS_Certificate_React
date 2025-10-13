@@ -1,4 +1,4 @@
-import { memo } from "react"
+
 import type { DeptList } from "@/entities/department/model"
 import { deptListStyles } from "@/pages/department-list/styles";
 import {Link} from "react-router-dom";
