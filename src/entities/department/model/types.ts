@@ -34,7 +34,7 @@ export interface DeptList {
   child: DeptChildList[]
 }
 
-export interface DeptMapDataCert {
+export interface DeptCert {
   certificate_id: number
   certificate_name: string
 }
@@ -42,7 +42,7 @@ export interface DeptMapDataCert {
 export interface DeptMapData{
   dept_map_id: number
   dept_map_name: string
-  cert: DeptMapDataCert[]
+  cert: DeptCert[]
   description: string
 }
 

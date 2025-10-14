@@ -2,7 +2,35 @@ export interface Certificate {
     certificate_id: number,
     certificate_name: string,
     jmcd: string,
-    category?: string
+    organization_id: number,
+    tag: number[]
+}
+
+export interface CertificateData {
+    certificate_id: number,
+    certificate_name: string,
+    basic_info: string;//일단 문자열로 받고 자격증 페이지에서
+    schedule: Record<string, string | null>[];
+    other_info: string; // 보여줄때 JSON.parse() 같은걸로 사용
+    organization_id: number;
+
+}
+
+export interface Organization {
+    organization_id: number;
+    organization_name: string;
+}
+
+export interface Tag {
+    tag_id: number;
+    tag_name: string;
+    color: string;
+}
+
+export interface Schedule {
+    certificate_id: number;
+    certificate_name: string;
+    schedule: Record<string, string | null>[];
 }
 
 // entities/certificate/model/types.ts
