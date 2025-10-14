@@ -1,7 +1,7 @@
 // src/entities/certificate/api/certificate-api.ts
 import { axiosApi } from '@/shared/api/axios-api';
-import type { Certificate, CertData } from "@/entities/certificate/model/types";
-import type { ScheduleEventsDto } from '@/entities/certificate/model/types';
+import type { Certificate, CertificateData, Schedule, Tag, Organization } from "@/entities/certificate/model/types";
+//import type { ScheduleEventsDto } from '@/entities/certificate/model/types';
 // CertData export 되어있어야 합니다.
 
 export const certificateApi = {
@@ -11,14 +11,30 @@ export const certificateApi = {
         return res.data;
     },
 
-    // 일정(분할)
-    async getSchedule(id: number, signal?: AbortSignal): Promise<ScheduleEventsDto> {
-        const res = await axiosApi.get<ScheduleEventsDto>(`/api/certificates/${id}/schedule`, { signal });
+    async getSchedule(ids: number[], signal?: AbortSignal): Promise<Schedule[]> {
+        const query = ids.map(id => `id=${id}`).join('&');
+        const res = await axiosApi.get<Schedule[]>(`/api/cert/schedule?${query}`, { signal });
         return res.data;
     },
 
-    async getCertData(id: number, signal?: AbortSignal): Promise<CertData> {
-        const res = await axiosApi.get<CertData>(`/api/cert/data/${id}`, { signal });
+    async getTags(signal?: AbortSignal): Promise<Tag[]> {
+        const res = await axiosApi.get<Tag[]>('/api/cert/tag', { signal });
+        return res.data;
+    },
+
+    async getOrganization(signal?: AbortSignal): Promise<Organization[]> {
+        const res = await axiosApi.get<Organization[]>('/api/cert/organization', { signal });
+        return res.data;
+    },
+
+    // 일정(분할)
+    // async getSchedule(id: number, signal?: AbortSignal): Promise<ScheduleEventsDto> {
+    //     const res = await axiosApi.get<ScheduleEventsDto>(`/api/certificates/${id}/schedule`, { signal });
+    //     return res.data;
+    // },
+
+    async getCertData(id: number, signal?: AbortSignal): Promise<CertificateData> {
+        const res = await axiosApi.get<CertificateData>(`/api/cert/data/${id}`, { signal });
         return res.data;
     },
 
