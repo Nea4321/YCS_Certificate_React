@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useEditSectionButton } from "@/features/department_edit/model/useEditSectionButton.tsx";
 import {departmentEditStyles} from "@/pages/department_edit";
 
@@ -25,6 +25,8 @@ export const DepartmentEditSection = ({
         setFaculty("");
     };
     console.log("targetParent:", departmentOptions);
+    console.log("faculty:", faculty);
+    console.log("department:", departments);
 
     const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedName = e.target.value;
@@ -45,16 +47,24 @@ export const DepartmentEditSection = ({
 
     const {handleSave} = useEditSectionButton(refetch);
 
+    useEffect(() => {
+        if (facultyDefault && parentType == "faculty") setFaculty(facultyDefault);
+        else if(facultyDefault && parentType == "department") {
+            setDepartments([...departments, { name: facultyDefault, majors: [] }]);
+        }
+
+    }, []);
+
     return (
         <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>
             <h3>새 학부/학과/전공 추가</h3>
             {parentType === "faculty" ? (
             facultyDefault ? (
+
                 <div>
                     <label style={{ display: "block", marginBottom: "4px" }}>학부명</label>
                     <select
                         value={faculty}
-                        onChange={(e) => setFaculty(e.target.value)}
                         className={departmentEditStyles.selectBox}
                     >
                         <option value="">{facultyDefault || "학부 선택"}</option>

@@ -87,7 +87,7 @@ export const SocialLoginHandler = () => {
         <div>
             {status === 'IDLE' && <p>로그인 처리 중...</p>}
             {status === 'SUCCESS' && <p>로그인 성공</p>}
-            {status === 'FAIL' && <p>로그인 실패</p>}
+            {status === 'FAIL' &&<p>로그인 실패 </p>}
         </div>
     )
 }

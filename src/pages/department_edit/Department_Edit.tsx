@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import {DepartmentEditSection} from "@/features/department_edit/components/DepartmentEditSection.tsx";
 import {useEditSectionButton} from "@/features/department_edit/model/useEditSectionButton.tsx";
 import {Popup} from "@/shared/popup";
+import {departmentApi} from "@/entities";
+import {useDataFetching} from "@/shared";
 
 export const Department_Edit = () => {
     const navigate = useNavigate();
-    const none = () =>{}
-    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(none)
+    const { refetch } = useDataFetching({fetchFn:departmentApi.getDeptList})
+    const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(refetch)
 
     return (
         <div className={departmentEditStyles.container}>
