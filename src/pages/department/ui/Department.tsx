@@ -33,8 +33,9 @@ export const Department = () => {
      * @property {() => Promise<void>} refetch - 데이터를 다시 요청하는 함수
      */
     const { data, loading, error, refetch } = useDataFetching({
-        fetchFn: departmentApi.getDeptMapData,
+        fetchFn: () => departmentApi.getDeptMapData(Number(id)),
     })
+
 
     // URL 파라미터가 없으면 리스트로 리다이렉트
     if (!id) {
@@ -43,7 +44,7 @@ export const Department = () => {
     }
 
     // 해당 ID에 맞는 데이터 찾기
-    const departmentData = data?.find((dept) => dept.dept_map_id === Number.parseInt(id))
+    const departmentData = data
 
     /**현재 상태(로딩,에러,데이터없음,정상)에 따라 UI 렌더링
      *

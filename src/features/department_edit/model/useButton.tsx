@@ -19,6 +19,7 @@ export const useButton= (refetch: (() => void) | undefined) =>{
         if (result) {
             const response = await axios.post('/api/dept/delete', { id,type,value });
             console.log(response);
+            refetch?.()
         }
         else {
             //console.log(`${id} 삭제됨`);
