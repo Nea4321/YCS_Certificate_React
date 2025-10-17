@@ -74,6 +74,7 @@ export const LoginForm = () => {
                     userName: data.userName || '',
                     userEmail: data.email || '',
                     socialType: data.socialType || 'NORMAL',
+                    userRole: data.role || '',
                     tokenExp: data.exp || 0,
                 }))
                 console.log("exp : " , data.exp)

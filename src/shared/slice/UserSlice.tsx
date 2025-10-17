@@ -29,14 +29,15 @@ export const userSlice = createSlice({
         setUser: (state, action) => {
             state.userName = action.payload.userName;
             state.userEmail = action.payload.userEmail;
+            state.userRole = action.payload.userRole;
             state.socialType = action.payload.socialType;
             state.tokenExp = action.payload.tokenExp
         },
         clearUser: (state) => {
         state.userName = ''
         state.userEmail = ''
-        state.socialType = ''
             state.userRole= ''
+        state.socialType = ''
             state.tokenExp = null}
     }
 })

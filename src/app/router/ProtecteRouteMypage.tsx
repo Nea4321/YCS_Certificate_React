@@ -9,7 +9,7 @@ import {JSX} from "react";
  *
  * 현재 사용은 대시보드(마이페이지) 에서 사용하고 있음
  * */
-export const ProtecteRoute = ({ children }: { children: JSX.Element }) => {
+export const ProtecteRouteMypage = ({ children }: { children: JSX.Element }) => {
     const email = useSelector((state: RootState) => state.user.userEmail);
 
     if (!email) {

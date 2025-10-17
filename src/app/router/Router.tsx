@@ -15,8 +15,9 @@ import {CBTStart} from "@/pages/cbt-start";
 import {CBTTest} from "@/pages/cbt-test";
 import {Logout} from "@/pages/logout/ui";
 import { Department_Edit } from "@/pages/department_edit";
-import {ProtecteRoute} from "@/app/router/ProtecteRoute.tsx";
+import {ProtecteRouteMypage} from "@/app/router/ProtecteRouteMypage.tsx";
 import {ExamResult} from "@/pages/exam-result";
+import {ProtecteRouteDepartment_edit} from "@/app/router/ProtecteRouteDepartment_edit.tsx";
 
 
 export const Router = () => {
@@ -41,9 +42,11 @@ export const Router = () => {
                             <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}
-                        <Route path="/dashboard" element={<ProtecteRoute><DashBoard /></ProtecteRoute>} />     {/* 마이 페이지 */}
-                            <Route path="/departments_edit" element={<Department_Edit/>} />          {/* 학과 수정 페이지 */}
-                            {/* 추가 라우트 정의 */}
+                            <Route path="/dashboard" element={<ProtecteRouteMypage><DashBoard /></ProtecteRouteMypage>} />     {/* 마이 페이지 */}
+                            <Route path="/departments_edit" element={<ProtecteRouteDepartment_edit><Department_Edit/></ProtecteRouteDepartment_edit>} />          {/* 학과 수정 페이지 */}
+
+
+                        {/* 추가 라우트 정의 */}
                             {/* <Route path="/departments/:id" element={<DepartmentDetailPage />} /> */}
                             {/* <Route path="/certificates" element={<CertificateListPage />} /> */}
                             {/* 검색 기능 */}

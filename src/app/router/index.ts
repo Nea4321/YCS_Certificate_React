@@ -1,2 +1,3 @@
 export { Router } from "./Router"
-export { ProtecteRoute } from "./ProtecteRoute"
+export { ProtecteRouteMypage } from "./ProtecteRouteMypage"
+export { ProtecteRouteDepartment_edit } from "./ProtecteRouteDepartment_edit"

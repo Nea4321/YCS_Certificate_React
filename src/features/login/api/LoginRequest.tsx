@@ -17,6 +17,7 @@ interface MyJwtPayload extends JwtPayload {
     userName?: string;
     email?: string;
     socialType?: string;
+    role?: string;
     exp: number;
 }
 

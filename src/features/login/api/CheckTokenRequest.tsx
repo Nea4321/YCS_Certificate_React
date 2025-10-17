@@ -11,6 +11,7 @@ interface MyJwtPayload extends JwtPayload {
     userName?: string;
     email?: string;
     socialType?: string;
+    role?: string;
     exp: number;
 }
 
@@ -44,6 +45,7 @@ export const CheckTokenRequest = () => {
                 userName: decode.userName || '',
                 userEmail: decode.email || '',
                 socialType: decode.socialType || 'NORMAL',
+                role: decode.role || 'normal',
                 tokenExp: decode.exp || 0,
             }))
             await logout()

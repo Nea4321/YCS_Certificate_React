@@ -16,7 +16,7 @@
 .formWrapper {
   width: 100%;
   max-width: 420px;
-  background-color: white;
+  background-color: var(--background-color);
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
