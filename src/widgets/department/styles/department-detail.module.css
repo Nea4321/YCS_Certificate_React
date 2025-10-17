@@ -40,6 +40,8 @@
     box-shadow: 0 2px 4px var(--shadow-color);
 }
 
+.calendarSection {max-height: 1000px;}
+
 .descriptionSection h2,
 .certificatesSection h2,
 .calendarSection h2{

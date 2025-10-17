@@ -3,7 +3,7 @@ export const imageKeywordMap: Record<string, string> = {
     '건축': 'https://www.adobe.com/kr/products/firefly/discover/media_1a29113bfbaef033f22f1a52c9f9ee20c664c2ab8.jpeg',
     '건설': 'https://d2k8i5ah8p7h3l.cloudfront.net/news/photo/202402/111207_97089_3115.jpg',
     '기계': 'https://pimg.mk.co.kr/meet/neds/2018/07/image_readtop_2018_463585_15323796613398026.jpg',
-    '전기': 'https://www.lgcns.com/wp-content/uploads/2021/11/99DFC14C5B0BDD8D16.png',
+    '전기': 'https://www.busan.com/nas/wcms/wcms_data/photos/2023/05/11/2023051118222281510_l.jpg',
     '토목': 'https://gangsan21.com/wp-content/uploads/2022/04/construction-site-1-scaled.jpg',
     '식품': 'https://cdn.kormedi.com/wp-content/uploads/2023/03/gettyimages-1437713519-700x487.jpg.webp',
     '항공': 'https://img0.yna.co.kr/etc/inner/KR/2024/07/22/AKR20240722143700003_01_i_P4.jpg',

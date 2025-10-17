@@ -29,8 +29,8 @@ export const departmentApi = {
     return response.data
   },
 
-  getDeptMapData: async (id: number, signal?: AbortSignal): Promise<DeptMapData[]> => {
-    const response = await axiosApi.get<DeptMapData[]>(`/api/dept/data${id}`, { signal })
+  getDeptMapData: async (id: number, signal?: AbortSignal): Promise<DeptMapData> => {
+    const response = await axiosApi.get<DeptMapData>(`/api/dept/data/${id}`, { signal })
     return response.data
   },
 

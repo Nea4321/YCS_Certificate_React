@@ -44,7 +44,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: "http://yjs0511.synology.me:50030",
         changeOrigin: true,
         secure: false,
       },

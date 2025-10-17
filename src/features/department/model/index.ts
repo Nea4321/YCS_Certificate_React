@@ -1,0 +1,1 @@
+export { useDepartmentSchedules } from './useDepartmentSchedules.ts'
