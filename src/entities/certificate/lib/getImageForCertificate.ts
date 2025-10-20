@@ -1,6 +1,6 @@
 import { imageKeywordMap } from './imageKeywordMap.ts';
 
-const defaultImage = 'https://i.namu.wiki/i/FYU32qsho4Zx4femUmKQBJLF-mZ1wuo9ZRQpUYpDc3IypISt4wiYO_dB_RtNetJaZkOs0Q82fMl_Mwm0c8A6zV2DCWkD8PuyKBGxUP0IArPMaZV7PUlmSBSqJVlEEzwNulOIXdcxeYtUmxO8TwYwyw.svg';
+const defaultImage = 'https://www.yuhan.ac.kr/ibuilder/template/theme_skin/theme900/images/introduce/img_sbmark_large.png';
 
 export const getImageForCertificate = (name: string): string => {
     for (const keyword in imageKeywordMap) {

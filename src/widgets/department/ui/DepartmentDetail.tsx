@@ -1,8 +1,10 @@
-import { memo } from "react"
+import {memo} from "react"
 import type { DeptMapData } from "@/entities/department/model"
 import { departmentDetailStyles } from "../styles"
 import { Link } from "react-router-dom"
 import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx";
+import { useDepartmentSchedules } from "@/features/department/model/useDepartmentSchedules";
+import { AdditionalInfoSection } from "@/features/department/ui/AdditionalInfoSection";
 
 /**DepartmentDetail에 전달할 props
  *
@@ -27,6 +29,10 @@ interface DepartmentDetailProps {
  *
  * @component*/
 export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => {
+    const { events, isLoading, error } = useDepartmentSchedules(department.cert);
+    const descriptionObject = department.description as unknown as Record<string, string>;
+    const introduction = descriptionObject?.["학과소개"];
+
     return (
         <div className={departmentDetailStyles.container}>
             <div className={departmentDetailStyles.header}>
@@ -34,11 +40,21 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
             </div>
 
             <div className={departmentDetailStyles.content}>
-
+                {introduction && (
+                    <section className={departmentDetailStyles.descriptionSection}>
+                        <h2>학과 소개</h2>
+                        <div className={departmentDetailStyles.description}>
+                        <p className={departmentDetailStyles.descriptionText}>{introduction}</p>
+                        </div>
+                    </section>
+                )}
                 <section className={departmentDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
-                    {/* dept_map_id를 통해서 해당 학과 자격증 구분 */}
-                    <CalendarWidget dept_map_id={department.dept_map_id} />
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <CalendarWidget
+                        events={events}
+                        loading={isLoading}
+                    />
                 </section>
 
                 <section className={departmentDetailStyles.certificatesSection}>
@@ -56,14 +72,10 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                     )}
                 </section>
 
-                <section className={departmentDetailStyles.descriptionSection}>
-                    <h2>학과 소개</h2>
-                    <div className={departmentDetailStyles.description}>
-                        {department.description || "학과 소개 정보가 없습니다."}
-                    </div>
-                </section>
+                <AdditionalInfoSection description={descriptionObject} />
             </div>
         </div>
+
     )
 })
 

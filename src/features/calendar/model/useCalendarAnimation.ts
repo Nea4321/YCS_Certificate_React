@@ -20,9 +20,7 @@ export function useCalendarAnimation({
         if (!grid) return;
 
         const raf = requestAnimationFrame(() => {
-            // 1순위: 선택된 날짜(react-calendar__tile--active)
-            // 2순위: 오늘(react-calendar__tile--now)
-            // 3순위: 첫 타일
+
             const target =
                 (root.querySelector('.react-calendar__tile--active') as HTMLElement | null) ||
                 (root.querySelector('.react-calendar__tile--now') as HTMLElement | null) ||

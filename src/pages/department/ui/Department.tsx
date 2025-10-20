@@ -36,7 +36,6 @@ export const Department = () => {
         fetchFn: () => departmentApi.getDeptMapData(Number(id)),
     })
 
-
     // URL 파라미터가 없으면 리스트로 리다이렉트
     if (!id) {
         navigate("/departments", { replace: true })

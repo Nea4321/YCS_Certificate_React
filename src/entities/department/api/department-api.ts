@@ -1,3 +1,4 @@
+
 import { axiosApi } from "@/shared/api/axios-api.ts";
 import {Department, DeptMapData, DeptList, DeptMap, Faculty, Major, FacultywithDepartment} from '@/entities';
 
@@ -29,7 +30,7 @@ export const departmentApi = {
   },
 
   getDeptMapData: async (id: number, signal?: AbortSignal): Promise<DeptMapData> => {
-    const response = await axiosApi.get<DeptMapData>(`/api/dept/data${id}`, { signal })
+    const response = await axiosApi.get<DeptMapData>(`/api/dept/data/${id}`, { signal })
     return response.data
   },
 

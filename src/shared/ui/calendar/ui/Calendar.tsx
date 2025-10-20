@@ -18,7 +18,7 @@ export function Calendar({ isExpanded, ...props }: CalendarProps) {
             {...props}
             locale="ko-KR"
             view={props.view}
-            onViewChange={props.onViewChange as any}
+            onViewChange={props.onViewChange}
             minDetail={isExpanded ? undefined : 'month'}
             showNavigation={isExpanded}
             formatDay={(_loc, d) => d.getDate().toString()}
