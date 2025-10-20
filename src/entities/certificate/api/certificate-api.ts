@@ -1,7 +1,6 @@
 // src/entities/certificate/api/certificate-api.ts
 import { axiosApi } from '@/shared/api/axios-api';
 import type { Certificate, CertificateData, Schedule, Tag, Organization } from "@/entities/certificate/model/types";
-//import type { ScheduleEventsDto } from '@/entities/certificate/model/types';
 // CertData export 되어있어야 합니다.
 
 export const certificateApi = {

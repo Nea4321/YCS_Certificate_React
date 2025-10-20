@@ -1,3 +1,3 @@
 export * from './department'
 export * from './certificate'
-export type { Certificate, CertData } from "./certificate/model/types";
+export type { Certificate, CertificateData } from "./certificate/model/types";
