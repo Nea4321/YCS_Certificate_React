@@ -58,7 +58,7 @@ export const SocialLoginHandler = () => {
                     userName: data.userName || '',
                     userEmail: data.email || '',
                     socialType: data.socialType || 'NORMAL',
-                    role: data.role || '',
+                    userRole: data.role || '',
                     tokenExp: data.exp || 0,
                 }))
                 window.opener.location.replace('/')
