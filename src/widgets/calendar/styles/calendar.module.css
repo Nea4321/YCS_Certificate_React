@@ -245,6 +245,7 @@
     flex-direction: column;
     justify-content: flex-end;
     overflow: hidden;
+    z-index: 2;
 }
 .certificateList {
     display: flex;
@@ -284,10 +285,11 @@
     transition: max-height .35s ease-in-out;
     overflow: hidden;
     max-height: 900px;
+    position: relative;
 }
 
 .calendarWrapper.collapsed {
-    max-height: 200px;
+    max-height: 194px;
 }
 
 .expandIconWrapper {
@@ -431,4 +433,51 @@
 .calendarWrapper.collapsed :global(.react-calendar__month-view__days__day--neighboringMonth) {
     pointer-events: none;
     cursor: not-allowed;
+}
+
+:global(.react-calendar__tile) {
+    position: relative;
+    overflow: hidden;
+}
+
+:global(.react-calendar__tile.calendar-tile--banded)::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    z-index:1;
+    pointer-events:none;
+    transition: opacity .2s ease-out;
+}
+
+:global(.react-calendar__tile.calendar-tile--banded:hover)::after,
+:global(.react-calendar__tile.calendar-tile--banded:focus-visible)::after{
+    opacity: 1;
+}
+
+.tileBandBg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+:global(.react-calendar__tile.calendar-tile--banded) {
+    background: transparent !important;
+}
+:global(.react-calendar__tile abbr) {
+    position: relative;
+    z-index: 2;
+}
+:global(.react-calendar__tile.calendar-tile--banded[class*="calendar-tile--round-left-"]) {
+    border-left: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+:global(.react-calendar__tile.calendar-tile--banded[class*="calendar-tile--round-right-"]) {
+    border-right: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }

@@ -1,11 +1,10 @@
 // widgets/calendar/ui/CalendarWidget.tsx
-import {useState, useEffect, useRef, useCallback} from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { UiEvent } from "@/features/calendar/model/adapters";
 import * as dateUtils from "@/shared/lib/date";
 import { Calendar } from "@/shared/ui/calendar/ui/Calendar";
 import { CalendarLegend } from "@/shared/ui/calendar/ui/CalendarLegend";
-import { getTileClassName, getTileContent as getBaseTileContent } from "@/features/calendar/ui/tile";
-import { withTileClickOverlay } from "@/features/calendar/ui/withTileClickOverlay.tsx";
+import { getTileClassName, getTileContent as getBaseTileContent, getTileBandsContent } from "@/features/calendar/ui/tile";
 import { useCalendarAnimation } from "@/features/calendar/model/useCalendarAnimation";
 import { CalendarToggleButton } from "@/features/calendar/ui/CalendarToggleButton";
 import { calendarStyles } from "@/widgets/calendar/";
@@ -28,8 +27,9 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
     const [viewReady, setViewReady] = useState(false);
     const [view, setView] = useState<CalView>("month");
     const calRef = useRef<HTMLDivElement>(null);
-
-    const { open, anchor, selectedDate, selectedEvents, openFor, close } = useCalendarPopover(events);
+    const bandBg = getTileBandsContent(events);
+    const { open, selectedDate, selectedEvents, openFor, close } = useCalendarPopover(events);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     const handleViewChange = useCallback(({ view }: { view: CalView }) => {
         if (isExpanded) setView(view);
@@ -51,8 +51,13 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
     }, [isExpanded, visibleMonth]);
 
     useCollapseToMonth({
-        isExpanded, view, setView, value: currentDate,
-        setVisibleMonth, startOfMonth: dateUtils.startOfMonth, restorePrevOnExpand: false
+        isExpanded,
+        view,
+        setView,
+        value: currentDate,
+        setVisibleMonth,
+        startOfMonth: dateUtils.startOfMonth,
+        restorePrevOnExpand: false,
     });
 
     useCalendarAnimation({ calRef, isExpanded, viewReady });
@@ -61,23 +66,36 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
 
     const baseTileContent = getBaseTileContent(events, certName);
 
-    const tileContent = withTileClickOverlay(baseTileContent, (date, rect) => openFor(date, rect));
+    const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+    const monthEvents = events.filter(
+        (e) => e.startdate.slice(0, 7) <= monthKey && monthKey <= e.enddate.slice(0, 7)
+    );
 
-    const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-    const monthEvents = events.filter(e => e.startdate.slice(0,7) <= monthKey && monthKey <= e.enddate.slice(0,7));
+    const tileContent = ({ date, view }: { date: Date; view: string }) => (
+        <>
+            {bandBg({ date, view })}
+            {baseTileContent({ date, view })}
+        </>
+    );
+
+
+
 
     if (loading) return <div className={calendarStyles.loading}>일정을 불러오는 중...</div>;
 
     return (
         <div className={calendarStyles.calendarWidget}>
-            <div style={{fontSize:12, color:"#6b7280", marginBottom:8}}>
-                {certName ? `자격증: ${certName}` : "자격증"} · {currentDate.getMonth()+1}월의 이벤트: {monthEvents.length}건
+            <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 8 }}>
+                {certName ? `자격증: ${certName}` : "자격증"} · {currentDate.getMonth() + 1}월의 이벤트: {monthEvents.length}건
             </div>
 
-            <div ref={calRef} className={`${calendarStyles.calendarWrapper} ${!isExpanded ? calendarStyles.collapsed : ""}`}>
+            <div
+                ref={calRef}
+                className={`${calendarStyles.calendarWrapper} ${!isExpanded ? calendarStyles.collapsed : ""}`}
+            >
                 <Calendar
                     value={currentDate ?? undefined}
-                    onChange={v => setCurrentDate(v as Date)}
+                    onChange={(v) => setCurrentDate(v as Date)}
                     activeStartDate={visibleMonth}
                     onActiveStartDateChange={({ activeStartDate }) => {
                         if (activeStartDate) setVisibleMonth(dateUtils.startOfMonth(activeStartDate));
@@ -87,6 +105,11 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
                     isExpanded={isExpanded}
                     tileClassName={tileClassName}
                     tileContent={tileContent}
+                    onClickDay={(date, e) => {
+                        const tile = e?.currentTarget as HTMLElement | null;  // 타일 <button>
+                        openFor(date);
+                        setAnchorEl(tile);
+                    }}
                 />
             </div>
 
@@ -102,7 +125,8 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
             <EventPopover
                 open={open}
                 onClose={close}
-                anchor={anchor}
+                anchorEl={anchorEl}
+                containerEl={calRef.current}
                 dateText={selectedDate ? dateUtils.formatDate(selectedDate) : ""}
                 items={selectedEvents}
             />

@@ -49,7 +49,7 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                     </section>
                 )}
                 <section className={departmentDetailStyles.calendarSection}>
-                    <h2>관련 자격증 시험 일정</h2>
+                    <h2>자격증 시험 일정</h2>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                     <CalendarWidget
                         events={events}
