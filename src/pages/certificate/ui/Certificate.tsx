@@ -4,8 +4,11 @@ import { useDataFetching } from "@/shared"
 import { CertificateDetail } from "@/widgets/certificate"
 import { certificateStyles } from "../styles"
 import { certificateApi } from '@/entities/certificate/api/certificate-api';
+import { schedulesToEvents } from '@/entities/certificate/lib'; // ← 요거 추가
+
 // ⬇️ 새로 추가/수정된 타입들만 가져오기
 import type {
+    Schedule,              // ← 추가
     ScheduleEventsDto,
     ExamEventDto,
     ExamEventTypeBE,
@@ -41,9 +44,12 @@ export default function Certificate() {
         if (!id || Number.isNaN(certId)) navigate('/', { replace: true });
     }, [id, certId, navigate]);
 
-    // ⬇️ 제네릭을 ScheduleEventsDto로 명확히
+    // ✅ fetchFn: number -> number[] 로 넘기고, Schedule[] -> ScheduleEventsDto 로 변환
     const { data, loading, error, refetch } = useDataFetching<ScheduleEventsDto>({
-        fetchFn: () => certificateApi.getSchedule(certId),
+        fetchFn: () =>
+            certificateApi.getSchedule([certId]).then((rows: Schedule[]) => ({
+                events: schedulesToEvents(rows),
+            })),
     });
 
     // BE events[] -> UI events

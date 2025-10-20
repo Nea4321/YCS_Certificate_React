@@ -1,31 +1,14 @@
+/** ───────── 기본 엔티티 ───────── */
 export interface Certificate {
-    certificate_id: number,
-    certificate_name: string,
-    jmcd: string,
-    organization_id: number,
-    tag: number[]
-}
-
-export interface CertificateData {
-    certificate_id: number,
-    certificate_name: string,
-    basic_info: string;//일단 문자열로 받고 자격증 페이지에서
-    schedule: Record<string, string | null>[];
-    other_info: string; // 보여줄때 JSON.parse() 같은걸로 사용
+    certificate_id: number;
+    certificate_name: string;
+    jmcd: string;
     organization_id: number;
-
+    tag: number[];
 }
 
-export interface Organization {
-    organization_id: number;
-    organization_name: string;
-}
-
-export interface Tag {
-    tag_id: number;
-    tag_name: string;
-    color: string;
-}
+export interface Organization { organization_id: number; organization_name: string; }
+export interface Tag { tag_id: number; tag_name: string; color: string; }
 
 export interface Schedule {
     certificate_id: number;
@@ -33,59 +16,71 @@ export interface Schedule {
     schedule: Record<string, string | null>[];
 }
 
-// entities/certificate/model/types.ts
+/** 자격증 상세(캐시) */
+export interface CertificateData {
+    certificate_id: number;
+    certificate_name: string;
+    basic_info: string;                 // 원문 HTML
+    schedule: Record<string, string | null>[];
+    other_info: unknown;                // 백엔드가 object|string 등 다양 → guards로 좁힘
+    organization_id: number;
+
+    // 선택 필드(정규화/HTML)
+    exam_info_normalized?: ExamInfoDto;
+    exam_info?: ExamInfoDto;
+    basic_info_html?: string;
+    benefit_info_html?: string;
+    benefit_info?: string;
+    basic_info_plain?: string;
+}
+
+/** ───────── 스케줄 DTO ───────── */
 export type ExamEventTypeBE =
     | 'DOC_REG' | 'DOC_EXAM' | 'DOC_PASS'
     | 'PRAC_REG' | 'PRAC_EXAM' | 'PRAC_PASS';
 
-export interface ExamEventDto {
-    startDate: string;   // 'YYYY-MM-DD'
-    endDate: string;     // 'YYYY-MM-DD'
-    type: ExamEventTypeBE;
-}
-// 통합 뷰
-export interface CertificatePublicViewDto {
-    meta?: { id: number; name?: string };
-    schedule?: ScheduleDto;
-    examInfo?: ExamInfoDto;
-    basicInfo?: BasicInfoDto;
-    preference?: PreferenceDto;
-}
-
-export interface ScheduleEventsDto {
-    events: ExamEventDto[];
-}
-
-// ── Schedule
-export interface ScheduleDto {
-    regular?: RegularScheduleRow[];   // 정기검정일정
-    special?: SpecialScheduleRow[];   // 상시/특별 등 (있다면)
-    updatedAt?: string;
-    [k: string]: unknown;
-}
+export interface ExamEventDto { startDate: string; endDate: string; type: ExamEventTypeBE; }
+export interface ScheduleEventsDto { events: ExamEventDto[]; }
 
 export interface RegularScheduleRow {
-    round?: string | number;  // 제○회
-    applyStart?: string;      // 원서접수 시작
-    applyEnd?: string;        // 원서접수 종료
-    examDate?: string;        // 시험일
-    resultDate?: string;      // 합격자발표
-    note?: string;            // 비고
+    round?: string | number;
+    applyStart?: string;
+    applyEnd?: string;
+    examDate?: string;
+    resultDate?: string;
+    note?: string;
     [k: string]: unknown;
 }
 export type SpecialScheduleRow = RegularScheduleRow;
 
-// ── ExamInfo/BasicInfo/Preference (필드는 점진 확장)
-export interface ExamInfoDto { sections?: unknown[]; fee?: unknown; [k: string]: unknown }
-export interface BasicInfoDto { overview?: string; history?: unknown; [k: string]: unknown }
-export interface PreferenceDto { items?: unknown[]; [k: string]: unknown }
+/** ───────── 시험정보 DTO ───────── */
+export interface StandardLink {
+    label: string;
+    href?: string | null;
+    action?: Record<string, unknown> | null;
+}
 
-// entities/certificate/model/types.ts
-export interface CertData {
-    certificate_id: number;
-    certificate_name?: string;
-    infogb?: string;
-    contents?: string;      // 문자열로 내려오니 string이 편함
+export interface ExamInfoFee { doc?: string|null; prac?: string|null }
+
+export interface ExamInfoDto {
+    fee?: ExamInfoFee;
+    criteria_html?: string;
+    scope_html?: string;
+    method_html?: string;
+    standard_list?: StandardLink[];
+    standard_more?: { label: string; href: string };
+    sections?: Array<{ title?: string; html?: string }>;
     [k: string]: unknown;
 }
 
+/** ───────── 기본/우대 HTML 선택 ───────── */
+export interface HtmlBlocks {
+    basic_info_html?: string;
+    basic_info?: string;
+    benefit_info_html?: string;
+    benefit_info?: string;
+}
+
+/** ───────── 종목별 검정현황 ───────── */
+export type ExamStatsRow = Record<string, string | number>;
+export type ExamStats = ExamStatsRow[];
