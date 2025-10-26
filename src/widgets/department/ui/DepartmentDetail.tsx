@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { CalendarWidget } from "@/widgets/calendar/ui/CalendarWidget.tsx";
 import { useDepartmentSchedules } from "@/features/department/model/useDepartmentSchedules";
 import { AdditionalInfoSection } from "@/features/department/ui/AdditionalInfoSection";
+import {FavoriteButton} from "@/features/favorite";
 
 /**DepartmentDetail에 전달할 props
  *
@@ -36,7 +37,10 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
     return (
         <div className={departmentDetailStyles.container}>
             <div className={departmentDetailStyles.header}>
+                <div className={departmentDetailStyles.titlebox}>
                 <h1 className={departmentDetailStyles.title}>{department.dept_map_name}</h1>
+                <FavoriteButton exist={department.dept_map_name} id={department.dept_map_id} type={"department"}/>
+                </div>
             </div>
 
             <div className={departmentDetailStyles.content}>

@@ -20,6 +20,13 @@
     font-weight: bold;
 }
 
+.titlebox {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 (원하면 flex-start로 바꿔도 됨) */
+    gap: 10px; /* 제목과 버튼 사이 간격 */
+}
+
 .id {
     color: var(--text-secondary);
     font-size: 1.1em;
