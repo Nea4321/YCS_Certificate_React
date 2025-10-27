@@ -17,8 +17,15 @@ interface FavoriteButtonProps {
     type:string
 }
 
+/** 즐찾 버튼
+ * 추가, 삭제, 체크
+ * 체크해서 있으면 별표 색칠 되어있고 없으면 빈칸이고
+ * 추가, 삭제 할 떄마다 통째로 redux에 저장. -> cancel 같은 복잡한 로직떄문에
+ * */
 export const FavoriteButton = ({exist,id,type}: FavoriteButtonProps)=>{
     const [isFavorite, setIsFavorite] = useState(false);
+    // 로그인 되어 있을 때 저장되게 -> 월래는 액세스 토큰으로 비교할려 했는데 주옷 버그 떄문에 임시로 redux 유저 이름으로 대체
+    // -> 물론 보안은 최악인 방법. -> redux값만 해킹해서 넣으면 즐찾 db요청을 허락하게 되는 거니까
     const name = useSelector((state: RootState) => state.user.userName)
     const dispatch = useDispatch();
 
@@ -52,9 +59,9 @@ export const FavoriteButton = ({exist,id,type}: FavoriteButtonProps)=>{
         }
     }, [type, id]);
 
-    const data = FavoriteInfoRequest()
-    console.log("info:",data)
-    console.log("id:",id)
+    // 실험 용 const data = FavoriteInfoRequest()
+    // console.log("info:",data)
+    // console.log("id:",id)
 
 
     // 상단에 이름 으로 데이터 유,무를 판단함 (자격증이름, 학과이름)
