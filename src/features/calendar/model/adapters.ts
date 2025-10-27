@@ -62,7 +62,7 @@ const clean = (s: unknown) =>
     String(s ?? '')
         .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width
         .replace(/\s+/g, '')
-        .replace(/[():\[\]{}]/g, '')
+        .replace(/[(){}:·]|\u005B|\u005D/g, '')
         .trim();
 
 // phase 값을 robust 하게 구함: 'phase' | '구분' | '종류' 중 첫 매치
