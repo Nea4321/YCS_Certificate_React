@@ -5,10 +5,11 @@ import {
     FavoriteAddRequest,
     FavoriteCheckRequest,
     FavoriteDeleteRequest,
-    FavoriteInfoRequest
+    FavoriteInfoRequest, FavoriteScheduleRequest
 } from "@/features/favorite";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
+import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
 
 interface FavoriteButtonProps {
     exist?:string
@@ -19,13 +20,24 @@ interface FavoriteButtonProps {
 export const FavoriteButton = ({exist,id,type}: FavoriteButtonProps)=>{
     const [isFavorite, setIsFavorite] = useState(false);
     const name = useSelector((state: RootState) => state.user.userName)
+    const dispatch = useDispatch();
+
     const toggleFavorite = async () => {
         if(name) {
         try {
                 if (!isFavorite) {
                     await FavoriteAddRequest(type, Number(id));
+                    const favorite_data = await FavoriteInfoRequest();
+                    const favorite_schedule = await FavoriteScheduleRequest();
+                    dispatch(setFavoriteInfo(favorite_data))
+                    dispatch(setFavoriteSchedule(favorite_schedule))
+
                 } else {
                     await FavoriteDeleteRequest(type, Number(id));
+                    const favorite_data = await FavoriteInfoRequest();
+                    const favorite_schedule = await FavoriteScheduleRequest();
+                    dispatch(setFavoriteInfo(favorite_data))
+                    dispatch(setFavoriteSchedule(favorite_schedule))
                 }
 
             setIsFavorite((prev) => !prev);

@@ -1,65 +1,97 @@
 import { User, X, Trash2 } from "lucide-react"
 
-import { useSelector } from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import type { RootState } from "@/app/store"
 import { userInfoPanelStyles } from "./styles"
-import {FavoriteInfoRequest} from "@/features/favorite";
+import {
+    FavoriteDeleteRequest,
+    FavoriteInfoRequest,
+    FavoriteScheduleRequest
+} from "@/features/favorite";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {FavoriteSchedule, setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
+import {CalendarWidget} from "@/widgets/calendar";
+import {UiEvent, UiEventType} from "@/features/calendar";
 
 interface UserInfoPanelProps {
     isOpen: boolean
     onToggle: () => void
 }
 
-interface FavoriteInfoRequest {
-    type: string;
-    type_id: number;
-    name: string;
-}
-
-const MOCK_USER_DATA = {
-    name: "김자격",
-    role: "일반 회원",
-    social: {
-        email: "user@example.com",
-        provider: "Google",
-    },
-    favoriteDepartments: [
-        { id: 1, name: "컴퓨터공학과" },
-        { id: 2, name: "전자공학과" },
-        { id: 3, name: "경영학과" },
-    ],
-    favoriteCertificates: [
-        { id: 1, name: "정보처리기사", examDate: "2025-03-15" },
-        { id: 2, name: "네트워크관리사", examDate: "2025-04-20" },
-        { id: 3, name: "리눅스마스터", examDate: "2025-05-10" },
-    ],
-}
-
 export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
     const userEmail = useSelector((state: RootState) => state.user.userEmail)
     const userName = useSelector((state: RootState) => state.user.userName)
     const socialType = useSelector((state: RootState) => state.user.socialType)
-    const [favorite, setFavorite] = useState<FavoriteInfoRequest[]>([]);
 
-    console.log("favorite", favorite);
-    const handleDelete = (type: "department" | "certificate", id: number) => {
+    const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
+    const favoriteSchedule = useSelector((state: RootState) => state.favorite_schedule.list);
+
+    const [selectedCertificate, setSelectedCertificate] = useState<FavoriteSchedule | null>(null);
+
+    console.log("favorite", favoriteInfo);
+    console.log("schedule", favoriteSchedule);
+
+    const handleDelete = async (type: "department" | "certificate", id: number) => {
         console.log(`Delete ${type} with id: ${id}`)
-        // 실제로는 여기서 Redux action이나 API 호출을 통해 삭제 처리
+        await FavoriteDeleteRequest(type, id);
+        const favorite_data = await FavoriteInfoRequest();
+        const favorite_schedule = await FavoriteScheduleRequest();
+        dispatch(setFavoriteInfo(favorite_data))
+        dispatch(setFavoriteSchedule(favorite_schedule))
     }
+    const selectedEvents: UiEvent[] =
+        selectedCertificate?.schedule.map((sch: any) => {
+            const [startStr, endStr] = sch.exam_date.split("~").map((s) => s.trim());
+            const start = new Date(startStr.replace(/\./g, "-"));
+            const end = endStr ? new Date(endStr.replace(/\./g, "-")) : start;
+
+            // phase 기반 type 지정
+            let type: UiEventType;
+            switch (sch.phase) {
+                case "필기":
+                    type = "doc-exam";
+                    break;
+                case "실기":
+                    type = "prac-exam";
+                    break;
+                case "서류접수":
+                    type = "doc-reg";
+                    break;
+                case "합격발표":
+                    type = "doc-pass";
+                    break;
+                default:
+                    type = "doc-exam"; // 기타
+            }
+
+            return {
+                startdate: start.toISOString().split("T")[0],
+                enddate: end.toISOString().split("T")[0],
+                certificate: selectedCertificate.certificate_name,
+                phase: sch.phase,
+                round: sch.round,
+                type, // 필수
+            };
+        }) ?? [];
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchFavorites = async () => {
             try {
                 const favorite_data = await FavoriteInfoRequest();
-                setFavorite(favorite_data);
-            } catch (err) {console.error(err);}
+                const favorite_schedule = await FavoriteScheduleRequest();
+                // Redux에 저장
+                dispatch(setFavoriteInfo(favorite_data));
+                dispatch(setFavoriteSchedule(favorite_schedule));
+            } catch (err) {
+                console.error(err);
+            }
         };
-        fetchData();
-    }, []);
 
+        fetchFavorites();
+    }, [dispatch]); // 마운트 시 한 번만 실행
 
     return (
         <>
@@ -81,7 +113,9 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                     {!userName ? (
                         <div className={userInfoPanelStyles.loginPrompt}>
                             <p className={userInfoPanelStyles.loginMessage}>로그인이 필요합니다</p>
-                            <button className={userInfoPanelStyles.loginButton} onClick={()=>navigate("/auth")}>로그인</button>
+                            <button className={userInfoPanelStyles.loginButton} onClick={() => navigate("/auth")}>
+                                로그인
+                            </button>
                         </div>
                     ) : (
                         <>
@@ -114,35 +148,78 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {MOCK_USER_DATA.favoriteCertificates.map((cert) => (
-                                            <tr key={cert.id}>
-                                                <td>{cert.name}</td>
-                                                <td>{cert.examDate}</td>
-                                            </tr>
-                                        ))}
+                                        {favoriteSchedule.map((cert) => {
+                                            const today = new Date();
+                                            const parseExamStart = (rangeStr: string) => {
+                                                const [startStr] = rangeStr.split("~").map((s) => s.trim());
+                                                const [y, m, d] = startStr.split(".").map(Number);
+                                                return new Date(y, m - 1, d);
+                                            };
+                                            const nearest = cert.schedule
+                                                .map((sch) => ({ ...sch, start: parseExamStart(sch["시험일"]) }))
+                                                .filter((sch) => sch.start >= today)
+                                                .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
+
+                                            if (!nearest) return null;
+
+                                            return (
+                                                <tr key={cert.certificate_id}>
+                                                    <td>
+                                                          <span
+                                                              style={{ cursor: "pointer", color: "#2563eb" }}
+                                                              onClick={() => setSelectedCertificate(cert)}
+                                                          >
+                                                            {cert.certificate_name}
+                                                          </span>
+                                                        </td>
+                                                    <td>{nearest["시험일"].split("~")[0].trim()}</td>
+                                                </tr>
+                                            );
+                                        })}
                                         </tbody>
                                     </table>
                                 </div>
+
+                                {/* 클릭 시 바로 CalendarWidget 렌더 */}
+                                {selectedCertificate && (
+                                    <div style={{ marginTop: 32, position: "relative" }}>
+                                        <button
+                                            onClick={() => setSelectedCertificate(null)}
+                                            style={{position: "absolute", top: 0, right: 0,
+                                                background: "#000000", color: "white",
+                                                border: "none", borderRadius: 4,
+                                                padding: "4px 8px", cursor: "pointer", zIndex: 10,
+                                            }}
+                                        >
+                                            닫기
+                                        </button>
+                                        <CalendarWidget
+                                            events={selectedEvents}
+                                            loading={false}
+                                            certName={selectedCertificate.certificate_name}
+                                        />
+                                    </div>
+                                )}
                             </section>
 
                             {/* 즐겨찾기 학과 섹션 */}
                             <section className={userInfoPanelStyles.section}>
                                 <h3 className={userInfoPanelStyles.sectionTitle}>즐겨찾기 학과</h3>
                                 <ul className={userInfoPanelStyles.favoriteList}>
-                                    {favorite
-                                        .filter(favorite=>favorite.type==="department")
+                                    {favoriteInfo
+                                        .filter((f) => f.type === "department")
                                         .map((favorite) => (
-                                        <li key={favorite.type_id} className={userInfoPanelStyles.favoriteItem}>
-                                            <span>{favorite.name}</span>
-                                            <button
-                                                className={userInfoPanelStyles.deleteButton}
-                                                onClick={() => handleDelete("department", favorite.type_id)}
-                                                aria-label={`${favorite.name} 삭제`}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </li>
-                                    ))}
+                                            <li key={favorite.type_id} className={userInfoPanelStyles.favoriteItem}>
+                                                <span>{favorite.name}</span>
+                                                <button
+                                                    className={userInfoPanelStyles.deleteButton}
+                                                    onClick={() => handleDelete("department", favorite.type_id)}
+                                                    aria-label={`${favorite.name} 삭제`}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </li>
+                                        ))}
                                 </ul>
                             </section>
 
@@ -150,20 +227,20 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                             <section className={userInfoPanelStyles.section}>
                                 <h3 className={userInfoPanelStyles.sectionTitle}>즐겨찾기 자격증</h3>
                                 <ul className={userInfoPanelStyles.favoriteList}>
-                                    {favorite
-                                        .filter(favorite=>favorite.type==="certificate")
+                                    {favoriteInfo
+                                        .filter((f) => f.type === "certificate")
                                         .map((cert) => (
-                                        <li key={cert.type_id} className={userInfoPanelStyles.favoriteItem}>
-                                            <span>{cert.name}</span>
-                                            <button
-                                                className={userInfoPanelStyles.deleteButton}
-                                                onClick={() => handleDelete("certificate", cert.type_id)}
-                                                aria-label={`${cert.name} 삭제`}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </li>
-                                    ))}
+                                            <li key={cert.type_id} className={userInfoPanelStyles.favoriteItem}>
+                                                <span>{cert.name}</span>
+                                                <button
+                                                    className={userInfoPanelStyles.deleteButton}
+                                                    onClick={() => handleDelete("certificate", cert.type_id)}
+                                                    aria-label={`${cert.name} 삭제`}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </li>
+                                        ))}
                                 </ul>
                             </section>
                         </>

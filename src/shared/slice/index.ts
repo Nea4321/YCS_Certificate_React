@@ -1,2 +1,4 @@
-export * from "./UserSlice.tsx";
-export * from "./Faculty_DepartmentSlice.tsx";
+export * from "./UserSlice";
+export * from "./Faculty_DepartmentSlice";
+export * from "./FavoriteListSlice";
+export * from "./FavoriteScheduleSlice";
