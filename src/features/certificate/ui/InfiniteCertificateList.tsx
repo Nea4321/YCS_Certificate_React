@@ -4,6 +4,7 @@ import type { Certificate } from "@/entities/certificate/model/types"
 import { certificateApi } from "@/entities/certificate/api/certificate-api"
 import { CertificateCard } from "@/features/certificate/ui/CertificateCard.tsx"
 import { mainStyles } from "@/pages/main/styles"
+import { loadCertTagMap } from "@/entities/certificate";
 
 const PAGE_SIZE = 20
 
@@ -38,6 +39,7 @@ export const InfiniteCertificateList: React.FC = () => {
                 const data = await certificateApi.getCertificate(controller.signal)
                 setAllCertificates(data) // 불러온 전체 목록 상태 변경
                 setDisplayedCertificates(data.slice(0, PAGE_SIZE)) // 처음 화면에 PAGE_SIZE만큼 자격증 화면에 표시
+                loadCertTagMap(data);
             } catch (error) {
                 console.error("자격증 목록을 불러오는 데 실패했습니다:", error)
             }

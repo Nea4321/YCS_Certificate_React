@@ -1,13 +1,14 @@
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { useEffect, useState } from "react"
+import {useEffect, useMemo, useState} from "react"
 import { axiosApi } from "@/shared/api/axios-api"
 import { SearchResultList } from "./ui"
 import { searchStyles } from "./styles"
 import type { Certificate } from "@/entities/certificate/model/types"
 import { getChoseong, disassemble } from "es-hangul"
-import { certificateTags } from "@/entities/certificate"
+import { certificateTags, loadCertTagMap } from "@/entities/certificate";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store/store";
 import { TagFilterBar } from "@/shared/ui/tag/TagFilterBar.tsx"
-import { tagIdByName } from "@/entities/certificate/model/tagMeta";
 
 /**검색 목록 페이지 컴포넌트
  * - 쿼리스트링의 keyword를 가져와서 사용한다
@@ -24,6 +25,13 @@ export default function SearchResultPage() {
     const [results, setResults] = useState<Certificate[]>([])
     const navigate = useNavigate()
 
+    const tagList = useSelector((s: RootState) => s.tag.list);
+    const tagNameToId = useMemo(() => {
+        const m = new Map<string, number>();
+        tagList.forEach(t => m.set(t.tag_Name, t.tag_id));
+        return m;
+    }, [tagList]);
+
     /**사용자가 검색을 제출하면 실행하는 useEffect
      * - 모든 자격증 정보를 불러온다
      * - 태그 검색, 일반 검색의 조건을 검사한다
@@ -35,30 +43,27 @@ export default function SearchResultPage() {
     useEffect(() => {
         const fetchResults = async () => {
             try {
-                const response = await axiosApi.get(`/api/cert/list`)
-                const data: Certificate[] = response.data
-                const deKeyword = [...disassemble(keyword)].join("")
+                const { data } = await axiosApi.get<Certificate[]>(`/api/cert/list`);
+                loadCertTagMap(data);
+                const deKeyword = [...disassemble(keyword)].join("");
 
                 if (keyword.startsWith("#")) {
                     const raw = keyword.slice(1).trim();
 
-                    // 1) 숫자 직접 입력도 허용: "#40"
                     const maybeNum = Number(raw);
                     const tagId =
                         (Number.isFinite(maybeNum) && maybeNum > 0 ? maybeNum : undefined) ??
-                        tagIdByName[raw]; // "#건설" → 40 으로 자동 넘버 변경
+                        tagNameToId.get(raw);
                     if (!tagId) {
-                        setResults([]); // 존재하지 않는 태그일 경우에
+                        setResults([]);
                         return;
                     }
 
                     const matchedCertIds = Object.entries(certificateTags)
-                        .filter(([, tags]) => (tags as number[]).includes(tagId))
+                        .filter(([, ids]) => (ids as number[]).includes(tagId))
                         .map(([id]) => Number(id));
-                    const filteredByTag = data.filter(cert =>
-                        matchedCertIds.includes(cert.certificate_id)
-                    );
-                    setResults(filteredByTag);
+
+                    setResults(data.filter(c => matchedCertIds.includes(c.certificate_id)));
                     return;
                 }
 

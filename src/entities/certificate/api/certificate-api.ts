@@ -1,6 +1,13 @@
 // src/entities/certificate/api/certificate-api.ts
 import { axiosApi } from '@/shared/api/axios-api';
-import type { Certificate, CertificateData, Schedule, Tag, Organization } from "@/entities/certificate/model/types";
+import type {
+    Certificate,
+    CertificateData,
+    Schedule,
+    Tag,
+    Organization,
+    NationalSchedule
+} from "@/entities/certificate/model/types";
 // CertData export 되어있어야 합니다.
 
 export const certificateApi = {
@@ -23,6 +30,11 @@ export const certificateApi = {
 
     async getOrganization(signal?: AbortSignal): Promise<Organization[]> {
         const res = await axiosApi.get<Organization[]>('/api/cert/organization', { signal });
+        return res.data;
+    },
+
+    async getNationalSchedule(signal?: AbortSignal): Promise<NationalSchedule[]> {
+        const res = await axiosApi.get<NationalSchedule[]>('/api/cert/schedule', { signal });
         return res.data;
     },
 

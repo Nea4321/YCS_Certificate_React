@@ -1,7 +1,9 @@
-import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CBTExamStyles from '@/pages/cbt/styles/CBTExamPage.module.css';
-import { certificateTags } from '@/entities/certificate/model/tags.ts';
-import { getTagName } from "@/entities/certificate/model/tagMeta";
+import { certificateApi } from "@/entities/certificate/api/certificate-api";
+import { setTag } from "@/shared/slice/TagSlice";
+import type { RootState, AppDispatch } from "@/app/store/store";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 /**CategoryFilter에 전달되는 props
@@ -26,20 +28,35 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                                                                   selectedCategory,
                                                                   setSelectedCategory,
                                                               }) => {
+
+    const dispatch = useDispatch<AppDispatch>();
+    const tagList = useSelector((s: RootState) => s.tag.list);
+
+    // 들어갔을 때 redux에 태그가 비어있으면 api 요청함
+    useEffect(() => {
+        if (tagList && tagList.length > 0) return;
+        const ctrl = new AbortController();
+        (async () => {
+            const raw = await certificateApi.getTags(ctrl.signal);
+            const adapted = raw.map(t => ({
+                tag_id: t.tag_id,
+                tag_Name: t.tag_name,
+                tag_color: t.color,
+            }));
+            dispatch(setTag(adapted));
+        })();
+        return () => ctrl.abort();
+    }, [dispatch, tagList]);
+
     /**모든 자격증의 태그를 집계하여 태그 목록을 만든다
      * - set으로 중복을 제거한다
      * - localeCompare을 사용해 한국어 기준 정렬
      */
     const categories = useMemo<string[]>(() => {
-        const s = new Set<string>();
-        Object.values(certificateTags).forEach((arr) =>
-            arr.forEach((id) => {
-                const name = getTagName(id); // 숫자 ID → 태그 이름으로 변환
-                if (name) s.add(name);
-            })); // 문자열 수집 -> ID를 이름으로 바꿔서 수집
-        // 기존 코드 Object.values(certificateTags).forEach((arr) => arr.forEach((t) => s.add(t)));
-        return ['전체', ...Array.from(s).sort((a, b) => a.localeCompare(b, 'ko'))];
-    }, []);
+        const names = (tagList ?? []).map(t => t.tag_Name).filter(Boolean);
+        const unique = Array.from(new Set(names)).sort((a, b) => a.localeCompare(b, "ko"));
+        return ["전체", ...unique];
+    }, [tagList]);
 
     const [isExpanded, setIsExpanded] = useState(false);
 

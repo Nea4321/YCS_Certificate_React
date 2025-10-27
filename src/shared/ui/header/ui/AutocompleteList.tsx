@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import styles from "./styles/autocomplete.module.css"
 import { getChoseong, disassemble } from "es-hangul"
-import { certificateTags } from "@/entities/certificate"
-import { getTagColor, getTagName } from "@/entities/certificate/model/tagMeta";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store/store";
 
 /**AutocompleteList에 제출되는 props
  *
@@ -12,7 +12,7 @@ import { getTagColor, getTagName } from "@/entities/certificate/model/tagMeta";
  */
 interface Props {
     query: string
-    certificates: { certificate_id: number; certificate_name: string }[]
+    certificates: { certificate_id: number; certificate_name: string; tag: number[]}[]
     onSelect: () => void
 }
 
@@ -27,6 +27,10 @@ interface Props {
  */
 export const AutocompleteList = ({ query, certificates, onSelect }: Props) => {
     const navigate = useNavigate();
+
+    const tagMap = useSelector((s: RootState) =>
+        new Map(s.tag.list.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }]))
+    );
 
     if (!query.trim()) return null;
 
@@ -48,40 +52,44 @@ export const AutocompleteList = ({ query, certificates, onSelect }: Props) => {
 
     return (
         <ul className={styles.autocompleteList}>
-            {filtered.map((cert) => (
-                <li
-                    key={cert.certificate_id}
-                    className={styles.autocompleteItem}
-                    onMouseDown={() => {
-                        navigate(`/certificate/${cert.certificate_id}`);
-                        onSelect();
-                    }}
-                >
-                    <div className={styles.itemContent}>
-                        <span className={styles.certName}>{cert.certificate_name}</span>
+            {filtered.map(cert => {
+                const tagIds = cert.tag ?? [];
 
-                        <div className={styles.tagBox}>
-                            {(certificateTags[cert.certificate_id] ?? []).map((tagId: number) => {
-                                const name = getTagName(tagId);
-                                if (!name) return null;
-
-                                return (
-                                    <span
-                                        key={tagId}
-                                        className={styles.tag}
-                                        style={{backgroundColor: getTagColor(tagId) ?? "#ccc"}}
-                                        onMouseDown={(e) => {
-                                            e.stopPropagation();
-                                            navigate(`/search?keyword=%23${encodeURIComponent(name)}`);
-                                            onSelect();}}
-                                    >
-                                        #{name}
-                                    </span>
-                                );})}
+                return (
+                    <li
+                        key={cert.certificate_id}
+                        className={styles.autocompleteItem}
+                        onMouseDown={() => {
+                            navigate(`/certificate/${cert.certificate_id}`);
+                            onSelect();
+                        }}
+                    >
+                        <div className={styles.itemContent}>
+                            <span className={styles.certName}>{cert.certificate_name}</span>
+                            <div className={styles.tagBox}>
+                                {tagIds.map(tagId => {
+                                    const tag = tagMap.get(tagId);
+                                    if (!tag) return null; // Redux에 아직 없으면 스킵
+                                    return (
+                                        <span
+                                            key={tagId}
+                                            className={styles.tag}
+                                            style={{ backgroundColor: tag.color ?? "#ccc" }}
+                                            onMouseDown={e => {
+                                                e.stopPropagation();
+                                                navigate(`/search?keyword=${encodeURIComponent("#" + tag.name)}`);
+                                                onSelect();
+                                            }}
+                                        >
+                      #{tag.name}
+                    </span>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                </li>
-            ))}
+                    </li>
+                );
+            })}
         </ul>
     );
-}
+};

@@ -34,6 +34,11 @@ export interface CertificateData {
     basic_info_plain?: string;
 }
 
+export interface NationalSchedule {
+    name: string;
+    content: string;
+}
+
 /** ───────── 스케줄 DTO ───────── */
 export type ExamEventTypeBE =
     | 'DOC_REG' | 'DOC_EXAM' | 'DOC_PASS'

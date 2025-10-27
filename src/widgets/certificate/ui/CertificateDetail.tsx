@@ -1,12 +1,12 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-
 import type { CertificateData } from '@/entities/certificate/model/types';
 import { certificateDetailStyles } from '../styles';
 import { certificateApi } from '@/entities/certificate/api/certificate-api';
-import { getTagName, getTagColor } from '@/entities/certificate/model/tagMeta';
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store/store";
 import { CalendarWidget } from '@/widgets/calendar/ui/CalendarWidget';
-import { certificateTags } from '@/entities/certificate';
+import { loadCertTagMap, certificateTags, certificateNames } from '@/entities/certificate';
 import type { UiEvent, UiEventType } from '@/features/calendar/model/adapters';
 import { fromRegularSchedule, toUiEvents, ADAPTER_BANNER }
     from '@/features/calendar/model/adapters';
@@ -59,6 +59,23 @@ export const CertificateDetail = memo(function CertificateDetail({
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const [tagVersion, setTagVersion] = useState(0);
+    const certId = Number(id);
+    useEffect(() => {
+        if (!certId) return;
+        if (!Array.isArray(certificateTags[certId]) || certificateTags[certId].length === 0) {
+            const ac = new AbortController();
+            (async () => {
+                try {
+                    const list = await certificateApi.getCertificate(ac.signal);
+                    loadCertTagMap(list);
+                    setTagVersion(v => v + 1);
+                } catch { /* ignore */ }
+            })();
+            return () => ac.abort();
+        }
+    }, [certId]);
+
     const [certificate, setCertificate] = useState<CertificateData | null>(
         initialCertificate ?? null
     );
@@ -84,9 +101,45 @@ export const CertificateDetail = memo(function CertificateDetail({
         });
     }, [id, initialCertificate]);
 
+    const tagList = useSelector((s: RootState) => s.tag.list);
+    const tagMetaMap = useMemo(
+        () => new Map(tagList.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }])),
+        [tagList]
+    );
+
     const base = certificate ?? initialCertificate ?? null;
-    const tagIds = base ? (certificateTags[base.certificate_id] ?? []) : [];
-    const certName = base?.certificate_name ?? '';
+
+    useEffect(() => {
+        if (!base?.certificate_id) return;
+
+        // 이 자격증의 태그 맵이 비어 있으면 채운다
+        if ((certificateTags[base.certificate_id] ?? []).length === 0) {
+            const ctrl = new AbortController();
+            let mounted = true;
+
+            (async () => {
+                try {
+                    const list = await certificateApi.getCertificate(ctrl.signal);
+                    loadCertTagMap(list);
+                    if (mounted) setTagVersion(v => v + 1);
+                } catch (e) {
+
+                }
+            })();
+
+            return () => {
+                mounted = false;
+                ctrl.abort();
+            };
+        }
+    }, [base?.certificate_id]);
+
+    const tagIds = useMemo(
+        () => certificateTags[certId] ?? [],
+        [certId, tagVersion]
+    );
+
+    const certName = base?.certificate_name ?? certificateNames[certId] ?? "";
 
     // HTML/블록
     const examInfo = pickExamInfo(base);
@@ -104,13 +157,8 @@ export const CertificateDetail = memo(function CertificateDetail({
         const rows = (base?.schedule ?? []) as any[];
 
         if (!forceAdapter && calendarEvents?.length) {
-            // 여기 내가 수정했음 박세호
-            return calendarEvents.map(e => ({
-                ...e,
-                certificate: e.certificate && e.certificate.trim()
-                    ? e.certificate
-                    : certName
-            }));
+            console.log('[CERT] using prop events:', calendarEvents.length);
+            return calendarEvents;
         }
 
         console.log('[CERT] building via adapter:', ADAPTER_BANNER, 'rows=', rows.length);
@@ -184,18 +232,17 @@ export const CertificateDetail = memo(function CertificateDetail({
                 <h1 className={certificateDetailStyles.title}>{certName}</h1>
                 <div className={certificateDetailStyles.tagBox}>
                     {tagIds.map((tid) => {
-                        const name = getTagName(tid);
-                        if (!name) return null;
-                        const color = getTagColor(tid) ?? '#64748B';
+                        const meta = tagMetaMap.get(tid);
+                        if (!meta) return null;
                         return (
                             <span
                                 key={tid}
                                 className={certificateDetailStyles.tag}
-                                style={{ backgroundColor: color }}
-                                onClick={() => navigate(`/search?keyword=${encodeURIComponent('#' + name)}`)}
+                                style={{ backgroundColor: meta.color ?? "#64748B" }}
+                                onClick={() => navigate(`/search?keyword=${encodeURIComponent("#" + meta.name)}`)}
                             >
-                #{name}
-              </span>
+        #{meta.name}
+      </span>
                         );
                     })}
                 </div>

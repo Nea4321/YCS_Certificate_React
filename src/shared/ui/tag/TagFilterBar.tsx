@@ -1,62 +1,90 @@
-import { useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import styles from "./styles/tag-filter-bar.module.css"
-import {
-    tagMetaList,   // 모든 태그의 메타 배열 [{id, name, color}, ...]
-    tagIdByName,   // 이름 → ID 맵 (예: "건설" → 40)
-    getTagName,    // ID → 이름
-    getTagColor,   // ID → 색상
-} from "@/entities/certificate/model/tagMeta";
-
-// 숫자 기반 태그 필터 바
-// tagMeta(단일 소스)에서 이름/색상/ID를 얻어 렌더
-// 인기 태그는 고정된 이름을 ID로 변환해서 사용
-// 나머지 태그는 meta 전체에서 인기 태그를 제외하고 가나다 정렬
+// TagFilterBar.tsx
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import styles from "./styles/tag-filter-bar.module.css";
+import { certificateApi } from "@/entities/certificate/api/certificate-api";
+import { setTag } from "@/shared/slice/TagSlice";
+import type { RootState, AppDispatch } from "@/app/store/store";
 
 interface TagFilterBarProps {
-    closeOnTagClick?: boolean; // 태그 클릭 시 펼침 영역 닫기 옵션
+    closeOnTagClick?: boolean;
 }
 
 export const TagFilterBar = ({ closeOnTagClick = false }: TagFilterBarProps) => {
-    const navigate = useNavigate()
-    const [expanded, setExpanded] = useState(false)
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const [expanded, setExpanded] = useState(false);
+    const tags = useSelector((s: RootState) => s.tag.list);
+    useEffect(() => {
+        if (tags && tags.length > 0) return;
 
-    // 1) 인기 태그(이름 배열)를 ID로 변환
-    const popular = ["IT", "건축", "운송", "전기", "식품"] as const;
+        const ctrl = new AbortController();
+        (async () => {
+            const raw = await certificateApi.getTags(ctrl.signal);
+            const adapted = raw.map(t => ({
+                tag_id: t.tag_id,
+                tag_Name: t.tag_name,
+                tag_color: t.color,
+            }));
+            dispatch(setTag(adapted));
+        })();
 
-    const popularTags = popular // 이름 → ID 변환 + 타입가드로 number[] 보장
-        .map((name) => tagIdByName[name])
-        .filter((id): id is number => id !== undefined);  // 단순화 불필요
+        return () => ctrl.abort();
+    }, [dispatch, tags]);
 
-    // 2) 나머지 태그 -전체 메타에서 인기 태그 제외, 한국어 가나다 정렬 (localeCompare with "ko")
-    const otherTags = tagMetaList
-        .filter((t) => !popularTags.includes(t.id))
-        .sort((a, b) => a.name.localeCompare(b.name, "ko")); // 가나다
+    useEffect(() => {
+        console.log("[TAG Redux] tag.list =", tags);
+    }, [tags]);
+    const popularNames = ["IT", "건축", "운송", "전기", "식품"] as const;
 
-    // 3) 태그 클릭 → #이름으로 라우팅
+    const idByName = useMemo(() => {
+        const m = new Map<string, number>();
+        tags.forEach(t => m.set(t.tag_Name, t.tag_id));
+        return m;
+    }, [tags]);
+
+    const byId = useMemo(() => {
+        const m = new Map<number, { tag_id: number; tag_Name: string; tag_color: string }>();
+        tags.forEach(t => m.set(t.tag_id, t));
+        return m;
+    }, [tags]);
+
+    const popularIds = useMemo(
+        () => popularNames.map(n => idByName.get(n)).filter((v): v is number => v !== undefined),
+        [popularNames, idByName]
+    );
+
+    // 나머지(가나다 정렬, 인기 제외)
+    const others = useMemo(
+        () =>
+            tags
+                .filter(t => !popularIds.includes(t.tag_id))
+                .sort((a, b) => a.tag_Name.localeCompare(b.tag_Name, "ko")),
+        [tags, popularIds]
+    );
+
     const handleNavigate = (id: number) => {
-        const name = getTagName(id);
-        if (!name) return;
-        navigate(`/search?keyword=${encodeURIComponent("#" + name)}`);
+        const t = byId.get(id);
+        if (!t) return;
+        navigate(`/search?keyword=${encodeURIComponent("#" + t.tag_Name)}`);
         if (closeOnTagClick) setExpanded(false);
     };
 
     return (
         <div className={styles.wrap}>
-            {/* 상단: 인기 태그 + 펼치기/접기 버튼 */}
             <div className={styles.row}>
-                {popularTags.map((id) => {
-                    const name = getTagName(id)!;
-                    const color = getTagColor(id)!;
+                {popularIds.map(id => {
+                    const t = byId.get(id)!;
                     return (
                         <button
                             key={id}
                             className={styles.tag}
-                            style={{ backgroundColor: color }}
+                            style={{ backgroundColor: t.tag_color }}
                             onClick={() => handleNavigate(id)}
                         >
-                            #{name}
+                            #{t.tag_Name}
                         </button>
                     );
                 })}
@@ -71,20 +99,16 @@ export const TagFilterBar = ({ closeOnTagClick = false }: TagFilterBarProps) => 
                 </button>
             </div>
 
-            {/* 하단: 나머지 태그(칩) */}
-            <div
-                id="tag-filter-expand"
-                className={`${styles.expand} ${expanded ? styles.open : ""}`}
-            >
+            <div id="tag-filter-expand" className={`${styles.expand} ${expanded ? styles.open : ""}`}>
                 <div className={styles.chips}>
-                    {otherTags.map((t) => (
+                    {others.map(t => (
                         <button
-                            key={t.id}
+                            key={t.tag_id}
                             className={styles.chip}
-                            style={{ backgroundColor: t.color }}
-                            onClick={() => handleNavigate(t.id)}
+                            style={{ backgroundColor: t.tag_color }}
+                            onClick={() => handleNavigate(t.tag_id)}
                         >
-                            #{t.name}
+                            #{t.tag_Name}
                         </button>
                     ))}
                 </div>

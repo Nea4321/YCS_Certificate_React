@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { certificateApi } from '@/entities/certificate/api/certificate-api';
 import { Certificate } from "@/entities/certificate/model/types";
 import { CBTExamStyles } from '../styles';
 import { CategoryFilter } from '@/features/cbt/category-filter/ui/CategoryFilter';
 import { Pagination } from '@/features/cbt/pagination/ui/Pagination';
 import { useNavigate } from 'react-router-dom';
-import { certificateTags } from '@/entities/certificate/model/tags';
-import { getTagName } from "@/entities/certificate/model/tagMeta";
+import {shallowEqual, useSelector} from 'react-redux';
+import type { RootState } from '@/app/store/store';
+import { certificateTags, loadCertTagMap } from '@/entities/certificate';
 
 /**certificate 모델에 tag 필드를 덧붙임*/
 type UICertificate = Certificate & { tags: string[] };
@@ -26,29 +27,32 @@ export const CBTExamPage: React.FC = () => {
     /**한 페이지에 보여줄 자격증 개수*/
     const itemsPerPage = 12;
     const navigate = useNavigate();
+    const rawRef = useRef<Certificate[] | null>(null);
+    const tagList = useSelector((s: RootState) => s.tag.list, shallowEqual);
+    const tagMetaMap = useMemo(() => {
+        return new Map(tagList.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }]));
+    }, [tagList]);
 
     /**자격증 목록을 가져와 certificate_id을 기반으로 태그를 부여함
      * 만약 certificate_id가 없는 자격증은 빈 배열
      */
     useEffect(() => {
         const controller = new AbortController();
-
         certificateApi.getCertificate(controller.signal)
-            .then((data: Certificate[]) => {
-                const withTags: UICertificate[] = data.map(cert => ({
-                    ...cert,
-                    /* tags: certificateTags[cert.certificate_id] ?? [] */
-                    /* number[] → name(string)[] 로 변환 (UI 하위 호환 유지) */
-                    tags: (certificateTags[cert.certificate_id] ?? [])
-                        .map((id) => getTagName(id))
-                        .filter((v): v is string => !!v),
-                }));
+            .then((data) => {
+                rawRef.current = data;
+                loadCertTagMap(data);
+                const withTags: UICertificate[] = data.map(cert => {
+                    const ids = certificateTags[cert.certificate_id] ?? [];
+                    const names = ids.map(id => tagMetaMap.get(id)?.name).filter((v): v is string => !!v);
+                    return { ...cert, tags: names };
+                });
                 setCertificates(withTags);
             })
-            .catch((err) => console.error(err));
-
+            .catch(console.error);
         return () => controller.abort();
     }, []);
+
 
     /**태그가 변경되면 페이지를 1로 리셋함*/
     useEffect(() => {

@@ -110,9 +110,13 @@ const pickLoose = (o: Record<string, unknown>, keywords: string[]): string | nul
 
 
 // 느슨 키 후보
-const KEYS_REG  = ["접수", "원서", "신청", "추가접수"];
+const KEYS_REG  = ["접수", "원서", "신청"];
+const KEYS_REG_EXTRA = ["추가접수", "추가 접수"];
 const KEYS_EXAM = ["시험", "평가", "검정"];
 const KEYS_PASS = ["발표", "합격", "결과"];
+
+const sameRange = (a: {start:string; end:string}, b:{start:string; end:string}) =>
+    a.start === b.start && a.end === b.end;
 
 export function fromRegularSchedule(rows: RegularRow[] = []): BEEvent[] {
     const out: BEEvent[] = [];
@@ -132,6 +136,9 @@ export function fromRegularSchedule(rows: RegularRow[] = []): BEEvent[] {
         const regStr  =
             (obj['접수기간'] as string | null | undefined) ??
             pickLoose(obj, KEYS_REG);
+        const regExtraStr =
+            (obj['추가접수기간'] as string | null | undefined) ??
+            pickLoose(obj, KEYS_REG_EXTRA);
         const examStr =
             (obj['시험일']   as string | null | undefined) ??
             pickLoose(obj, KEYS_EXAM);
@@ -150,10 +157,16 @@ export function fromRegularSchedule(rows: RegularRow[] = []): BEEvent[] {
         }]);
 
         const reg  = toRangeLoose(regStr);
+        const regExtra = toRangeLoose(regExtraStr);
         const exam = toRangeLoose(examStr);
         const pass = toRangeLoose(passStr);
 
         if (reg)  out.push({ start: reg.start,  end: reg.end,  type: K.REG  });
+        if (regExtra) {
+            if (!reg || !sameRange(reg, regExtra)) {
+                out.push({ start: regExtra.start, end: regExtra.end, type: K.REG });
+            }
+        }
         if (exam) out.push({ start: exam.start, end: exam.end, type: K.EXAM });
         if (pass) out.push({ start: pass.start, end: pass.end, type: K.PASS });
     });

@@ -1,15 +1,21 @@
-import { getTagColor, getTagName } from "@/entities/certificate/model/tagMeta";
+import React from 'react'
+import { useSelector } from "react-redux"
 import styles from "./styles/tag-badge.module.css"
+import type { RootState } from "@/app/store/store"
 
 type Props = {
     id: number;
-    onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void; // onclick 타입 명시
+    onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void;
     className?: string
 }
 
 export default function TagBadge({ id, onClick, className }: Props) {
-    const name = getTagName(id) ?? "";            // 렌더 가드
-    const color = getTagColor(id) ?? "#64748B";   // fallback
+    const tag = useSelector((s: RootState) =>
+        s.tag.list.find((t) => t.tag_id === id)
+    );
+
+    const name = tag?.tag_Name ?? "";
+    const color = tag?.tag_color ?? "#64748B";
 
     return (
         <span

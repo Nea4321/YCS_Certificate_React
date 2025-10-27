@@ -7,11 +7,19 @@ const COLOR_MAP: Record<UiEvent["type"], string> = {
     "doc-reg":  "rgba(122,162,247,.35)", // 필기접수
     "doc-exam": "rgba(253,186,116,.35)", // 필기시험
     "doc-pass": "rgba(110,231,183,.35)", // 필기합격
-    "prac-reg": "rgba(196,181,253,.35)", // 실기접수
+    "prac-reg": "rgba(196,181,253,.72)", // 실기접수
     "prac-exam":"rgba(248,113,113,.43)", // 실기시험
     "prac-pass":"rgba(134,239,172,.35)", // 실기합격
 };
 
+const TYPE_PRIORITY: UiEvent["type"][] = [
+    "prac-exam", // 실기시험(빨강) 가장 우선
+    "doc-exam",  // 필기시험
+    "prac-reg",  // 실기접수
+    "doc-reg",   // 필기접수
+    "prac-pass", // 실기합격
+    "doc-pass",  // 필기합격
+];
 export const getTileBandsContent =
     (allEvents: UiEvent[]) =>
         ({ date, view }: { date: Date; view: string }) => {
@@ -47,6 +55,14 @@ const getEventsForDate = (date: Date, allEvents: UiEvent[]): UiEvent[] => {
     return (allEvents ?? []).filter(ev => isDateInRange(date, ev.startdate, ev.enddate));
 };
 
+function pickPrimaryType(types: UiEvent["type"][]): UiEvent["type"] {
+    if (types.length <= 1) return types[0];
+    for (const t of TYPE_PRIORITY) {
+        if (types.includes(t)) return t;
+    }
+    return types[0];
+}
+
 export const getTileClassName = (allEvents: UiEvent[]) =>
     ({ date, view }: { date: Date; view: string }): string | null => {
         if (view !== 'month') return null;
@@ -55,15 +71,47 @@ export const getTileClassName = (allEvents: UiEvent[]) =>
 
         const classes: string[] = [];
         const uniqTypes = Array.from(new Set(dayEvents.map(e => e.type)));
-        if (uniqTypes.length > 1) classes.push('calendar-tile--banded'); // ← 추가!
+        const isBanded = uniqTypes.length > 1;
+        if (isBanded) classes.push('calendar-tile--banded');
 
-        dayEvents.forEach(ev => {
-            classes.push(`calendar-tile-${ev.type}`);
-            const prevIn = isDateInRange(dateUtils.addDays(date, -1), ev.startdate, ev.enddate);
-            const nextIn = isDateInRange(dateUtils.addDays(date, +1), ev.startdate, ev.enddate);
-            if (!prevIn) classes.push(`calendar-tile--round-left-${ev.type}`);
-            if (!nextIn) classes.push(`calendar-tile--round-right-${ev.type}`);
-        });
+        // ── 보더는 대표 타입 하나만으로 그린다 (충돌 방지)
+        const primaryType = isBanded ? pickPrimaryType(uniqTypes) : uniqTypes[0];
+
+        // 이 날짜가 대표 타입 구간의 연속 중 어디인지 판단해서 좌/우 라운드와 보더 결정
+        const primaryEvents = dayEvents.filter(e => e.type === primaryType);
+        // 보통 같은 타입 이벤트가 하나일 텐데, 혹시 여러 개인 케이스 방어:
+        const belongsTo = (ev: UiEvent) =>
+            isDateInRange(date, ev.startdate, ev.enddate);
+
+        const prevDate = dateUtils.addDays(date, -1);
+        const nextDate = dateUtils.addDays(date, +1);
+
+        const inAnyPrimary = primaryEvents.some(belongsTo);
+        if (inAnyPrimary) {
+            classes.push(`calendar-tile-${primaryType}`);
+
+            const prevIn = primaryEvents.some(ev => isDateInRange(prevDate, ev.startdate, ev.enddate));
+            const nextIn = primaryEvents.some(ev => isDateInRange(nextDate, ev.startdate, ev.enddate));
+
+            if (!prevIn) classes.push(`calendar-tile--round-left-${primaryType}`);
+            if (!nextIn)  classes.push(`calendar-tile--round-right-${primaryType}`);
+        } else {
+            // 만약 같은 날짜가 대표타입에 속하지 않으면, (이례적)
+            // 가장 긴 기간의 이벤트를 대표로 삼아 보더를 그려준다
+            let best: UiEvent | null = null;
+            let bestSpan = -1;
+            for (const ev of dayEvents) {
+                const span = +new Date(ev.enddate) - +new Date(ev.startdate);
+                if (span > bestSpan) { bestSpan = span; best = ev; }
+            }
+            if (best) {
+                classes.push(`calendar-tile-${best.type}`);
+                const prevIn = isDateInRange(prevDate, best.startdate, best.enddate);
+                const nextIn = isDateInRange(nextDate, best.startdate, best.enddate);
+                if (!prevIn) classes.push(`calendar-tile--round-left-${best.type}`);
+                if (!nextIn)  classes.push(`calendar-tile--round-right-${best.type}`);
+            }
+        }
 
         return classes.join(' ');
     };
@@ -84,14 +132,14 @@ export const getTileContent = (allEvents: UiEvent[], certName?: string) => ({ da
 
     return (
         <div className={calendarStyles.tileContent}>
-        <div className={calendarStyles.certificateList}>
-            {uniqueCerts.slice(0, 2).map((c, i) => (
+            <div className={calendarStyles.certificateList}>
+                {uniqueCerts.slice(0, 2).map((c, i) => (
                     <div key={i} className={calendarStyles.certificateName}>{c}</div>
-    ))}
-    </div>
-    {uniqueCerts.length > 2 && (
-        <div className={calendarStyles.moreEvents}>+{uniqueCerts.length - 2}</div>
-    )}
-    </div>
+                ))}
+            </div>
+            {uniqueCerts.length > 2 && (
+                <div className={calendarStyles.moreEvents}>+{uniqueCerts.length - 2}</div>
+            )}
+        </div>
     );
 };

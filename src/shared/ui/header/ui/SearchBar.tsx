@@ -20,7 +20,7 @@ export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("") // 검색 입력 상태
   const [isSearchFocused, setIsSearchFocused] = useState(false) // 포커스 상태
   // 로드한 전체 자격증(자동완성)
-  const [allCertificates, setAllCertificates] = useState<{ certificate_id: number, certificate_name: string }[]>([])
+  const [allCertificates, setAllCertificates] = useState<{ certificate_id: number, certificate_name: string; tag: number[]}[]>([])
   const navigate = useNavigate()
 
   useEffect(() => { //초기에 전체 자격증 받아오기
