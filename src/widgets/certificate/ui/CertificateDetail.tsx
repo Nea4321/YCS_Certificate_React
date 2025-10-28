@@ -14,7 +14,7 @@ import { QnetScheduleTable } from '@/widgets/schedule/ui/QnetScheduleTable';
 import type { RawItem } from '@/widgets/schedule/buildQnetGrid';
 import { Tabs } from '@/shared/components/Tabs';
 import { ExamInfoBlocks } from '@/widgets/schedule/ui/ExamInfoBlocks';
-import { BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
+import {BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
 import { pickExamInfo, pickExamStats, pickBasicHtml, pickBenefitHtml } from '@/entities/certificate/model/selectors';
 import {PreferencePanel} from '@/widgets';
 
@@ -52,7 +52,6 @@ const isEmptyHtml = (v?: unknown) => {
     const html = toHtmlString(v);
     return !html || !html.replace(/<[^>]*>/g, '').trim();
 };
-
 
 export const CertificateDetail = memo(function CertificateDetail({
                                                                      certificate: initialCertificate,
@@ -170,6 +169,13 @@ export const CertificateDetail = memo(function CertificateDetail({
                 </div>
             </div>
 
+            {/* ▼ 여기부터: 기본정보(개요/수행직무/진로및전망) */}
+            {base?.basic_info && (
+                <div className={`${certificateDetailStyles.basicInfo} certificate-content`}>
+                    {base && <BasicInfoPanel data={base} />}
+                </div>
+            )}
+
             {/* 달력 먼저 */}
             <section className={certificateDetailStyles.calendarSection} style={{ marginTop: 32 }}>
                 <h2>자격증 시험일정</h2>
@@ -187,7 +193,7 @@ export const CertificateDetail = memo(function CertificateDetail({
                         <Tabs
                             tabs={[
                                 { key: 'exam',    label: '시험정보' },
-                                { key: 'basic',   label: '기본정보' },
+                                { key: 'basic',   label: '검정통계' },
                                 { key: 'benefit', label: '우대현황' },
                             ]}
                             active={active}
@@ -204,8 +210,6 @@ export const CertificateDetail = memo(function CertificateDetail({
 
                             {active === 'basic' && (
                                 <div className="certificate-content">
-                                    <h2>기본정보</h2>
-                                    {base && <BasicInfoPanel data={base} />}
                                     {base && <ExamStatsPanel data={examStats} />}
                                     <div dangerouslySetInnerHTML={{ __html: base ? (basicHtml || '') : '' }} />
                                 </div>
