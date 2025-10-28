@@ -1,7 +1,35 @@
 .container {
+    --link-blue: #2563eb; /* 지역 변수로 선언 */
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
+}
+
+/* 이 규칙은 .container 범위 안에서만 전역 .certificate-content a를 조준 */
+.container :global(.certificate-content) a {
+    color: var(--link-blue);
+    text-decoration: none;
+}
+.container :global(.certificate-content) a:visited {
+    color: var(--link-blue);
+}
+.container :global(.certificate-content) a:hover,
+.container :global(.certificate-content) a:focus {
+    text-decoration: none;
+    opacity: .9;
+}
+
+.basicInfo {
+    text-align: left;
+    margin-top: 12px;
+}
+
+.basicInfo h3,
+.basicInfo p,
+.basicInfo ul,
+.basicInfo li {
+    text-align: left;
+    margin-left: 0;
 }
 
 .header {
@@ -12,6 +40,31 @@
     box-shadow: 0 4px 6px var(--shadow-color);
     text-align: center;
 }
+
+/* 헤더 안에 있을 때 달력/제목을 좌측 정렬로 리셋 */
+.header .calendarSection {
+    text-align: left;
+    margin-top: 24px;      /* 헤더 제목과 간격 */
+}
+
+/* 달력 섹션의 제목도 왼쪽 정렬로 강제 */
+.header .calendarSection h2 {
+    text-align: left;
+    margin-left: 0;
+}
+
+/* 헤더 안에 있을 때도 좌측 정렬로 강제 */
+.header .empty {
+    text-align: left;
+    margin-top: 24px; /* 제목/달력과 간격 */
+}
+
+.header .empty h2,
+.header .empty p {
+    text-align: left;
+    margin-left: 0;
+}
+
 
 .title {
     font-size: 2.5em;

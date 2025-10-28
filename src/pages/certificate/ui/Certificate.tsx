@@ -1,76 +1,51 @@
-import { useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from "react-router-dom"
-import { useDataFetching } from "@/shared"
-import { CertificateDetail } from "@/widgets/certificate"
-import { certificateStyles } from "../styles"
-import { certificateApi } from '@/entities/certificate/api/certificate-api';
-import { schedulesToEvents } from '@/entities/certificate/lib'; // ← 요거 추가
+// pages/certificate/ui/Certificate.tsx
+import { useEffect, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDataFetching } from "@/shared";
+import { CertificateDetail } from "@/widgets/certificate";
+import { certificateStyles } from "../styles";
+import { certificateApi } from "@/entities/certificate/api/certificate-api";
 
-// ⬇️ 새로 추가/수정된 타입들만 가져오기
-import type {
-    Schedule,              // ← 추가
-    ScheduleEventsDto,
-    ExamEventDto,
-    ExamEventTypeBE,
-} from '@/entities/certificate/model/types';
-import type { UiEvent, UiEventType } from '@/features/calendar/model/adapters.ts';
+import { schedulesToEvents as buildUiEvents } from "@/entities/certificate/lib/schedulesToEvents";
+import type { UiEvent } from "@/features/calendar/model/adapters";
+import type { RawItem } from "@/widgets/schedule/buildQnetGrid";
 
-const mapType = (t: ExamEventTypeBE): UiEventType =>
-    t === 'DOC_REG'   ? 'doc-reg'
-        : t === 'DOC_EXAM'  ? 'doc-exam'
-            : t === 'DOC_PASS'  ? 'doc-pass'
-                : t === 'PRAC_REG'  ? 'prac-reg'
-                    : t === 'PRAC_EXAM' ? 'prac-exam'
-                        : 'prac-pass';
-
-/**
- * 자격증 상세 정보 페이지 접근 컴포넌트
- * 쿼리스트링의 id 값을 읽어 해당하는 자격증의 정보를 조회하고,
- * 로딩,에러,데이터없음,정상 상태에 따른 UI를 렌더링 한다
- *
- * - id가 없으면 홈('/')으로 리다이렉트
- * - 정상적으로 접근했다면 선택한 자격증의 상세페이지로 리다이렉트
- * @component
- *
- * @example
- * <Route path="/certificate/:id" element={<CertificatePage />} />
- */
 export default function Certificate() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const certId = Number(id);
 
+    // id 유효성 체크
     useEffect(() => {
-        if (!id || Number.isNaN(certId)) navigate('/', { replace: true });
+        if (!id || Number.isNaN(certId)) navigate("/", { replace: true });
     }, [id, certId, navigate]);
 
-    // ✅ fetchFn: number -> number[] 로 넘기고, Schedule[] -> ScheduleEventsDto 로 변환
-    const { data, loading, error, refetch } = useDataFetching<ScheduleEventsDto>({
-        fetchFn: () =>
-            certificateApi.getSchedule([certId]).then((rows: Schedule[]) => ({
-                events: schedulesToEvents(rows),
-            })),
+    // 일정 불러오기
+    const { data, loading, error, refetch } = useDataFetching<{ events: UiEvent[] }>({
+        fetchFn: async () => {
+            const schedules = await certificateApi.getSchedule([certId]);
+            const rows = (schedules?.[0]?.schedule ?? []) as RawItem[];
+            return { events: buildUiEvents(rows) };
+        },
     });
 
-    // BE events[] -> UI events
-    const uiEvents: UiEvent[] = useMemo(() => {
-        // ⬇️ 타입 단언으로 배열 보장 + 콜백 파라미터 타입 명시
-        const events = (data?.events ?? []) as ExamEventDto[];
-        return events.map((ev: ExamEventDto) => ({
-            startdate:   ev.startDate,
-            enddate:     ev.endDate,
-            type:        mapType(ev.type),
-            certificate: '',
-        }));
-    }, [data]);
+    const uiEvents = useMemo(() => data?.events ?? [], [data]);
 
+    // 로딩
     if (loading) {
-        return <div className={certificateStyles.loading}>불러오는 중…</div>;
+        return (
+            <div className={certificateStyles.loading}>
+                <div className={certificateStyles.loadingSpinner} />
+                <p>자격증 정보를 불러오는 중입니다…</p>
+            </div>
+        );
     }
+
+    // 에러
     if (error) {
         return (
             <div className={certificateStyles.error}>
-                오류: {String(error)}{' '}
+                <p>오류: {String(error)}</p>
                 <button className={certificateStyles.retryButton} onClick={() => void refetch()}>
                     다시 시도
                 </button>
@@ -78,6 +53,20 @@ export default function Certificate() {
         );
     }
 
+    // 데이터 없음 (이벤트가 비어있을 때)
+    if (!uiEvents || uiEvents.length === 0) {
+        return (
+            <div className={certificateStyles.notFound}>
+                <h2>자격증 정보를 찾을 수 없습니다</h2>
+                <p>요청하신 자격증 정보가 존재하지 않습니다.</p>
+                <button className={certificateStyles.backButton} onClick={() => navigate("/")}>
+                    자격증 목록으로 돌아가기
+                </button>
+            </div>
+        );
+    }
+
+    // 정상 렌더
     return (
         <div className={certificateStyles.certificateContainer}>
             <div className={certificateStyles.pageHeader}>

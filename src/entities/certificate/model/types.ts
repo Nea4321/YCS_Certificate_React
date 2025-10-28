@@ -62,7 +62,7 @@ export type SpecialScheduleRow = RegularScheduleRow;
 export interface StandardLink {
     label: string;
     href?: string | null;
-    action?: Record<string, unknown> | null;
+    action?: string | Record<string, unknown> | null; // ⬅️ string 허용
 }
 
 export interface ExamInfoFee { doc?: string|null; prac?: string|null }

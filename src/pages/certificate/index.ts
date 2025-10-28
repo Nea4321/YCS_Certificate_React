@@ -1,3 +1,3 @@
 export * from './styles'
 export * from './ui'
-export { CertificatePage } from "./CertificatePage"
+export { default as CertificatePage } from './CertificatePage';
