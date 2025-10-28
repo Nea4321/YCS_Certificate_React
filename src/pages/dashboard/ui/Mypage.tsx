@@ -1,24 +1,25 @@
 import { myPageStyles } from "../styles"
 import { MyPageForm } from "@/features/login"
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom";
+import {FavoriteInfoRequest, FavoriteScheduleRequest} from "@/features/favorite";
+import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "@/app/store";
 
 export const MyPage = () => {
     const { userInfo, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()
     const navigate = useNavigate()
-    const [isAdmin] = useState(true) // 관리자 여부 (실제로는 userInfo에서 가져와야 함)
-    const [members] = useState([
-        { id: 1, name: "김철수", email: "kim@example.com"},
-        { id: 2, name: "이영희", email: "lee@example.com" },
-        { id: 3, name: "박민수", email: "park@example.com"},
-    ])
+    const dispatch = useDispatch()
+    const isAdmin =  useSelector((state: RootState) => state.user.userRole);
 
-    const [favorites] = useState([
-        { id: 1, name: "정보처리기사", category: "IT", url: "certificate/273" },
-        { id: 2, name: "컴활 1급", category: "Office", url: "/certificates/computer-activity" },
-        { id: 3, name: "SQLD", category: "Database", url: "/certificates/sqld" },
-        { id: 4, name: "토익", category: "Language", url: "/certificates/toeic" },
-    ])
+    useEffect(() => {
+        FavoriteInfoRequest()
+            .then((a) => dispatch(setFavoriteInfo(a)))
+            .catch((err) => console.error("즐겨찾기 정보 로드 실패:", err));
+    }, [dispatch]); // ✅ 처음 마운트 시 1번만 실행
+
+    const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
     const handleMemberAction = (memberId: number, action: "delete" | "suspend" | "activate") => {
         console.log(`${action} member with ID: ${memberId}`)
@@ -45,7 +46,7 @@ export const MyPage = () => {
                             <div className={myPageStyles.profileInfo}>
                                 <h2 className={myPageStyles.profileName}>{userInfo.name}</h2>
                                 <p className={myPageStyles.profileEmail}>{userInfo.email}</p>
-                                {isAdmin && <span className={myPageStyles.adminBadge}>관리자</span>}
+                                {isAdmin ==="admin" && <span className={myPageStyles.adminBadge}>관리자</span>}
                             </div>
                         </div>
                     </div>
@@ -115,66 +116,67 @@ export const MyPage = () => {
                             <h3 className={myPageStyles.cardTitle}>즐겨찾기 자격증</h3>
                         </div>
                         <div className={myPageStyles.favoritesGrid}>
-                            {favorites.map((favorite) => (
+                            {favoriteInfo.map((favorite) => (
                                 <div
-                                    key={favorite.id}
+                                    key={favorite.type_id}
                                     className={myPageStyles.favoriteItem}
-                                    onClick={() => handleFavoriteClick(favorite.url)}
+                                    onClick={() => navigate(`/${favorite.type === "department" ? "departments" : favorite.type}/${favorite.type_id}`)}
+
                                 >
                                     <div className={myPageStyles.favoriteIcon}>📋</div>
                                     <div className={myPageStyles.favoriteInfo}>
                                         <h4 className={myPageStyles.favoriteName}>{favorite.name}</h4>
-                                        <p className={myPageStyles.favoriteCategory}>{favorite.category}</p>
+                                        <p className={myPageStyles.favoriteCategory}>{favorite.type}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* 계정 관리 섹션 */}
-                    <div className={myPageStyles.accountCard}>
-                        <div className={myPageStyles.cardHeader}>
-                            <h3 className={myPageStyles.cardTitle}>계정 관리</h3>
-                        </div>
-                        <div className={myPageStyles.accountActions}>
-                            <button className={myPageStyles.deleteButton}>계정 삭제</button>
-                        </div>
-                    </div>
+                    {/*/!* 계정 관리 섹션 *!/*/}
+                    {/*<div className={myPageStyles.accountCard}>*/}
+                    {/*    <div className={myPageStyles.cardHeader}>*/}
+                    {/*        <h3 className={myPageStyles.cardTitle}>계정 관리</h3>*/}
+                    {/*    </div>*/}
+                    {/*    <div className={myPageStyles.accountActions}>*/}
+                    {/*        <button className={myPageStyles.deleteButton}>계정 삭제</button>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
-                    {/* 관리자 회원 관리 섹션 */}
-                    {isAdmin && (
-                        <div className={myPageStyles.infoCard}>
-                            <div className={myPageStyles.cardHeader}>
-                                <h3 className={myPageStyles.cardTitle}>회원 관리</h3>
-                            </div>
-                            <div className={myPageStyles.membersList}>
-                                {members.map((member) => (
-                                    <div key={member.id} className={myPageStyles.memberItem}>
-                                        <div className={myPageStyles.memberInfo}>
-                                            <div className={myPageStyles.memberAvatar}>
-                                                <span className={myPageStyles.avatarText}>{member.name.charAt(0)}</span>
-                                            </div>
-                                            <div className={myPageStyles.memberDetails}>
-                                                <h4 className={myPageStyles.memberName}>{member.name}</h4>
-                                                <p className={myPageStyles.memberEmail}>{member.email}</p>
-                                            </div>
-                                            <div className={myPageStyles.memberStatus}>
+                    {/*/!* 관리자 회원 관리 섹션 *!/*/}
+                    {/*{isAdmin && (*/}
+                    {/*    <div className={myPageStyles.infoCard}>*/}
+                    {/*        <div className={myPageStyles.cardHeader}>*/}
+                    {/*            <h3 className={myPageStyles.cardTitle}>회원 관리</h3>*/}
+                    {/*        </div>*/}
+                    {/*        <div className={myPageStyles.membersList}>*/}
+                    {/*            {members.map((member) => (*/}
+                    {/*                <div key={member.id} className={myPageStyles.memberItem}>*/}
+                    {/*                    <div className={myPageStyles.memberInfo}>*/}
+                    {/*                        <div className={myPageStyles.memberAvatar}>*/}
+                    {/*                            <span className={myPageStyles.avatarText}>{member.name.charAt(0)}</span>*/}
+                    {/*                        </div>*/}
+                    {/*                        <div className={myPageStyles.memberDetails}>*/}
+                    {/*                            <h4 className={myPageStyles.memberName}>{member.name}</h4>*/}
+                    {/*                            <p className={myPageStyles.memberEmail}>{member.email}</p>*/}
+                    {/*                        </div>*/}
+                    {/*                        <div className={myPageStyles.memberStatus}>*/}
 
-                                            </div>
-                                        </div>
-                                        <div className={myPageStyles.memberActions}>
-                                            <button
-                                                onClick={() => handleMemberAction(member.id, "delete")}
-                                                className={myPageStyles.deleteButton}
-                                            >
-                                                삭제
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/*                        </div>*/}
+                    {/*                    </div>*/}
+                    {/*                    <div className={myPageStyles.memberActions}>*/}
+                    {/*                        <button*/}
+                    {/*                            onClick={() => handleMemberAction(member.id, "delete")}*/}
+                    {/*                            className={myPageStyles.deleteButton}*/}
+                    {/*                        >*/}
+                    {/*                            삭제*/}
+                    {/*                        </button>*/}
+                    {/*                    </div>*/}
+                    {/*                </div>*/}
+                    {/*            ))}*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 </div>
             </main>
         </div>

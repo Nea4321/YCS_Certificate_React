@@ -1,6 +1,6 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Logo, SearchBar, Navigation, MobileMenu } from "./ui"
+import {Logo, SearchBar, Navigation, MobileMenu, UserInfoPanel} from "./ui"
 import { headerStyles } from "./styles"
 import {useLocation} from "react-router-dom";
 
@@ -8,6 +8,7 @@ export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isUserInfoOpen, setIsUserInfoOpen] = useState(false)
   const location = useLocation()
   const lastScrollY = useRef(0)
 
@@ -48,6 +49,11 @@ export const Header: React.FC = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
+  // 유저 정보 패널 토글
+  const toggleUserInfo = () => {
+    setIsUserInfoOpen(!isUserInfoOpen)
+  }
+
   // 로그인 화면이면 헤더 없음
   if(location.pathname === "/auth") {return null}
 
@@ -59,10 +65,13 @@ export const Header: React.FC = () => {
       className={`${headerStyles.header} ${isScrolled ? headerStyles.scrolled : ""} ${isHidden ? headerStyles.hidden : ""}`}
     >
       <div className={headerStyles.container}>
-        <Logo />
-        <SearchBar />
-        <Navigation />
-        <MobileMenu isOpen={isMobileMenuOpen} onToggle={toggleMobileMenu} />
+          <Logo />
+          <SearchBar />
+          <Navigation />
+        <div className={headerStyles.rightSection}>
+          <MobileMenu isOpen={isMobileMenuOpen} onToggle={toggleMobileMenu} />
+        <UserInfoPanel isOpen={isUserInfoOpen} onToggle={toggleUserInfo} />
+        </div>
       </div>
     </header>
   )

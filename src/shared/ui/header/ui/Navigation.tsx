@@ -6,7 +6,7 @@ import {RootState} from "@/app/store";
 export const Navigation = () => {
 
   const location = useLocation()
-    // 리덕스에서 이메일 가져옴
+    // 리덕스에서 이름 가져옴
     const name = useSelector((state: RootState) => state.user.userName)
 
 

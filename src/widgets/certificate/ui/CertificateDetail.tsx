@@ -17,6 +17,7 @@ import { ExamInfoBlocks } from '@/widgets/schedule/ui/ExamInfoBlocks';
 import { BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
 import { pickExamInfo, pickExamStats, pickBasicHtml, pickBenefitHtml } from '@/entities/certificate/model/selectors';
 import { PreferencePanel } from '@/widgets';
+import {FavoriteButton} from "@/features/favorite";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 2) 본 컴포넌트
@@ -202,8 +203,10 @@ export const CertificateDetail = memo(function CertificateDetail({
             />
             {/* 헤더 */}
             <div className={certificateDetailStyles.header}>
+                <div className={certificateDetailStyles.titleBox}>
                 <h1 className={certificateDetailStyles.title}>{certName}</h1>
-
+                <FavoriteButton exist={certName} id={id} type={"certificate"}/>
+                </div>
                 <div className={certificateDetailStyles.tagBox}>
                     {tagIds.map((tid) => {
                         const meta = tagMetaMap.get(tid);

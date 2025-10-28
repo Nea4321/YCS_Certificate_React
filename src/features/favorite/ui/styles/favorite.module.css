@@ -1,0 +1,13 @@
+/* 즐겨 찾기 별색 */
+.favoriteButton {
+    display: flex;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #facc15; /* 기본 별색 */
+    transition: transform 0.2s ease;
+}
+
+.favoriteButton:hover {
+    transform: scale(1.6);
+}

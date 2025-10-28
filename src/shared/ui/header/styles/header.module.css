@@ -28,10 +28,16 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 70px;
 }
 
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
@@ -39,11 +45,18 @@
     padding: 0 16px;
     height: 60px;
   }
+  .rightSection {
+    gap: 8px;
+  }
+
 }
 
 @media (max-width: 480px) {
   .container {
     padding: 0 12px;
+  }
+  .rightSection {
+    gap: 6px;
   }
 }
 

@@ -1,0 +1,272 @@
+
+
+/* 유저 정보 버튼 */
+.userInfoButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: var(--background-color);
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.userInfoButton:hover {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+}
+
+/* 유저 정보 패널 */
+.userInfoPanel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    /* 모바일에서 스크롤 개선을 위한 속성 추가 */
+    max-height: 100vh;
+    background-color: var(--background-color);
+    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1001;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.userInfoPanelOpen {
+    right: 0;
+}
+
+/* 패널 헤더 */
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+
+}
+
+.panelTitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color, #1f2937);
+    margin: 0;
+}
+
+.closeButton {
+    padding: 8px;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #6b7280);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background-color: var(--hover-color, #f3f4f6);
+    color: var(--text-color, #1f2937);
+}
+
+/* 패널 콘텐츠 */
+.panelContent {
+    padding: 20px;
+}
+
+/* 로그인 프롬프트 */
+.loginPrompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.loginMessage {
+    font-size: 18px;
+    color: var(--text-secondary, #6b7280);
+    margin-bottom: 20px;
+}
+
+.loginButton {
+    padding: 12px 32px;
+    background-color: var(--primary-color, #2092aa);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.loginButton:hover {
+    background-color: var(--primary-color, #1a7a8f);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(32, 146, 170, 0.3);
+}
+
+/* 섹션 */
+.section {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.section:last-child {
+    border-bottom: none;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color, #1f2937);
+    margin-bottom: 12px;
+}
+
+/* 정보 아이템 */
+.infoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.infoLabel {
+    font-size: 14px;
+    color: var(--text-secondary, #6b7280);
+    font-weight: 500;
+}
+
+.infoValue {
+    font-size: 14px;
+    color: var(--text-color, #1f2937);
+}
+
+/* 캘린더 테이블 */
+.calendarTable {
+    overflow-x: auto;
+}
+
+.calendarTable table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.calendarTable th {
+    background-color: var(--hover-color, #f3f4f6);
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-color, #1f2937);
+    border-bottom: 2px solid var(--border-color, #e5e7eb);
+}
+
+.calendarTable td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    color: var(--text-color, #1f2937);
+}
+
+.calendarTable tbody tr:hover {
+    background-color: var(--hover-color, #f3f4f6);
+}
+
+/* 즐겨찾기 리스트 */
+.favoriteList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.favoriteItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: var(--hover-color, #f3f4f6);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.favoriteItem:hover {
+    background-color: var(--border-color, #e5e7eb);
+}
+
+.favoriteItem span {
+    font-size: 14px;
+    color: var(--text-color, #1f2937);
+}
+
+.deleteButton {
+    padding: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #6b7280);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* 오버레이 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+
+
+    .userInfoPanel {
+        /* 모바일에서 전체 너비로 표시 */
+        width: 100%;
+        max-width: 100vw;
+        right: -100%;
+    }
+
+    .userInfoPanelOpen {
+        right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .panelHeader {
+        padding: 16px;
+    }
+
+    .panelContent {
+        padding: 16px;
+    }
+
+    .panelTitle {
+        font-size: 18px;
+    }
+}
