@@ -45,18 +45,6 @@ export type ExamEventTypeBE =
     | 'PRAC_REG' | 'PRAC_EXAM' | 'PRAC_PASS';
 
 export interface ExamEventDto { startDate: string; endDate: string; type: ExamEventTypeBE; }
-export interface ScheduleEventsDto { events: ExamEventDto[]; }
-
-export interface RegularScheduleRow {
-    round?: string | number;
-    applyStart?: string;
-    applyEnd?: string;
-    examDate?: string;
-    resultDate?: string;
-    note?: string;
-    [k: string]: unknown;
-}
-export type SpecialScheduleRow = RegularScheduleRow;
 
 /** ───────── 시험정보 DTO ───────── */
 export interface StandardLink {

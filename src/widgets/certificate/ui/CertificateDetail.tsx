@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import type { CertificateData } from '@/entities/certificate/model/types';
 import { certificateDetailStyles } from '../styles';
@@ -16,8 +16,11 @@ import { Tabs } from '@/shared/components/Tabs';
 import { ExamInfoBlocks } from '@/widgets/schedule/ui/ExamInfoBlocks';
 import { BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
 import { pickExamInfo, pickExamStats, pickBasicHtml, pickBenefitHtml } from '@/entities/certificate/model/selectors';
-import { PreferencePanel } from '@/widgets';
+import { PreferencePanel } from '@/widgets/preference/ui/PreferencePanel';
 import {FavoriteButton} from "@/features/favorite";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import CBTAnim from '@/pages/cbt/styles/CBTExamPage.module.css';
+import { adaptPreference } from '@/widgets/preference/ui/adaptPreference';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 2) 본 컴포넌트
@@ -49,10 +52,20 @@ const toHtmlString = (v: unknown): string => {
     return String(v);
 };
 
-const isEmptyHtml = (v?: unknown) => {
-    const html = toHtmlString(v);
-    return !html || !html.replace(/<[^>]*>/g, '').trim();
+type UnknownRec = Record<string, unknown>;
+
+/** base에서 preference/other_info가 있으면 그쪽을 우선 선택 */
+const pickPreferenceSource = (v: unknown): unknown => {
+    if (v && typeof v === 'object') {
+        const o = v as UnknownRec;
+        const pref = o['preference'];
+        const other = o['other_info'];
+        if (pref && typeof pref === 'object') return pref as UnknownRec;
+        if (other && typeof other === 'object') return other as UnknownRec;
+    }
+    return v;
 };
+
 
 export const CertificateDetail = memo(function CertificateDetail({
                                                                      certificate: initialCertificate,
@@ -64,6 +77,7 @@ export const CertificateDetail = memo(function CertificateDetail({
 
     const [tagVersion, setTagVersion] = useState(0);
     const certId = Number(id);
+    const [open, setOpen] = useState(false); // 기본: 접힘. 펼쳐서 시작하려면 true
     useEffect(() => {
         if (!certId) return;
         if (!Array.isArray(certificateTags[certId]) || certificateTags[certId].length === 0) {
@@ -181,14 +195,58 @@ export const CertificateDetail = memo(function CertificateDetail({
         return toUiEvents(be, base?.certificate_name || '');
     }, [calendarEvents, base, forceAdapter]);
 
+    const benefitRef = useRef<HTMLDivElement | null>(null);
+
+    // 빈 행(실제 글자 없는 tr) 제거
+    useEffect(() => {
+        const root = benefitRef.current;
+        if (!root) return;
+
+        queueMicrotask(() => {
+            const tables = root.querySelectorAll<HTMLTableElement>('table:not([data-kind="qpref"])');
+            tables.forEach((table) => {
+                table.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((tr) => {
+                    const cells = Array.from(tr.cells) as HTMLTableCellElement[];
+                    const keep = cells.some((td) => {
+                        const t = (td.textContent ?? '').replace(/[\u00A0\s]/g, '');
+                        return t.length > 0;
+                    });
+                    if (!keep) tr.remove();
+                });
+            });
+        });
+    }, [benefitHtml]); // ← 우리 표는 benefitHtml로 렌더되지 않으므로 영향 없음
+
+    // (우대현황 탭 JSX 바깥, return 위 어딘가)
+    const prefData = useMemo<unknown>(() => pickPreferenceSource(base as unknown), [base]);
+    const prefRows = useMemo(() => adaptPreference(prefData), [prefData]);
+
+// (필요하면 URL에 ?debugPref 붙였을 때만 찍게)
+    if (new URLSearchParams(location.search).has('debugPref')) {
+        console.table(prefRows.slice(0, 5));
+    }
+
+
 
     // 1) 플래그 정리
-    const hasSchedule = (scheduleRaw?.length ?? 0) > 0;
-    const hasBasic    = !isEmptyHtml(basicHtml);
-    const hasBenefit  = !isEmptyHtml(benefitHtml);
+    // 1) 플래그 정리
+    const hasSchedule =
+        (scheduleRaw?.length ?? 0) > 0 ||
+        (Array.isArray(base?.schedule) && base!.schedule.length > 0);
 
-    // 탭은 내용이 하나라도 있을 때
+    const hasBasic =
+        Boolean(base?.basic_info || base?.basic_info_html || (basicHtml && basicHtml.length > 0));
+
+    const hasBenefit  = prefRows.length > 0 || Boolean(benefitHtml && benefitHtml.length > 0);
+
     const showTabs = hasSchedule || hasBasic || hasBenefit;
+
+    useEffect(() => {
+        if (Array.isArray(base?.schedule)) {
+            setScheduleRaw(base!.schedule as RawItem[]);
+        }
+    }, [base?.schedule]);
+
 
 
     return (
@@ -196,9 +254,13 @@ export const CertificateDetail = memo(function CertificateDetail({
             <style
                 dangerouslySetInnerHTML={{
                     __html: `
-          .certificate-content{font-size:1.1em;line-height:1.8}
-          .certificate-content h3{font-size:1.3em;font-weight:bold;margin:1.5em 0 1em}
-        `,
+      /* 기본은 폰트만 */
+      .certificate-content{font-size:1.1em}
+      .certificate-content h3{font-size:1.3em;font-weight:bold;margin:1.5em 0 1em}
+
+      /* 줄간격은 basic-info에만 */
+      #basic-info.certificate-content{line-height:1.8}
+    `,
                 }}
             />
             {/* 헤더 */}
@@ -225,11 +287,40 @@ export const CertificateDetail = memo(function CertificateDetail({
                 </div>
             </div>
 
-            {/* ▼ 여기부터: 기본정보(개요/수행직무/진로및전망) */}
+            {/* ▼ 기본정보(개요/수행직무/진로및전망) */}
             {base?.basic_info && (
-                <div className={`${certificateDetailStyles.basicInfo} certificate-content`}>
-                    {base && <BasicInfoPanel data={base} />}
-                </div>
+                <section className={certificateDetailStyles.basicInfoSection}>
+                    {/* 바깥: 카드(그림자/라운드/배경) */}
+                    <div className={certificateDetailStyles.basicInfoCard}>
+                        {/* 안쪽: 내용(접힘/펼침, 그라데이션) */}
+                        <div
+                            id="basic-info"
+                            className={[
+                                certificateDetailStyles.cardInner,
+                                !open ? certificateDetailStyles.collapsed : '',
+                                !open ? certificateDetailStyles.clamp2 : '',
+                                !open ? certificateDetailStyles.noFade : '',
+                                'certificate-content',
+                            ].join(' ')}
+                        >
+                            <BasicInfoPanel data={base} />
+                        </div>
+
+                        {/* 펼치기/접기 버튼은 카드 안쪽 하단에 */}
+                        <div className={certificateDetailStyles.expandBar}>
+                            <button
+                                className={CBTAnim.expandIconButton}
+                                onClick={() => setOpen(v => !v)}
+                                aria-expanded={open}
+                                aria-controls="basic-info"
+                                type="button"
+                                title={open ? '접기' : '펼치기'}
+                            >
+                                {open ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                            </button>
+                        </div>
+                    </div>
+                </section>
             )}
 
             {/* 달력 먼저 */}
@@ -272,12 +363,17 @@ export const CertificateDetail = memo(function CertificateDetail({
                             )}
 
                             {active === 'benefit' && (
-                                <div className="certificate-content">
+                                <div id="benefit-root" ref={benefitRef} className={`${certificateDetailStyles.benefitSection} certificate-content`}>
                                     <h2>우대현황</h2>
-                                    {base && <PreferencePanel data={base} />}
-                                    <div dangerouslySetInnerHTML={{ __html: base ? (benefitHtml || '') : '' }} />
+                                    {prefRows.length > 0
+                                        ? <PreferencePanel data={prefData}/>
+                                        : <div style={{color:'#6b7280',fontSize:14,padding:'10px 2px'}}>
+                                                우대현황(법령) 데이터가 없습니다.
+                                               </div>}
                                 </div>
                             )}
+
+
                         </Tabs>
                     </section>
                 )}

@@ -1,52 +1,116 @@
 // widgets/schedule/buildQnetGrid.ts
-
 export type RawItem = {
-    phase: '필기' | '실기';
+    phase: string;                 // '필기' | '실기' | '면접' | '1차' | '2차' ...
     회차?: string | null;
+
+    // phase-특화(필/실/면접 등)
     접수기간?: string | null;
-    추가접수기간?: string | null;   // ⬅️ 여기서 온다
+    추가접수기간?: string | null;
     시험일?: string | null;
     발표?: string | null;
+
+    // 공용(phase 구분 없음)
+    서류제출기간?: string | null;
+    의견제시기간?: string | null;
+    "최종정답 발표기간"?: string | null;
 };
 
-export type QnetGridRow = {
-    round: string;
+type GridHeader = { id: string; title: string };
+type GridRow    = Record<string, string>;
 
-    // 필기
-    docReg?: string | null;        // 원서접수
-    docRegExtra?: string | null;   // ⬅️ 추가접수기간
-    docExam?: string | null;
-    docPass?: string | null;
-
-    // 실기
-    pracReg?: string | null;       // 원서접수
-    pracRegExtra?: string | null;  // ⬅️ 추가접수기간
-    pracExam?: string | null;
-    pracPass?: string | null;
+const P_COLS = ["REG", "EXAM", "RESULT"] as const; // phase-특화 3종
+const P_LABEL: Record<(typeof P_COLS)[number], string> = {
+    REG: "원서접수(휴일제외)",
+    EXAM: "시험",
+    RESULT: "합격자 발표",
 };
 
-export function buildQnetGrid(items: RawItem[]): QnetGridRow[] {
-    const byRound = new Map<string, QnetGridRow>();
+// 공용 3종(phase 미구분)
+const SHARED_COLS = ["DOCS", "OBJECTION", "ANSWER"] as const;
+const SHARED_LABEL: Record<(typeof SHARED_COLS)[number], string> = {
+    DOCS: "서류제출기간",
+    OBJECTION: "의견제시기간",
+    ANSWER: "최종정답 발표기간",
+};
 
-    for (const it of items) {
-        const round = it.회차 ?? '-';
-        if (!byRound.has(round)) byRound.set(round, { round });
-        const row = byRound.get(round)!;
+function push(row: GridRow, id: string, v?: string | null) {
+    if (!v) return;
+    row[id] = row[id] ? `${row[id]}\n${v}` : v;
+}
 
-        if (it.phase === '필기') {
-            row.docReg      = row.docReg      ?? it.접수기간 ?? null;
-            row.docRegExtra = row.docRegExtra ?? it.추가접수기간 ?? null;
-            row.docExam     = row.docExam     ?? it.시험일 ?? null;
-            row.docPass     = row.docPass     ?? it.발표 ?? null;
-        } else {
-            row.pracReg      = row.pracReg      ?? it.접수기간 ?? null;
-            row.pracRegExtra = row.pracRegExtra ?? it.추가접수기간 ?? null;
-            row.pracExam     = row.pracExam     ?? it.시험일 ?? null;
-            row.pracPass     = row.pracPass     ?? it.발표 ?? null;
-        }
+export function buildQnetGrid(items: RawItem[]): { headers: GridHeader[]; rows: GridRow[] } {
+    // 1) phase 후보(실제로 쓸 값이 있는 phase만 남김)
+    const phasesAll = Array.from(new Set(items.map(i => i.phase).filter(Boolean)));
+    const phasesUsed: string[] = [];
+
+    for (const p of phasesAll) {
+        const hasAny =
+            items.some(i => i.phase === p && (i.접수기간 || i.추가접수기간 || i.시험일 || i.발표));
+        if (hasAny) phasesUsed.push(p);
     }
 
-    const norm = (s: string) => (s || '').replace(/[^\d]/g, '');
-    return Array.from(byRound.values())
-        .sort((a, b) => Number(norm(a.round)) - Number(norm(b.round)));
+    // 2) 공용 컬럼 존재 여부
+    const hasShared: Record<(typeof SHARED_COLS)[number], boolean> = {
+        DOCS: items.some(i => i.서류제출기간),
+        OBJECTION: items.some(i => i.의견제시기간),
+        ANSWER: items.some(i => i["최종정답 발표기간"]),
+    };
+
+    // 3) 헤더 구성
+    const headers: GridHeader[] = [{ id: "round", title: "구분(회차)" }];
+
+    // phase-특화 3종 (필/실/면접/1차/2차…)
+    for (const p of phasesUsed) {
+        for (const c of P_COLS) {
+            headers.push({ id: `${p}:${c}`, title: `${p} ${P_LABEL[c]}` });
+        }
+    }
+    // 공용 3종 (phase 미구분, 실제 데이터 있을 때만 추가)
+    for (const c of SHARED_COLS) {
+        if (hasShared[c]) headers.push({ id: `SHARED:${c}`, title: SHARED_LABEL[c] });
+    }
+
+    // 4) 행 만들기(회차 기준)
+    const byRound = new Map<string, GridRow>();
+
+    for (const it of items) {
+        const round = it.회차 ?? "-";
+        const row = byRound.get(round) ?? { round };
+
+        // phase-특화
+        push(row, `${it.phase}:REG`, it.접수기간 || undefined);
+        if (it.추가접수기간) push(row, `${it.phase}:REG`, `추가접수: ${it.추가접수기간}`);
+        push(row, `${it.phase}:EXAM`, it.시험일 || undefined);
+        push(row, `${it.phase}:RESULT`, it.발표 || undefined);
+
+        // 공용(단일 컬럼)
+        push(row, `SHARED:DOCS`, it.서류제출기간 || undefined);
+        push(row, `SHARED:OBJECTION`, it.의견제시기간 || undefined);
+        push(row, `SHARED:ANSWER`, it["최종정답 발표기간"] || undefined);
+
+        byRound.set(round, row);
+    }
+
+    // 5) 완성된 데이터에서 "값이 전혀 없는" 컬럼은 헤더에서 제거
+    const usedIds = new Set<string>(["round"]);
+    for (const r of byRound.values()) {
+        Object.keys(r).forEach(k => r[k] && usedIds.add(k));
+    }
+    const finalHeaders = headers.filter(h => usedIds.has(h.id));
+
+    // 6) 회차 정렬
+    const num = (s?: string) => (s ?? "").replace(/[^\d]/g, "");
+    const rows = Array.from(byRound.values()).sort(
+        (a, b) => Number(num(a.round)) - Number(num(b.round))
+    );
+
+    // 7) 안전: 제거된 컬럼은 행에서도 접근 안 되도록
+    const finalIds = new Set(finalHeaders.map(h => h.id));
+    for (const r of rows) {
+        Object.keys(r).forEach(k => {
+            if (!finalIds.has(k)) delete (r as any)[k];
+        });
+    }
+
+    return { headers: finalHeaders, rows };
 }
