@@ -1,5 +1,5 @@
 // widgets/basic-info/BasicInfoPanel.tsx
-import { adaptBasicInfo, type InfoBlock } from './adaptBasicInfo';
+import { adaptBasicInfo, type InfoBlock } from './adaptBasicInfo.ts';
 
 // widgets/basic-info/BasicInfoPanel.tsx
 function DlRow({ label, children }: { label: string; children: React.ReactNode }) {

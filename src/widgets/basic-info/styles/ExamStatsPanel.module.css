@@ -1,0 +1,75 @@
+/* 래퍼/스크롤 */
+.qstatsWrap { margin-top: 28px; }
+.qstatsTitle { font-size: 18px; font-weight: 700; margin: 0 0 10px; }
+.qstatsScroll { overflow-x: auto; overflow-y: hidden; border: 1px solid #e5e7eb; border-radius: 8px; }
+
+/* 표 본체 */
+.qstats {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 14px;
+    /* min-width: 740px;  ← 데스크톱 전용이면 유지, 모바일에선 미디어쿼리로 제거 */
+}
+
+/* ✅ TSX에서 className으로 직접 쓰는 토큰들(반드시 존재) */
+.group {}   /* 헤더 첫 줄 tr */
+.year  {}   /* 연도 th */
+.num   {}   /* 숫자 td */
+.bold  {}   /* 굵게 */
+.total {}   /* 소계/합계 tr */
+
+/* 상세 스타일 */
+.qstats thead th {
+    background: #f6f8fb; color:#111827;
+    border-bottom:1px solid #e5e7eb;
+    padding: 12px 14px; text-align: center;
+}
+.qstats thead tr.group th { background:#eef3fb; font-weight:700; }
+.qstats tbody th.year { background: #fafafa; font-weight:600; text-align:center; }
+
+.qstats td, .qstats th {
+    border-bottom: 1px solid #eef0f3; padding: 10px 14px; vertical-align: top;
+}
+.qstats tbody tr:nth-child(even) td { background: #fcfcfd; }
+.qstats td.num { text-align: center; font-variant-numeric: tabular-nums; }
+.qstats td.bold { font-weight: 600; }
+.qstats tbody tr.total th,
+.qstats tbody tr.total td { background:#f9fafb; font-weight:600; }
+
+/* 긴 텍스트 줄바꿈 안전 */
+.qstats td, .qstats th {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px){
+    .qstats { min-width: 0; }        /* 강제 폭 제거 */
+    .qstats thead th, .qstats td, .qstats th { padding: 10px 12px; }
+    .qstats { font-size: 13px; }
+}
+@media (max-width: 420px){
+    .qstats { font-size: 12.5px; }
+}
+
+/* 기존 내용 유지 + 아래 추가 */
+
+.cols col:nth-child(1){ width:92px; }  /* 연도 */
+.cols col:nth-child(2),
+.cols col:nth-child(3),
+.cols col:nth-child(4),
+.cols col:nth-child(5),
+.cols col:nth-child(6),
+.cols col:nth-child(7){ width:110px; } /* 필기/실기 6칸 */
+
+/* 모바일: 고정폭 풀기 + 레이아웃 유연화 */
+@media (max-width: 768px){
+    .cols col { width:auto !important; }     /* 인라인 대신 CSS라 오버라이드 가능 */
+    .qstats { min-width:0; table-layout:auto; font-size:13px; }
+    .qstats thead th, .qstats td, .qstats th { padding:10px 12px; }
+}
+@media (max-width: 420px){
+    .qstats { font-size:12.5px; }
+}
