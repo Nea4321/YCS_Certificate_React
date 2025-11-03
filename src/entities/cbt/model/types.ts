@@ -4,8 +4,20 @@
  * @property {string} text - 문제 본문
  * @property {string[]} options - 보기 배열
  */
-export type Question = {
-    id: number;
+export interface Question {
+    question_id: number;
+    certificate_id: number;
+    question_type_id: number;
     text: string;
-    options: string[];
-};
+    content: string | null;
+    img: string | null;
+    answers: Answer[];
+}
+
+export interface Answer {
+    answer_id: number;
+    question_id: number;
+    bool: boolean;
+    content: string;
+    img: string | null;
+}

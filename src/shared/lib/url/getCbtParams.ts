@@ -11,5 +11,6 @@ export function getCbtParams(search: string) {
     const start = q.get("start") || "";
     const end = q.get("end") || "";
     const certName = q.get("certName") || "";
-    return { ui, mode, date, start, end, certName };
+    const certificateId = q.get("certificateId") || "";
+    return { ui, mode, date, start, end, certName, certificateId };
 }

@@ -55,7 +55,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     const categories = useMemo<string[]>(() => {
         const names = (tagList ?? []).map(t => t.tag_Name).filter(Boolean);
         const unique = Array.from(new Set(names)).sort((a, b) => a.localeCompare(b, "ko"));
-        return ["전체", ...unique];
+        return ["전체","문제 O", ...unique];
     }, [tagList]);
 
     const [isExpanded, setIsExpanded] = useState(false);

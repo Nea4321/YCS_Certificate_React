@@ -186,29 +186,29 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                          * 각 자격증의 "가장 가까운 시험 일정"을 테이블로 렌더링한다.
                                          */}
                                         {favoriteSchedule.map((cert) => {
-                                            const today = new Date();
+                                            // const today = new Date();
                                             /**
                                              *  "YYYY.MM.DD ~ YYYY.MM.DD" 형태의 문자열에서
                                              * 시작일(YYYY.MM.DD)만 Date 객체로 변환하는 함수
                                              */
-                                            const parseExamStart = (rangeStr: string) => {
-                                                const [startStr] = rangeStr.split("~").map((s) => s.trim());
-                                                const [y, m, d] = startStr.split(".").map(Number);
-                                                return new Date(y, m - 1, d);
-                                            };
+                                            // const parseExamStart = (rangeStr: string) => {
+                                            //     const [startStr] = rangeStr.split("~").map((s) => s.trim());
+                                            //     const [y, m, d] = startStr.split(".").map(Number);
+                                            //     return new Date(y, m - 1, d);
+                                            // };
                                             /**
                                              *  cert.schedule에서 가장 가까운(오늘 이후) 시험 일정 계산
                                              * 1. 각 일정에 start(시작일) 필드 추가
                                              * 2. 오늘 이전 일정은 필터링
                                              * 3. 시작일 기준 오름차순 정렬 → 가장 가까운 일정 하나만 선택
                                              */
-                                            const nearest = cert.schedule
-                                                .map((sch) => ({ ...sch, start: parseExamStart(sch["시험일"]) }))
-                                                .filter((sch) => sch.start >= today)
-                                                .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
+                                            // const nearest = cert.schedule
+                                            //     .map((sch) => ({ ...sch, start: parseExamStart(sch["시험일"]) }))
+                                            //     .filter((sch) => sch.start >= today)
+                                            //     .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
 
                                             /** 가까운 일정이 없으면 표시하지 않음 */
-                                            if (!nearest) return null;
+                                            // if (!nearest) return null;
 
                                             /**
                                              *  자격증명 클릭 → 캘린더 위젯으로 표시되도록 setSelectedCertificate(cert) 호출
@@ -224,7 +224,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                                             {cert.certificate_name}
                                                           </span>
                                                         </td>
-                                                    <td>{nearest["시험일"].split("~")[0].trim()}</td>
+                                                    {/*<td>{nearest["시험일"].split("~")[0].trim()}</td>*/}
                                                 </tr>
                                             );
                                         })}

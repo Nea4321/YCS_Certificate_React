@@ -34,7 +34,7 @@ export const certificateApi = {
     },
 
     async getNationalSchedule(signal?: AbortSignal): Promise<NationalSchedule[]> {
-        const res = await axiosApi.get<NationalSchedule[]>('/api/cert/schedule', { signal });
+        const res = await axiosApi.get<NationalSchedule[]>('/api/cert/national', { signal });
         return res.data;
     },
 

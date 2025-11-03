@@ -34,9 +34,6 @@ export const TagFilterBar = ({ closeOnTagClick = false }: TagFilterBarProps) => 
         return () => ctrl.abort();
     }, [dispatch, tags]);
 
-    useEffect(() => {
-        console.log("[TAG Redux] tag.list =", tags);
-    }, [tags]);
     const popularNames = ["IT", "건축", "운송", "전기", "식품"] as const;
 
     const idByName = useMemo(() => {

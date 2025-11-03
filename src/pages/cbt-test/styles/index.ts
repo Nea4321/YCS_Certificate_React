@@ -1,0 +1,1 @@
+export { default as CBTTestStyle } from './CBTTestPageStyle.module.css'

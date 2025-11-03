@@ -1,5 +1,5 @@
-/* 전역 컨테이너 */
 .examWrap {
+    position: fixed;
     width: 100%;
     height: 100vh;         /* ⬅ 전체를 뷰포트 높이로 고정 */
     overflow: hidden;      /* ⬅ 문서(body) 스크롤 억제 */
@@ -147,7 +147,8 @@
 .paper {
     box-sizing:border-box;
     height:calc(100vh - var(--headerH,0px) - var(--footerH,0px) - var(--toolbarH,0px));
-    overflow:auto;
+    overflow-y: auto;              /* ← 세로 스크롤은 여기만 */
+    overflow-x: hidden;
     background:#fff;
     border:1px solid #d9dee6;
     border-top:none;
@@ -157,7 +158,6 @@
 
 /* 레이아웃 전환 모드 */
 .layoutTwoCol .paper {
-    column-count: 1;
     column-gap: 0;
 }
 .layoutTwoColNarrow .paper {
@@ -181,13 +181,25 @@
 }
 
 .qblock { padding: 8px 0 16px; }
-.qnum   { font-size: calc(16px * var(--qScaleQ)); margin-bottom: 6px; }
+.qnum   { font-size: calc(16px * var(--qScaleQ)); margin-bottom: 6px; width: 450px}
 
 .opts { list-style: none; padding: 0; margin: 0; }
 .opt  { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: calc(15px * var(--qScaleQ)); line-height: calc(1.6 * var(--qScaleQ)); }
 
 .optLabel { display: inline-flex; align-items: center; gap: 8px; }
 
+.content {
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid #999;
+    width: 300px;
+    border-radius: 0;
+    background-color: #fff;
+    white-space: pre-wrap;
+    font-family: monospace;
+    overflow-x: auto;
+    line-height: 1.5;
+}
 /* 네이티브 라디오 숨김(접근성 유지) */
 .optRadio {
     position: absolute;
@@ -817,4 +829,134 @@
     color: #ffffff;
 }
 
+@media (max-width: 768px) {
+    .examBody {
+        grid-template-columns: 1fr;   /* 한 칼럼로 변경 */
+        gap: 12px;
+        display: block;
+    }
+
+    .examToolbar { display: none !important; }
+    .examSheet   { display: none !important; }
+
+    .examWrap {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;          /* 전체 화면 채움 */
+        overflow: hidden;        /* 바깥쪽 스크롤 방지 */
+    }
+
+    .examHeader {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .examFooterRow {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+    }
+
+    /* 문제지 먼저 */
+    .paperCol {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;       /* 이곳이 세로 스크롤 주체 */
+        overflow-x: hidden;
+        width: auto;
+        align-self: stretch;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .paper {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
+    .qblock,
+    .content,
+    .opts,
+    .opt,
+    .optLabel,
+    .optText {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .content img,
+    .content table,
+    .content canvas,
+    .content iframe,
+    .content video {
+        max-width: 100% !important;
+        height: auto;
+        display: block;
+    }
+
+    /* 표기란 헤더 컴팩트 */
+    .sheetHeader {
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 12px 12px 0 0;
+    }
+
+
+    .sheetRow {
+        display: grid;
+        grid-template-columns: 28px 1fr; /* 번호, 선택지 */
+        align-items: center;
+        padding: 6px 8px;
+        border: 1px solid #eef1f5;
+        border-radius: 10px;
+        background: #fff;
+    }
+    .sheetRowNum {
+        justify-self: center;
+        font-size: 13px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #f3f6fb;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    /* 풋터: 3분할 -> 2줄로 쌓이기 */
+    .examFooterRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .footerLeft { grid-column: 1 / 2; }
+    .footerPagerWrap { grid-column: 1 / -1; order: 3; }
+    .footerRight { grid-column: 2 / 3; justify-self: end; display: flex; gap: 8px; }
+
+    /* 풋터 버튼 크기/터치 영역 */
+    .footerBtn { min-width: 36px; min-height: 36px; }
+    .footerCalcBtn,
+    .unansweredFooterBtn,
+    .submitBtn {
+        min-height: 40px;
+        padding: 0 10px;
+        background-color: #CFD2D8;
+        box-shadow: none;
+    }
+
+    /* 문제지 옵션 줄바꿈/간격 */
+    .qblock { padding: 10px 8px; }
+    .opts { gap: 6px 10px; }
+    .optLabel { gap: 8px; }
+    .optImg { width: 26px; height: 26px; }
+    .optText { line-height: 1.35; }
+    .qnum{
+        width: 100%;
+    }
+}
 

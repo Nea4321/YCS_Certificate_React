@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { ExamStyles } from "@/widgets/cbt-exam/styles";
 import type { Question } from "@/entities/cbt/model/types";
 import {
@@ -10,7 +10,7 @@ import {
     QuestionPaper,
     AnswerSheet,
     UnansweredModal,
-    FooterBar,
+    FooterBar, useExamViewMobile,
 } from "@/features/cbt-exam";
 import { SubmitConfirmModal } from "@/features/cbt-exam";
 import { Calculator } from "@/features/cbt-exam";
@@ -42,7 +42,6 @@ export function ExamView({
                              setFontZoom,
                          }: ExamViewProps) {
     const { leftTime, limitMin } = timer;
-
     type LayoutMode = "twoCol" | "narrowSheet" | "oneCol";
     const [layout, setLayout] = useState<LayoutMode>("twoCol");
     const [showUnanswered, setShowUnanswered] = useState(false);
@@ -50,18 +49,25 @@ export function ExamView({
     const [showConfirm, setShowConfirm] = useState(false);
     const navigate = useNavigate();
     const { bodyRef, headerRef, footerRef, toolbarRef } = useStickyHeights();
+    const { isMobile, effectivePageSize } = useExamViewMobile(pageSize);
+
+
+    const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
+        useUnanswered(answers);
+
+    useEffect(() => {
+        if (isMobile && layout !== "oneCol") setLayout("oneCol");
+    }, [isMobile, layout]);
+
     const { totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion } =
         useExamPaging(
             layout,
-            pageSize,
+            effectivePageSize,
             currentPage,
             setCurrentPage,
             questions.length,
             questions,
         );
-
-    const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
-        useUnanswered(answers);
 
     const wrapCls = [
         ExamStyles.examWrap,
@@ -78,9 +84,14 @@ export function ExamView({
 
     const handleSubmitConfirm = () => {
         setShowConfirm(false);
-        const qs = new URLSearchParams();
-        qs.set("certName", certName);
-        navigate(`/cbt/result?${qs.toString()}`, { replace: true });
+        navigate('/cbt/exam/result', {
+            replace: true,
+            state: {
+                certName: certName,
+                userAnswers: answers,
+                questions: questions,
+            }
+        });
     };
 
     return (
@@ -94,16 +105,16 @@ export function ExamView({
                 />
 
                 <div className={ExamStyles.paperCol}>
-                    <ExamToolbar
-                        fontZoom={fontZoom}
-                        setFontZoom={setFontZoom}
-                        layout={layout}
-                        setLayout={setLayout}
-                        onLayoutChange={onLayoutChange}
-                        totalQuestions={questions.length}
-                        unanswered={unanswered}
-                        toolbarRef={toolbarRef}
-                    />
+                    {!isMobile && (
+                        <ExamToolbar
+                            fontZoom={fontZoom} setFontZoom={setFontZoom}
+                            layout={layout} setLayout={setLayout}
+                            onLayoutChange={onLayoutChange}
+                            totalQuestions={questions.length}
+                            unanswered={unanswered}
+                            toolbarRef={toolbarRef}
+                        />
+                    )}
 
                     <QuestionPaper
                         slice={currentSlice}
