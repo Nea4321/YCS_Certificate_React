@@ -186,16 +186,16 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                          * 각 자격증의 "가장 가까운 시험 일정"을 테이블로 렌더링한다.
                                          */}
                                         {favoriteSchedule.map((cert) => {
-                                            const today = new Date();
+                                            // const today = new Date();
                                             /**
                                              *  "YYYY.MM.DD ~ YYYY.MM.DD" 형태의 문자열에서
                                              * 시작일(YYYY.MM.DD)만 Date 객체로 변환하는 함수
                                              */
-                                            const parseExamStart = (rangeStr: string) => {
-                                                const [startStr] = rangeStr.split("~").map((s) => s.trim());
-                                                const [y, m, d] = startStr.split(".").map(Number);
-                                                return new Date(y, m - 1, d);
-                                            };
+                                            // const parseExamStart = (rangeStr: string) => {
+                                            //     const [startStr] = rangeStr.split("~").map((s) => s.trim());
+                                            //     const [y, m, d] = startStr.split(".").map(Number);
+                                            //     return new Date(y, m - 1, d);
+                                            // };
                                             /**
                                              *  cert.schedule에서 가장 가까운(오늘 이후) 시험 일정 계산
                                              * 1. 각 일정에 start(시작일) 필드 추가

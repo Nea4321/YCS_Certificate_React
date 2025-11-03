@@ -3,7 +3,8 @@ import { CertificateCategorySlider } from '@/features/certificate/ui/Certificate
 import { TagFilterBar } from '@/shared/ui/tag/TagFilterBar.tsx';
 import { useOrganizations } from "@/shared";
 import {NewsTicker} from "@/widgets/newsticker";
-import {MobileBannerSlider, useMedia} from "@/features";
+import {MobileBannerSlider} from "@/features/certificate/ui/MobileBannerSlider";
+import  {useMedia} from "@/features/certificate/hooks/useMedia"
 import {originalCategories} from "@/entities/certificate/lib/slidesData.ts";
 
 export const Main = () => {
