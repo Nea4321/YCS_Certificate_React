@@ -1,9 +1,9 @@
 import { myPageStyles } from "../styles"
 import { MyPageForm } from "@/features/login"
-import {useEffect, useState} from "react"
+import {useEffect} from "react"
 import {useNavigate} from "react-router-dom";
-import {FavoriteInfoRequest, FavoriteScheduleRequest} from "@/features/favorite";
-import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
+import {FavoriteInfoRequest} from "@/features/favorite";
+import {setFavoriteInfo} from "@/shared/slice";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
 
@@ -21,16 +21,16 @@ export const MyPage = () => {
 
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
-    const handleMemberAction = (memberId: number, action: "delete" | "suspend" | "activate") => {
-        console.log(`${action} member with ID: ${memberId}`)
-        // 실제 구현에서는 API 호출
-    }
+    // const handleMemberAction = (memberId: number, action: "delete" | "suspend" | "activate") => {
+    //     console.log(`${action} member with ID: ${memberId}`)
+    //     // 실제 구현에서는 API 호출
+    // }
 
-    const handleFavoriteClick = (url: string) => {
-        console.log(`Navigate to: ${url}`)
-        navigate(`/${url}`)
-        // 실제 구현에서는 router.push(url) 사용
-    }
+    // const handleFavoriteClick = (url: string) => {
+    //     console.log(`Navigate to: ${url}`)
+    //     navigate(`/${url}`)
+    //     // 실제 구현에서는 router.push(url) 사용
+    // }
 
     return (
         <div className={myPageStyles.container}>
