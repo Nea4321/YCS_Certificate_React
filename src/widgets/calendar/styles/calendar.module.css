@@ -370,7 +370,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,.1);
-    margin: 20px 0 2rem;
+    margin: 20px 0 1.2rem;
 }
 
 .legendTitle {
@@ -480,4 +480,101 @@
     border-right: 0 !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+}
+/* backdrop */
+.popoverBackdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+}
+
+/* 팝오버 본체 */
+.popover {
+    position: absolute;
+    width: 400px;
+    max-height: 72vh;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    overflow: auto;
+}
+
+/* 헤더 */
+.popoverHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.popoverDate {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.popoverTitle {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* 닫기 버튼 */
+.popoverClose {
+    font-size: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* 목록 */
+.popoverList {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    list-style: none;      /* ● 불릿 제거 */
+    margin: 0;
+}
+
+.popoverItem {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.popoverItemRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.popoverItemName {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.popoverItemChip {
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+}
+
+.popoverItemPeriod {
+    font-size: 14px;
+    color: #374151;
+}
+
+/* ── 반응형 (모바일) ───────────────────────── */
+@media (max-width: 768px) {
+    .popover {
+        width: calc(100vw - 120px);
+        left: 12px !important;   /* 위치 인라인보다 우선하려면 !important 필요 */
+        right: 12px;
+        max-height: 700vh;
+    }
 }

@@ -1,0 +1,1 @@
+export { default as NewsTickerStyles } from './NewsTicker.module.css'

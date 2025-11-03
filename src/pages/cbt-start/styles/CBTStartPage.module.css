@@ -179,3 +179,78 @@
     background-color: #cbd5e1;
     cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+    .page {
+        padding: 24px 12px;
+    }
+
+    /* 카드 영역 – 한 줄 꽉 차게 */
+    .cardWrapper {
+        gap: 12px;
+        margin-bottom: 28px;
+    }
+    .card {
+        width: 100%;
+        padding: 16px;
+        border-radius: 14px;
+    }
+    .icon { font-size: 2rem; }
+    .cardTitle { font-size: 1.1rem; }
+    .cardDesc { font-size: 0.93rem; }
+
+    /* 시험 설정 박스 */
+    .optionsContainer {
+        width: 90%;
+        max-width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        margin: 0 auto 20px auto;
+        gap: 12px;
+    }
+
+    .optionsTitle {
+        font-size: 16px;
+        margin: 0 4px 4px 4px;
+    }
+
+    /* 한 줄 → 세로 정렬 */
+    .optionRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    /* 라벨은 위, 전체 너비 */
+    .optionsContainer label {
+        width: 100%;
+        font-size: 13.5px;
+        margin-bottom: 4px;
+    }
+
+    /* 셀렉트는 전체 너비 */
+    .optionsContainer select {
+        min-width: 0;
+        width: 100%;
+        padding: 12px 12px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+
+    /* (라디오 그룹) 두 번째 div도 전체 너비 */
+    .optionRow > div {
+        width: 100%;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* 하단 버튼 – 화면 폭에 맞게 */
+    .footerButton {
+        width: 100%;
+        max-width: 420px;
+        padding: 14px 18px;
+        border-radius: 12px;
+    }
+}

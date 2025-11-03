@@ -95,13 +95,23 @@
 .slider-arrow.left { left: 5%; }
 .slider-arrow.right { right: 5%; }
 
+.slider-track {
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-drag: none;
+    cursor: grab;
+}
+
+/* 드래그 중 시각 피드백 */
+.slider-track.dragging {
+    cursor: grabbing;
+}
 @media (max-width: 768px) {
+    /* 슬라이드 프레임 기본 (이미 있으나 덮어쓰기) */
     .slider-wrapper {
         width: 100vw;
         padding: 0;
         display: block;
-        justify-content: unset;
-        align-items: unset;
     }
 
     .slider-track {
@@ -114,20 +124,116 @@
         flex: 0 0 100%;
         min-width: 100%;
         margin: 0;
-        padding: 1.25rem;
+        padding: 16px;                  /* 카드 내부 여백 */
         box-sizing: border-box;
         border-radius: 12px;
-        text-align: center;
+        text-align: left;               /* 리스트는 왼쪽 정렬 */
+        background: transparent;        /* 외부 카드 배경 제거 */
+        border: 0;
+        box-shadow: none;
+    }
+    .m-pill__thumb{
+        width: 36px; height: 36px;             /* 40 → 36, 너무 커보이면 */
+        margin-left: -45px;                     /* 번호 원 쪽으로 살짝 겹치게 */
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,.9);
+        box-shadow: 0 2px 6px rgba(0,0,0,.08) inset;
+        margin-right: 20px;
+    }
+    /* 타이틀 */
+    .slide h3 {
+        font-size: 18px;
+        font-weight: 800;
+        margin: 6px 0 12px;
+        color: #1e2430;
+        padding: 0 8px 8px;
+        border: 0;
+        border-bottom: 2px solid #e9eefc;
     }
 
-    .slide h3 { font-size: 1.25rem; margin-bottom: 1rem; }
-    .slide ol { grid-template-columns: 1fr; gap: .6rem; padding-left: 40px; }
-
-    .slider-arrow {
-        width: 40px; height: 40px; font-size: 1.2rem;
+    /* 리스트를 1열 세로로 */
+    .slide ol {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding-left: 0;
+        list-style: none;
+        counter-reset: item;
     }
-    .slider-arrow.left  { left: 8px; }
-    .slider-arrow.right { right: 8px; }
+
+    /* 캡슐형 항목 */
+    .slide ol li {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 56px;
+        padding: 0 18px 0 102px;        /* 왼쪽 아이콘 공간 확보 */
+        border-radius: 999px;
+        color: #fff;
+        background: #5e7cff;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1;
+        letter-spacing: 0;
+        overflow: hidden;
+    }
+
+    .slide ol li:nth-child(1) {
+        background: linear-gradient(90deg, #4F7BFF 0%, #8B6CFF 100%);
+    }
+
+    .slide ol li:nth-child(2) {
+        background: linear-gradient(90deg, #8B6CFF 0%, #2ecc71 100%);
+    }
+
+    .slide ol li:nth-child(3) {
+        background: linear-gradient(90deg, #6B7A8C 0%, #a8c9a7 100%);
+    }
+
+    .slide ol li:nth-child(4) {
+        background: linear-gradient(90deg, #feca57 0%, #40D9C7 100%);
+    }
+
+    .slide ol li:nth-child(5) {
+        background: linear-gradient(90deg, #7FA8FF 0%, #374151 100%);
+    }
+
+    /* 왼쪽 "작은 번호칩" */
+    .slide ol li::before {
+        content: counter(item);
+        counter-increment: item;
+        position: absolute;
+        left: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+        background: rgba(255,255,255,.2);
+        border: 2px solid rgba(255,255,255,.35);
+        box-shadow: 0 6px 12px rgba(0,0,0,.08);
+    }
+
+    /* 부드러운 인터랙션 */
+    .slide ol li:active { transform: translateY(0); }
+    .slide ol li:hover  { transform: translateY(-1px); }
+
+    .slider-arrow{
+        display: none;
+    }
+    .slider-arrow:hover {
+         border: none;
+         background: none;
+        box-shadow: none;
+        color: #000000;
+     }
+
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {

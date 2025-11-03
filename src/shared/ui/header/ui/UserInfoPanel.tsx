@@ -202,13 +202,13 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                              * 2. 오늘 이전 일정은 필터링
                                              * 3. 시작일 기준 오름차순 정렬 → 가장 가까운 일정 하나만 선택
                                              */
-                                            const nearest = cert.schedule
-                                                .map((sch) => ({ ...sch, start: parseExamStart(sch["시험일"]) }))
-                                                .filter((sch) => sch.start >= today)
-                                                .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
+                                            // const nearest = cert.schedule
+                                            //     .map((sch) => ({ ...sch, start: parseExamStart(sch["시험일"]) }))
+                                            //     .filter((sch) => sch.start >= today)
+                                            //     .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
 
                                             /** 가까운 일정이 없으면 표시하지 않음 */
-                                            if (!nearest) return null;
+                                            // if (!nearest) return null;
 
                                             /**
                                              *  자격증명 클릭 → 캘린더 위젯으로 표시되도록 setSelectedCertificate(cert) 호출
@@ -224,7 +224,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                                             {cert.certificate_name}
                                                           </span>
                                                         </td>
-                                                    <td>{nearest["시험일"].split("~")[0].trim()}</td>
+                                                    {/*<td>{nearest["시험일"].split("~")[0].trim()}</td>*/}
                                                 </tr>
                                             );
                                         })}

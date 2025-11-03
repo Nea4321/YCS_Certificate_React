@@ -1,29 +1,44 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { getCbtParams } from "@/shared/lib/url/getCbtParams";
 import { useExamChrome } from "@/features/cbt-exam/hooks/useExamChrome";
 import { useExamTimer } from "@/features/cbt-exam/hooks/useExamTimer";
 import { useAnswers } from "@/features/cbt-exam/hooks/useAnswers";
-import { mockQuestions } from "@/entities/cbt/lib/mockQuestions";
 import { ExamView } from "@/widgets/cbt-exam/ui/ExamView";
 import { PracticeView } from "@/widgets/cbt-practice/ui/PracticeView";
+import { questions as allQuestions } from "@/entities/cbt/lib/mockQuestions";
+import { CBTTestStyle } from "@/pages/cbt-test/styles";
 
 export const CBTTestPage: React.FC = () => {
     const location = useLocation();
-    const { ui, mode, date, start, end, certName } = getCbtParams(location.search);
+    const navigate = useNavigate();
 
+    const { ui, mode, date, start, end, certName, certificateId } = getCbtParams(location.search);
+    const questions = useMemo(() => {
+        return allQuestions.filter(q => q.certificate_id === Number(certificateId));
+    }, [certificateId]);
+
+    if (questions.length === 0) return (
+        <div className={CBTTestStyle.notFound}>
+            <h2>CBT 문제를 찾을 수 없습니다.</h2>
+            <p>요청하신 문제 데이터가 존재하지 않습니다.</p>
+            <button className={CBTTestStyle.backButton} onClick={() => navigate("/cbt")}>
+                CBT 목록으로 돌아가기
+            </button>
+        </div>
+    )
     const modeLabel = useMemo(() => (mode === "past" ? "기출문제" : "랜덤문제"), [mode]);
-    const totalQuestions = mockQuestions.length;
+    const totalQuestions = questions.length;
 
     const [fontZoom, setFontZoom] = useState<0.75 | 1 | 1.25>(1);  // 글자 크기 상태
     const [pageSize, setPageSize] = useState(3);  // 기본 페이지 크기
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
 
-    // 글자 크기 및 화면 크기에 따른 문제 수 계산
+
     const calculatePageSize = () => {
         const windowHeight = window.innerHeight;
-        const baseProblemHeight = 150; // 문제 하나의 기본 높이 (예시)
-        const adjustedHeight = windowHeight * 0.6; // 화면의 60%를 문제 영역으로 사용
+        const baseProblemHeight = 150;
+        const adjustedHeight = windowHeight * 0.6;
 
         // 글자 크기 조정
         const adjustedProblemHeight = baseProblemHeight * fontZoom;
@@ -57,7 +72,7 @@ export const CBTTestPage: React.FC = () => {
                     answers={answers}
                     setAnswer={setAnswer}
                     timer={timer}
-                    questions={mockQuestions}
+                    questions={questions}
                     fontZoom={fontZoom}
                     setFontZoom={setFontZoom}  // 글자 크기 변경 함수 전달
                 />
