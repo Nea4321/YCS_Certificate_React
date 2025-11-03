@@ -207,3 +207,44 @@
         padding: 6px 0 8px;
     }
 }
+
+/* components/CardNews/CardNews.module.css */
+.wrap { padding: 12px 16px; }
+.header { display: grid; gap: 10px; margin-bottom: 12px; }
+.heading { margin: 0; font-size: 18px; font-weight: 800; }
+
+.tabs { display: flex; gap: 8px; overflow-x: auto; }
+.tab {
+    white-space: nowrap; padding: 8px 12px; border-radius: 999px;
+    border: 1px solid #e5e7eb; background: #fff; font-weight: 700; font-size: 13px;
+}
+.tabActive { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+
+.card {
+    display: grid; grid-template-columns: 44px 1fr; align-items: center;
+    padding: 12px; border-radius: 14px; color: #fff;
+    box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+.rank {
+    width: 44px; height: 44px; border-radius: 999px; background: rgba(255,255,255,.2);
+    display: grid; place-items: center; font-weight: 900; font-size: 16px;
+    border: 2px solid rgba(255,255,255,.35);
+}
+.body { padding-left: 8px; }
+.title { font-size: 15px; font-weight: 800; }
+
+/* 그라데이션 팔레트 */
+.g_violet { background: linear-gradient(135deg,#6d28d9,#7c3aed 70%); }
+.g_green  { background: linear-gradient(135deg,#059669,#10b981 70%); }
+.g_teal   { background: linear-gradient(135deg,#0f766e,#14b8a6 70%); }
+.g_gold   { background: linear-gradient(135deg,#f59e0b,#fbbf24 70%); color:#1f2937; }
+.g_slate  { background: linear-gradient(135deg,#334155,#1f2937 70%); }
+.g_pink   { background: linear-gradient(135deg,#db2777,#f472b6 70%); }
+.g_blue   { background: linear-gradient(135deg,#2563eb,#60a5fa 70%); }
+
+/* 데스크탑에서는 숨김(모바일 전용 노출이 목표) */
+@media (min-width: 769px) {
+    .wrap { display: none; }
+}

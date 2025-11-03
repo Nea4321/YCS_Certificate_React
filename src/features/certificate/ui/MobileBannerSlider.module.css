@@ -1,0 +1,94 @@
+/* 모바일에서만 보이게 */
+.wrap { display: block;}
+@media (min-width: 769px){ .wrap { display: none; } }
+
+/* 상단 탭(카테고리) */
+.tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 10px; }
+.tab {
+    white-space: nowrap; padding: 8px 12px; border-radius: 999px;
+    border: 1px solid #e5e7eb; background: #fff; font-weight: 700; font-size: 13px;
+}
+.tabActive { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+.mobileBannerCard{
+    width: min(420px, 92vw);
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(2, 10, 40, .12);
+    overflow: hidden;           /* 둥근 모서리 안에서 내용 잘림 방지 */
+}
+
+.mobileBannerWrap{
+    width: auto;
+    background: #0ea5e9;
+    padding: 14px 0;
+}
+
+/* 배너 박스 */
+.banner {
+    border-radius: 16px;
+    border: 1px solid #cfe0ff;
+    padding: 16px 14px 12px;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, .10);
+}
+
+/* 헤더(큰 제목) - 예시 이미지를 참고해 볼드+가로라인 느낌 */
+.header { padding: 4px 0 10px; }
+.heading {
+    margin: 0; font-size: 20px; font-weight: 900; color: #111827;
+    letter-spacing: -.2px; text-align: left;
+    border-top: 4px solid #1f2937; border-bottom: 4px solid #1f2937;
+    padding: 10px 2px;
+}
+
+/* 항목 리스트(파란 알약 + 동그라미 번호) */
+.list { list-style: none; margin: 12px 0 6px; padding: 0; display: grid; gap: 10px; }
+.row {
+    display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 8px;
+    background: #1d4ed8; color: #fff; border-radius: 28px; padding: 10px 12px;
+    box-shadow: 0 4px 12px rgba(29,78,216,.18);
+}
+.num {
+    width: 32px; height: 32px; border-radius: 999px;
+    display: grid; place-items: center;
+    background: #fff; color: #1d4ed8; font-weight: 900;
+    border: 3px solid #facc15;  /* 노란 링 */
+}
+.text { font-size: 14px; font-weight: 800; letter-spacing: .2px; }
+
+/* 네비게이션 */
+.nav { display: grid; grid-template-columns: 36px 1fr 36px; align-items: center; margin-top: 6px; }
+.navBtn {
+    width: 32px; height: 32px; border-radius: 999px; border: 1px solid #cfd9ff;
+    background: #ffffffcc; font-size: 18px; font-weight: 900; color: #1e40af;
+}
+.dots { display: flex; justify-content: center; gap: 6px; }
+.dot {
+    width: 6px; height: 6px; border-radius: 999px; background: #bfdbfe;
+}
+.dotOn { background: #2563eb; width: 18px; border-radius: 999px; }
+
+.exitL { animation: exitLeft .24s ease forwards; }
+.exitR { animation: exitRight .24s ease forwards; }
+.enterL { animation: enterLeft .24s ease forwards; }
+.enterR { animation: enterRight .24s ease forwards; }
+
+/* 좌우 슬라이드 + 페이드 */
+@keyframes exitLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-14%); }
+}
+@keyframes exitRight {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(14%); }
+}
+@keyframes enterLeft {
+    from { opacity: 0; transform: translateX(-14%); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes enterRight {
+    from { opacity: 0; transform: translateX(14%); }
+    to   { opacity: 1; transform: translateX(0); }
+}

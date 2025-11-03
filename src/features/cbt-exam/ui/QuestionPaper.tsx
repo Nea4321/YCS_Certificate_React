@@ -12,13 +12,16 @@ export function QuestionPaper({
         <div className={ExamStyles.paper} style={{["--qScaleQ" as any]: fontZoom}}>
             {slice.map((q, i) => {
                 const gi = startIdx + i;
-                const groupName = `q-${q.id}`;
+                const groupName = `q-${q.question_id}`;
                 const questionNo = gi + 1;
                 return (
-                    <div key={q.id} id={`q-${questionNo}`} className={ExamStyles.qblock}>
-                        <div className={ExamStyles.qnum}>{q.id}. {q.text}</div>
+                    <div key={q.question_id} id={`q-${questionNo}`} className={ExamStyles.qblock}>
+                        <div className={ExamStyles.qnum}>{q.question_id}. {q.text}</div>
+                        {q.content &&
+                            <div className={ExamStyles.content}>{q.content}</div>
+                        }
                         <ol className={ExamStyles.opts}>
-                            {q.options.map((opt, idx) => {
+                            {q.answers.map((answer, idx) => {
                                 const v = idx + 1;
                                 return (
                                     <li key={v} className={ExamStyles.opt}>
@@ -42,9 +45,9 @@ export function QuestionPaper({
                                                       backgroundPosition: "center",
                                                       backgroundSize: "contain",
                                                   }}
-                                            aria-hidden="true"
+                                                  aria-hidden="true"
                                             />
-                                            <span className={ExamStyles.optText}>{opt}</span>
+                                            <span className={ExamStyles.optText}>{answer.content}</span>
                                         </label>
                                     </li>
                                 );

@@ -1,295 +1,507 @@
-/* 전체 래퍼 */
-.testWrapper {
-    display: flex;
-    background-color: #f8f9fa; /* 더 부드러운 배경색 */
+/* ====== 컨테이너 ====== */
+.testWrapperClassic {
+    display: grid;
+    grid-template-columns: 1fr 360px;
     min-height: 100vh;
 }
 
-/* 왼쪽 문제 영역 */
-.questionArea {
-    flex: 1;
-    padding: 0; /* 내부에서 패딩 관리 */
+.leftPane { background: #fff; }
+.leftInner { max-width: 880px; margin: 0 auto; padding: 24px 24px 80px; }
+
+.rightPane {
+    position: sticky; top: 0; height: 100vh;
+    display: grid; grid-template-rows: auto 1fr;
+    background: #e7efe5; /* 은은한 그린톤 */
+    border-left: 1px solid #d9e2d7;
 }
 
-.testContent {
-    max-width: 900px;
-    margin: 2rem auto; /* 상하 여백 및 중앙 정렬 */
-    padding: 0 1rem;
+/* 우측 장식 패턴(스크린샷의 사선무늬 대용) */
+.rightDecor {
+    margin: 16px; border-radius: 12px;
 }
 
-/* 오른쪽 답안지 영역 */
-.answerArea {
-    width: 320px; /* 너비 살짝 조정 */
-    position: sticky;
-    top: 0;
-    height: 100vh; /* 화면 높이에 꽉 차게 */
-    background-color: #ffffff;
-    border-left: 1px solid #e9ecef;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.03);
-    display: flex;
-    flex-direction: column; /* 내부 요소 세로 정렬 */
-    transition: width 0.3s ease; /* 너비 변경 애니메이션 (선택 사항) */
+/* ====== 상단 영역 ====== */
+.paperHeader { margin-bottom: 12px; }
+.paperTitle {
+    font-size: 22px; font-weight: 700;
+    display: inline-block; padding: 10px 16px;
+    border-radius: 999px; background: #f0f3ef; color: #2b2f2b;
+}
+.paperMeta { display: flex; gap: 14px; margin-top: 10px; color: #5a615a; font-size: 14px; }
+.paperMeta strong { color: #2d332d; margin-right: 6px; }
+
+/* ====== 문제 리스트 ====== */
+.questionList { list-style: none; padding-left: 10px; margin: 0; }
+.questionItem { padding: 18px 4px; }
+
+.qBlock { display: grid; gap: 10px; }
+.qTitle { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; color: #2b2f2b; }
+.qNumber { color: #2b2f2b; }
+.qText { line-height: 1.6; }
+
+.optList { list-style: none; padding-left: 18px; margin: 0; display: grid; gap: 6px; }
+.optItem { }
+.optLabel {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
 }
 
-
-/* --- 시험 정보 섹션 --- */
-.testTitle {
-    font-size: 2.25rem; /* 36px */
-    font-weight: 800; /* 더 두껍게 */
-    margin-bottom: 0.5rem;
-    color: #212529;
-    letter-spacing: -0.5px;
+/* 라디오는 숨기고 원형 점을 스타일링 */
+.optLabel input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.optBullet {
+    display: inline-flex; width: 22px; height: 22px; border-radius: 50%;
+    align-items: center; justify-content: center;
+    border: 1px solid #b8c3b6; font-size: 12px; background: #fff; color: #647064;
+    transition: .15s;
 }
-
-.testInfo {
-    display: flex;
-    gap: 1.5rem; /* 항목 간 간격 */
-    font-size: 0.95rem; /* 15px */
-    color: #495057;
-    margin-bottom: 2.5rem; /* 40px */
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #dee2e6;
-}
-.testInfo p strong {
-    color: #343a40;
-    margin-right: 0.5rem;
-}
-
-
-/* --- 문제 카드 섹션 --- */
-.questionCard {
-    background-color: #fff;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 1.75rem 2rem; /* 28px 32px */
-    margin-bottom: 1.5rem; /* 24px */
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-}
-.questionCard:focus-within {
-    border-color: #845ef7; /* 포커스 시 테두리 색상 변경 */
-    box-shadow: 0 6px 20px rgba(132, 94, 247, 0.1);
-}
-
-.questionHeader {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 700;
-    color: #845ef7; /* 포인트 색상 */
-    margin-bottom: 1rem;
-}
-
-.questionText {
-    font-size: 1.125rem; /* 18px */
-    color: #343a40;
-    margin-bottom: 2rem; /* 32px */
-    line-height: 1.7;
-}
-
-/* 선택지 (보기) */
-.choices {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem; /* 12px */
-}
-
-.choiceItem {
-    font-size: 1rem; /* 16px */
-    color: #495057;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1.25rem; /* 14px 20px */
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-.choiceItem:hover {
-    background-color: #f8f9fa;
-    border-color: #adb5bd;
-}
-/* 커스텀 라디오 버튼 */
-.choiceItem input[type="radio"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #adb5bd;
+.optLabel .optBullet {
+    display: grid;               /* 정가운데 배치용 */
+    place-items: center;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;  /* flex 수축 방지 */
+    min-height: 26px !important;
+    flex: 0 0 26px !important;   /* 늘어나거나 줄지 않게 고정 */
+    line-height: 26px !important;/* 텍스트가 높이를 밀지 못하게 */
+    font-size: 12px !important;
     border-radius: 50%;
-    margin: 0;
-    transition: all 0.2s;
-    flex-shrink: 0;
+    border: 1px solid #b8c3b6;
+    background: #fff;
+    color: #647064;
+    box-sizing: border-box;
 }
-.choiceItem input[type="radio"]:checked {
-    background-color: #845ef7;
-    border-color: #845ef7;
-    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+.optLabel input[type="radio"]:checked + .optBullet {
+    background: #9ac39a; border-color: #84b084; color: #fff; font-weight: 700;
 }
-.choiceItem input[type="radio"]:checked + span {
-    font-weight: 600;
-    color: #212529;
+.optText { color: #374037; }
+
+/* ====== 페이지네이션 (하단 바) ====== */
+.paginationBar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px; padding: 10px 14px; border: 1px solid #e1e6e1; border-radius: 8px; background: #fafcf9;
+}
+.paginationBtn {
+    background: #7aa87a; color: #fff; border: none; border-radius: 6px;
+    padding: 8px 14px; cursor: pointer; font-weight: 600; transition: .15s;
+}
+.paginationBtn:disabled { background: #d7dfd6; color: #96a196; cursor: not-allowed; }
+.paginationBtn:not(:disabled):hover { filter: brightness(0.95); }
+.paginationInfo { font-weight: 700; color: #3b453b; }
+
+/* ====== 우측: 답안 표기란 ====== */
+.answerPanel { padding: 16px; }
+.answerPanelHead {
+    background: #a8c9a7; color: #fff; font-weight: 800; text-align: center;
+    padding: 10px 12px; border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.05) inset;
 }
 
+/* 실제 표 영역 */
+.answerSheet {
+    background: #f2f7f1; border: 1px solid #cadac8; border-top: none;
+    padding: 8px 10px 14px; border-radius: 0 0 8px 8px;
+    max-height: calc(100vh - 96px); overflow: auto;
 
-/* --- 답안지 섹션 --- */
-.answerSheetContent {
-    padding: 2rem 1.5rem; /* 32px 24px */
-    flex-grow: 1;
-    overflow-y: auto; /* 내용이 길어지면 스크롤 */
-
-    /* For Webkit browsers (Chrome, Safari, Edge) */
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* For Firefox */
-    scrollbar-width: none;
-
-    /* For IE/Edge (legacy) */
-    -ms-overflow-style: none;
 }
 
-.answerTitle {
-    font-size: 1.5rem; /* 24px */
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    color: #212529;
+/* 각 줄 */
+.answerRowClassic {
+    display: grid; grid-template-columns: 28px 1fr;
+    align-items: center; gap: 8px; padding: 6px 4px;
+    border-bottom: 1px solid #e1e9e0; cursor: pointer;
 }
-
-.answerGrid {
-    /* 💡 가로 스크롤 대신 세로 그리드로 변경 */
-    display: grid;
-    /* 💡 화면 너비에 따라 2~3개의 열을 유동적으로 표시 */
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px; /* 항목 간의 간격 */
-    padding: 8px;
-    overflow-y: auto; /* 내용이 길어지면 세로 스크롤 */
+.answerRowClassic:hover { background: #eaf2ea; }
+.answerNo {
+    width: 24px; height: 24px; line-height: 24px; text-align: center;
+    background: #fff; border: 1px solid #cfe1cf; border-radius: 4px; font-weight: 700; color: #385138;
 }
-
-.answerRow {
-    display: flex;
-    flex-direction: column; /* 문제 번호와 선택지를 세로로 배치 */
-    align-items: center;
-    padding: 12px 8px;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    background-color: #fff;
+.answerDots { display: flex; gap: 8px; align-items: center; }
+.dotLabel input { position: absolute; opacity: 0; pointer-events: none; }
+.dotCircle {
+    display: inline-flex; width: 22px; height: 22px; border-radius: 50%;
+    align-items: center; justify-content: center; font-size: 12px;
+    background: #fff; border: 1px solid #b8c3b6; color: #5b685b; transition: .15s;
 }
-
-.answerNumber {
-    font-weight: 600;
-    margin-bottom: 8px;
-    cursor: pointer;
-}
-
-.answerOptions {
-    display: flex;
-    gap: 6px;
-}
-
-.answerOptions label {
-    font-size: 0.875rem;
-}
-/* 커스텀 라디오 버튼 (답안지용) */
-.answerOptions input[type="radio"] {
-    display: none; /* 숨김 */
-}
-.answerOptions span {
-    display: flex;
-    width: 22px;
-    height: 22px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1px solid #dee2e6;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.answerOptions input[type="radio"]:checked + span {
-    background-color: #845ef7;
-    border-color: #845ef7;
-    color: white;
-    font-weight: 600;
+.dotLabel input:checked + .dotCircle {
+    background: #6aa86a; border-color: #5f9c5f; color: #fff; font-weight: 700;
 }
 
 /* 채점 버튼 */
-.submitBtnWrapper {
-    padding: 1.5rem;
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
+.submitClassic {
+    margin-top: 10px; width: 100%;
+    background: #6aa86a; color: #fff; font-weight: 800;
+    padding: 10px 12px; border: none; border-radius: 8px; cursor: pointer;
+}
+.submitClassic:hover { filter: brightness(0.95); }
+/* 바탕 배경 */
+
+.paperRight{ background:#fff; border-left:1px solid #e5e9e5; max-width:225px; margin-left: 30px;}
+.answerSheet{ background:#fff; border:1px solid #e4e9e4; border-top:none; }
+
+/* ▶ 가운데 시험지(종이) */
+.examPaper{
+    --head-center-h: 100px;
+    --left-col: clamp(520px, 56vw, 600px);
+    --right-col: 320px;
+    --gap: 16px;
+    border:0;
+    width: min(1180px, 92vw);
+    margin: 0 auto;
+    background:#fff;
+    padding-top: 100px;
+    overflow: hidden;                  /* 상단 바 둥근 모서리 일치 */
 }
 
-.submitBtn {
-    display: block;
-    width: 100%;
-    background-color: #845ef7; /* 포인트 색상 */
-    color: white;
-    padding: 1rem; /* 16px */
-    font-size: 1.125rem; /* 18px */
-    font-weight: 700;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    opacity: 1;
-    transition: all 0.2s ease;
+/* 시험지 상단 바 (타이틀+시간) */
+.examPaperHead{
+    display:flex; align-items:center; justify-content:center;
+    gap:16px;
+    padding:18px 20px;
+    border-bottom:1px solid #e4ebe2;
+    background: #fafcf9;
 }
-.submitBtn:hover {
-    background-color: #7048e8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(132, 94, 247, 0.3);
+.examTitle{
+    font-size:28px; font-weight:800; letter-spacing:-.5px; color:#2c332c;
+    margin:0;
 }
-.submitBtn:disabled {
-    background-color: #ced4da;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+.timeBadge{
+    padding:6px 10px; font-size:12px; color:#2e3a2e;
+    background:#eef4ee; border:1px solid #dbe6db; border-radius:6px;
 }
 
+/* 종이 내부 2단 */
+.examGrid {
+    display: grid;
+    grid-template-columns: clamp(520px, 56vw, 600px) 320px; /* ← 왼쪽 컬럼 자체 폭을 600px로 고정(반응형 완충) */
+    justify-content: center;      /* 두 컬럼 블록을 종이 가운데로 */
+    align-items: start;
 
-/* --- 페이지네이션 섹션 --- */
-.paginationControls {
+}
+/* 좌측 문제 영역 */
+.examPaper{
+    background:#fff !important;
+    box-shadow:none !important;
+    border:0;
+}
+.paperMeta{
+    display:flex; gap:14px; color:#5a615a; font-size:14px;
+    margin: 4px 0 18px;
+}
+.paperMeta strong{ color:#2d332d; margin-right:6px; }
+
+/* 문제 리스트(시험지 느낌) */
+.questionList{ border:1px solid #cadac8;}
+.questionItem{ padding:18px 4px; }
+
+/* 오른쪽 답안 표기란(초록 박스) */
+.paperRight{
+    background:#93a68f; /* 스샷의 그린 톤 */
+    padding:24px;
+    border-left:1px solid #cfd8d3;
+}
+.answerPanelHead{
+    background:#a8c9a7; color:#fff; font-weight:800; text-align:center;
+    padding:10px 12px; border-radius:6px 6px 0 0;
+    box-shadow: 0 2px 0 rgba(0,0,0,.05) inset;
+    margin-bottom:0;
+}
+
+/* AnswerSheet 내부 박스가 종이 안쪽처럼 붙도록 */
+.answerSheet{
+    background:#f2f7f1; border:1px solid #cadac8; border-top:none;
+    padding:8px 10px 14px; border-radius:0 0 6px 6px;
+    max-height: calc(100vh - 160px);
+    overflow:auto;
+}
+
+/* 행 모양(표 줄 느낌) */
+.answerRowClassic{
+    display:grid; grid-template-columns: 28px 1fr;
+    align-items:center; gap:8px; padding:6px 4px;
+    border-bottom:1px solid #e1e9e0; cursor:pointer;
+    background:#fff;
+}
+.answerRowClassic:hover{ background:#eaf2ea; }
+.answerNo{
+    width:24px; height:24px; line-height:24px; text-align:center;
+    background:#fff; border:1px solid #cfe1cf; border-radius:4px;
+    font-weight:700; color:#385138;
+}
+.answerDots{ display:flex; gap:8px; align-items:center; }
+.dotLabel input{ position:absolute; opacity:0; pointer-events:none; }
+.dotCircle{
+    display:inline-flex; width:22px; height:22px; border-radius:50%;
+    align-items:center; justify-content:center; font-size:12px;
+    background:#fff; border:1px solid #b8c3b6; color:#5b685b; transition:.15s;
+}
+.dotLabel input:checked + .dotCircle{
+    background:#6aa86a; border-color:#5f9c5f; color:#fff; font-weight:700;
+}
+
+/* 페이지네이션을 종이 하단 바처럼 */
+.paginationBar{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:18px; padding:12px 14px;
+    border:1px solid #e1e6e1; border-radius:8px; background:#fafcf9;
+
+}
+.paginationBtn{
+    background:#7aa87a; color:#fff; border:none; border-radius:6px;
+    padding:8px 14px; cursor:pointer; font-weight:600;
+}
+.paginationBtn:disabled{ background:#d7dfd6; color:#96a196; cursor:not-allowed; }
+.paginationInfo{ font-weight:700; color:#3b453b; }
+.examPaperHead{
+    /* 헤더의 전체 너비 = 좌측 + 간격 + 우측 */
+    width: calc(var(--left-col) + var(--gap) + var(--right-col));
+    margin: 0 auto;                          /* 가운데 정렬 */
+    padding: 18px 0 20px;
+    background: transparent !important;      /* 배경색 제거 */
+    border-bottom: 0 !important;             /* 밑줄 제거 */
+    border-top: 1px solid #000000;           /* 상단 보더만 표시(색/두께 조절 가능) */
+    overflow: visible;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.mobileSubmitBar { display: none; }
+.content{
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid #999;
+    width: 300px;
+    border-radius: 0;
+    background-color: #fff;
+    white-space: pre-wrap;
+    font-family: monospace;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+.headCta{
+    display:inline-flex; align-items:center; gap:.25rem;
+    padding:8px 14px; background:#f5f8f4; border:1px solid #cfd8d3;
+    border-radius:999px; color:#354135; text-decoration:none;
+    font-weight:700; font-size:14px; transition:.15s;
+}
+.headCta:hover{ background:#eef4ee; border-color:#b8c7b2; }
+.headCtaDisabled{
+    pointer-events:none; opacity:.5; filter:grayscale(.2);
+}
+.headCenter{
+    position: absolute;
+    left: 50%;
+    top: 8px;                 /* 헤더 보더 바로 아래 */
+    transform: translateX(-50%);
+    height: var(--head-center-h);
     display: flex;
-    justify-content: space-between; /* 양쪽 끝으로 */
+    flex-direction: column;
+    justify-content: center;  /* 블록 내부 수직 가운데 */
     align-items: center;
-    margin-top: 2.5rem;
-    padding: 1.5rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
+    gap: 8px;
+    pointer-events: none;             /* 중앙 클릭 통과 (선택사항) */
 }
 
-.pageButton {
-    background-color: #845ef7;
-    color: #fff;
-    font-weight: 600;
-    padding: 0.75rem 2rem; /* 12px 32px */
-    border: none;
+/* 날짜 뱃지 (타이틀 위) */
+.centerDate{
+    font-size: 12px;
+    line-height: 1;
+    padding: 7px 12px;
+    color: #2e3a2e;
+    background: #eef4ee;
+    border: 1px solid #dbe6db;
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    display: inline-flex;
+}
+
+/* 중앙 타이틀 */
+.centerTitle{
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #2c332c;
+}
+.examPaperHead{
+    position: relative;
+    width: calc(var(--left-col) + var(--gap) + var(--right-col));
+    margin: 0 auto;
+    /* 중앙 블록 높이 + 여백 */
+    padding-top: calc(var(--head-center-h));
+    padding-bottom: 12px;
+    border-top: 2px solid #b8c7b2;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    gap: 12px;
 }
 
-.pageButton:hover:not(:disabled) {
-    background-color: #7048e8;
-    transform: translateY(-2px);
+/* CTA 캡슐 */
+.headCta{
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateY(calc(-100% - 8px)); /* -100%면 정확히 선 위, -100%-8px은 8px 띄움 */
+    z-index: 2;
 }
 
-.pageButton:disabled {
-    background-color: #e9ecef;
-    color: #adb5bd;
-    cursor: not-allowed;
-    transform: none;
+/* 호버/포커스 */
+.headCta:hover{ background:#eef4ee; border-color:#b8c7b2; }
+.headCta:active{ transform: translateY(-60%) translateY(1px); }
+.headCta:focus-visible{
+    outline:2px solid #88b388; outline-offset:2px; border-color:#88b388;
 }
 
-.pageStatus {
-    font-size: 1.125rem;
-    color: #343a40;
-    font-weight: 600;
+/* ✅ 1) 레이아웃이 페이지 전체 높이를 끌어올리지 않도록 */
+.testWrapperClassic {
+    min-height: 0;                /* 기존에 min-height:100vh 있었다면 제거/무력화 */
 }
 
+/* ✅ 2) 우측 컬럼은 '내용 만큼'만 차지. 필요하면 sticky로 화면에 고정 */
+.paperRight {
+    height: auto;                 /* ← 핵심: 컬럼 자체가 100vh를 잡지 않게 */
+    align-self: start;            /* grid 높이 계산 시 컬럼을 위쪽에 붙임 */
+    position: sticky;             /* 선택: 고정하고 싶으면 사용 */
+    top: 72px;                    /* 헤더 높이만큼 여백(원하시는 값으로 조정) */
+    /* 기존에 height:100vh 같은 게 있으면 제거하세요 */
+}
+
+/* ✅ 3) AnswerSheet만 내부 스크롤을 갖도록 (우측 컬럼은 키우지 않음) */
+.answerSheet {
+    max-height: calc(100vh - 140px);  /* 헤더/상단 여백을 제외한 가용 높이 */
+    overflow: auto;
+}
+
+/* ✅ 4) 그리드는 각 컬럼을 위쪽에 맞추어 세워서 불필요한 세로 확장 방지 */
+.examGrid {
+    align-items: start;
+}
+
+/* ✅ 5) 마진/패딩 때문에 하단 여백이 쓸데없이 커지는 경우 방지 */
+.questionList { margin-bottom: 0; }
+.paginationBar { margin-top: 16px; margin-bottom: 0; }
+.examPaper { padding-bottom: 16px; }
+
+/* 비활성(아이디 없을 때) */
+.headCtaDisabled{ pointer-events:none; opacity:.5; }
+/* 반응형: 좁은 화면에서 세로 스택 */
+@media (max-width: 1024px) {
+    .examGrid {
+        grid-template-columns: 1fr !important; /* 단일 컬럼 */
+        align-items: start;
+    }
+
+    .mobileSubmitBar {
+        position: sticky;   /* 페이지 최하단에 붙게 */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        padding: 10px 12px;
+        background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+        border-top: 1px solid #e5e9e5;
+        z-index: 10;        /* 페이징/문제 위로 */
+    }
+
+    .mobileSubmitBtn {
+        flex: 1;
+        height: 48px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 16px;
+        color: #fff;
+        background: #6aa86a;
+        box-shadow: 0 6px 18px rgba(0,0,0,.08);
+        cursor: pointer;
+    }
+
+    /* 우측 답안 표기란 통째로 숨김 */
+    .paperRight {
+        display: none !important;
+    }
+
+    /* 좌측(문제) 컬럼이 전체 폭 사용 */
+    .paperLeft {
+        width: 100%;
+    }
+
+    /* 상단 헤더(타이틀 바) 여백 줄이고 가운데 정렬 */
+    .examPaper {
+        --left-col: 100%;
+        --right-col: 0px;
+        --gap: 0px;
+        width: 100%;
+        padding-top: 68px; /* 상단 헤더 높이 줄었으니 패딩도 축소 */
+    }
+    .examPaperHead {
+        width: 100% !important;
+        padding: 12px 16px !important;
+        border-top-width: 1px !important;
+        justify-content: center !important;
+    }
+    .headCenter {
+        position: static !important;
+        transform: none !important;
+        height: auto !important;
+        gap: 6px !important;
+    }
+    .centerTitle { font-size: 22px; }
+    .centerDate  { font-size: 11px; padding: 6px 10px; }
+
+    /* 오른쪽 상단 캡슐 버튼은 헤더 아래로 내려붙이기 */
+    .headCta {
+        position: static !important;
+        transform: none !important;
+        margin-left: auto;
+        margin-right: 30px;
+    }
+}
+
+/* 768px 이하(휴대폰): 터치/가독성 강화 + 하단 페이징 고정 */
+@media (max-width: 768px) {
+    /* 문제 본문 영역 패딩 조정 */
+    .paperLeft {
+        padding: 0 14px 92px; /* 하단 페이징 고정 공간 확보(=92px) */
+        box-sizing: border-box;
+    }
+
+    /* 보기(옵션) 터치 폭/높이 키우기 */
+    .optLabel { gap: 10px; }
+    .optBullet {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 12px;
+    }
+    .optText { font-size: 15px; line-height: 1.55; }
+
+    /* 코드/이미지 등 긴 content가 나올 때 세로 스크롤 허용 */
+    .content {
+        -webkit-overflow-scrolling: touch;
+        margin: 12px 0;
+    }
+
+    /* 페이징 바를 하단 고정(앱 느낌) */
+    .paginationBar {
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 20;
+        margin: 0 !important;
+        border-radius: 12px 12px 0 0;
+        padding: 10px 14px;
+        background: #ffffff;
+        border: 1px solid #e6e9e6;
+        box-shadow: 0 -6px 16px rgba(0,0,0,.06);
+        /* iOS 안전영역 */
+        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+
+    .paginationBtn {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+    .paginationInfo { font-size: 14px; }
+
+    /* 제목/메타 폰트 한 단계 축소 */
+    .examTitle { font-size: 22px; }
+    .paperMeta { font-size: 13px; gap: 10px; }
+
+}

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import {shallowEqual, useSelector} from 'react-redux';
 import type { RootState } from '@/app/store/store';
 import { certificateTags, loadCertTagMap } from '@/entities/certificate';
+import { questions as mockQuestions } from "@/entities/cbt/lib/mockQuestions";
 
 /**certificate 모델에 tag 필드를 덧붙임*/
 type UICertificate = Certificate & { tags: string[] };
@@ -32,6 +33,10 @@ export const CBTExamPage: React.FC = () => {
     const tagMetaMap = useMemo(() => {
         return new Map(tagList.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }]));
     }, [tagList]);
+    const questionCertIdSet = useMemo(
+        () => new Set(mockQuestions.map(q => q.certificate_id)),
+        []
+    );
 
     /**자격증 목록을 가져와 certificate_id을 기반으로 태그를 부여함
      * 만약 certificate_id가 없는 자격증은 빈 배열
@@ -65,7 +70,9 @@ export const CBTExamPage: React.FC = () => {
     const filteredCertificates =
         selectedTag === '전체'
             ? certificates
-            : certificates.filter(cert => cert.tags.includes(selectedTag));
+            : selectedTag === "문제 O"
+                ? certificates.filter(cert => questionCertIdSet.has(cert.certificate_id))
+                : certificates.filter(cert => cert.tags.includes(selectedTag));
 
     const totalPages = Math.ceil(filteredCertificates.length / itemsPerPage);
 
@@ -80,7 +87,7 @@ export const CBTExamPage: React.FC = () => {
      */
     const handleStartClick = (cert: Certificate) => {
         const query = new URLSearchParams({
-            certId: cert.certificate_id.toString(),
+            certificateId: cert.certificate_id.toString(),
             certName: cert.certificate_name
         }).toString();
         navigate(`/cbt/start?${query}`);
@@ -102,7 +109,11 @@ export const CBTExamPage: React.FC = () => {
             <div className={CBTExamStyles.examListSection}>
                 <div className={CBTExamStyles.examContainer}>
                     <div className={CBTExamStyles.cbtCountInfo}>
-                        {selectedTag === '전체' ? '전체 자격증 수 ' : `${selectedTag} 태그에서 `}
+                        {selectedTag === "전체"
+                            ? "전체 자격증 수 "
+                            : selectedTag === "문제 O"
+                                ? "문제가 있는 자격증 수 "
+                                : `${selectedTag} 태그에서 `}
                         <strong>{filteredCertificates.length}</strong>개의 자격증이 있습니다
                     </div>
 
