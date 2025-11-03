@@ -1,0 +1,37 @@
+/* 래퍼/스크롤 */
+.wrap { margin-top:16px; }
+.empty { color:#6b7280; font-size:14px; padding:10px 2px; }
+.scroll { overflow:auto; border:1px solid #e5e7eb; border-radius:8px; }
+
+/* 표 */
+.table {
+    width:100%;
+    min-width:760px;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:14px;
+}
+.theadTh {
+    background:#f6f8fb; color:#111827;
+    border-bottom:1px solid #e5e7eb;
+    padding:12px 14px; text-align:center; font-weight:700;
+}
+.cell { border-bottom:1px solid #eef0f3; padding:10px 14px; vertical-align:top; }
+.striped tr:nth-child(even) td { background:#fcfcfd; }
+
+.txt   { white-space:pre-wrap; }
+.break { word-break:break-word; }
+
+/* 링크 */
+.plink { color:inherit !important; text-decoration:none; cursor:pointer; }
+.plink:hover  { text-decoration:underline; }
+.plink:focus  { outline:2px dashed #93c5fd; outline-offset:2px; }
+.plink:visited{ color:inherit !important; }
+
+/* 모바일: 고정 레이아웃 완화(좁은 폭 페인팅 이슈 회피) */
+@media (max-width: 768px){
+    .table{ table-layout:auto !important; min-width:640px; }
+}
+
+/* “빈칸처럼 보임” 방지(가시성 강제) */
+.cell, .cell * { visibility:visible; opacity:1; }
