@@ -74,6 +74,20 @@ export interface HtmlBlocks {
     benefit_info?: string;
 }
 
+export type ExamPhase = '필기' | '실기' | '면접' | '1차' | '2차' | (string & {});
+export interface RawItem {
+    phase: ExamPhase;
+    회차?: string | null;
+    접수기간?: string | null;
+    추가접수기간?: string | null;
+    시험일?: string | null;
+    발표?: string | null;
+    서류제출기간?: string | null;
+    의견제시기간?: string | null;
+    "최종정답 발표기간"?: string | null;
+}
+
+
 /** ───────── 종목별 검정현황 ───────── */
 export type ExamStatsRow = Record<string, string | number>;
 export type ExamStats = ExamStatsRow[];

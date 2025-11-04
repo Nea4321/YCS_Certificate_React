@@ -1,19 +1,6 @@
 // widgets/schedule/buildQnetGrid.ts
-export type RawItem = {
-    phase: string;                 // '필기' | '실기' | '면접' | '1차' | '2차' ...
-    회차?: string | null;
-
-    // phase-특화(필/실/면접 등)
-    접수기간?: string | null;
-    추가접수기간?: string | null;
-    시험일?: string | null;
-    발표?: string | null;
-
-    // 공용(phase 구분 없음)
-    서류제출기간?: string | null;
-    의견제시기간?: string | null;
-    "최종정답 발표기간"?: string | null;
-};
+// buildQnetGrid.ts
+import type { RawItem } from '@/entities/certificate/model/types';
 
 type GridHeader = { id: string; title: string };
 type GridRow    = Record<string, string>;
@@ -107,9 +94,11 @@ export function buildQnetGrid(items: RawItem[]): { headers: GridHeader[]; rows: 
     // 7) 안전: 제거된 컬럼은 행에서도 접근 안 되도록
     const finalIds = new Set(finalHeaders.map(h => h.id));
     for (const r of rows) {
-        Object.keys(r).forEach(k => {
-            if (!finalIds.has(k)) delete (r as any)[k];
-        });
+        for (const k of Object.keys(r)) {
+            if (!finalIds.has(k)) {
+                Reflect.deleteProperty(r, k);   // ← any 없이 안전 삭제
+            }
+        }
     }
 
     return { headers: finalHeaders, rows };

@@ -1,37 +1,58 @@
 /* 래퍼/스크롤 */
 .wrap { margin-top:16px; }
 .empty { color:#6b7280; font-size:14px; padding:10px 2px; }
-.scroll { overflow:auto; border:1px solid #e5e7eb; border-radius:8px; }
+.scroll { overflow-x:auto; overflow-y:hidden; border:1px solid #e5e7eb; border-radius:8px; }
 
-/* 표 */
-.table {
-    width:100%;
-    min-width:760px;
-    border-collapse:collapse;
-    table-layout:fixed;
-    font-size:14px;
-}
+
 .theadTh {
     background:#f6f8fb; color:#111827;
     border-bottom:1px solid #e5e7eb;
     padding:12px 14px; text-align:center; font-weight:700;
 }
-.cell { border-bottom:1px solid #eef0f3; padding:10px 14px; vertical-align:top; }
-.striped tr:nth-child(even) td { background:#fcfcfd; }
 
-.txt   { white-space:pre-wrap; }
-.break { word-break:break-word; }
+/* 표 */
+.table{
+    width:100%;
+    /* 데스크톱에선 고정 레이아웃로 균등 배분 */
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:14px;
+    /* min-width:760px;  ← 제거(폭 강제 X) */
+}
 
-/* 링크 */
-.plink { color:inherit !important; text-decoration:none; cursor:pointer; }
+/* 공통 셀 */
+.cell{
+    border-bottom:1px solid #eef0f3;
+    padding:10px 14px; vertical-align:top;
+    /* 🔽 줄바꿈 강제 (한국어+긴토큰 모두) */
+    white-space:normal;
+    word-break:keep-all;
+    overflow-wrap:anywhere;
+}
+
+/* 텍스트/링크 */
+.txt   { white-space:pre-wrap; }      /* 줄바꿈 문자를 살리고 */
+.break { word-break:break-word; }     /* 필요시 쓰되 기본은 위의 anywhere로 커버 */
+
+.plink{
+    color:inherit !important; text-decoration:none; cursor:pointer;
+    word-break:break-all;              /* 긴 URL은 강제 개행 */
+}
 .plink:hover  { text-decoration:underline; }
 .plink:focus  { outline:2px dashed #93c5fd; outline-offset:2px; }
 .plink:visited{ color:inherit !important; }
 
-/* 모바일: 고정 레이아웃 완화(좁은 폭 페인팅 이슈 회피) */
-@media (max-width: 768px){
-    .table{ table-layout:auto !important; min-width:640px; }
+/* 줄무늬 */
+.striped tr:nth-child(even) td { background:#fcfcfd; }
+
+/* 모바일: 레이아웃 유연 + 패딩 살짝 축소 */
+@media (max-width:768px){
+    .table{ table-layout:fixed; }       /* auto 대신 fixed 유지(폭 나눔이 안정적) */
+    .theadTh, .cell{ padding:10px 12px; }
 }
 
-/* “빈칸처럼 보임” 방지(가시성 강제) */
+/* 페이지 전체 가로 스크롤 방지 */
+html, body { overflow-x:hidden; }
+
+/* 보이는 문제 방지 */
 .cell, .cell * { visibility:visible; opacity:1; }

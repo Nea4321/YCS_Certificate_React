@@ -1,6 +1,6 @@
 // widgets/schedule/ui/QnetScheduleTable.tsx
 import React from "react";
-import type { RawItem } from "../buildQnetGrid";
+import type { RawItem } from '@/entities/certificate/model/types';
 import { buildQnetGrid } from "../buildQnetGrid";
 
 type Props = { data: RawItem[] };

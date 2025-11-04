@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ScheduleItem {
+    시험일: string;
     exam_date: string;
     round: string;
     phase: string;

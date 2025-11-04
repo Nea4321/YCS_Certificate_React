@@ -11,7 +11,7 @@ import type { UiEvent } from '@/features/calendar/model/adapters';
 import { fromRegularSchedule, toUiEvents, ADAPTER_BANNER }
     from '@/features/calendar/model/adapters';
 import { QnetScheduleTable } from '@/widgets/schedule/ui/QnetScheduleTable';
-import type { RawItem } from '@/widgets/schedule/buildQnetGrid';
+import type { RawItem } from '@/entities/certificate/model';
 import { Tabs } from '@/shared/components/Tabs';
 import { ExamInfoBlocks } from '@/widgets/schedule/ui/ExamInfoBlocks';
 import { BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
@@ -21,6 +21,7 @@ import {FavoriteButton} from "@/features/favorite";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import CBTAnim from '@/pages/cbt/styles/CBTExamPage.module.css';
 import { adaptPreference } from '@/widgets/preference/ui/adaptPreference';
+import { toRawItems } from '@/entities/certificate/lib/asRawItems';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 2) 본 컴포넌트
@@ -243,7 +244,7 @@ export const CertificateDetail = memo(function CertificateDetail({
 
     useEffect(() => {
         if (Array.isArray(base?.schedule)) {
-            setScheduleRaw(base!.schedule as RawItem[]);
+            setScheduleRaw(toRawItems(base!.schedule));
         }
     }, [base?.schedule]);
 

@@ -8,7 +8,8 @@ import { certificateApi } from "@/entities/certificate/api/certificate-api";
 
 import { schedulesToEvents as buildUiEvents } from "@/entities/certificate/lib/schedulesToEvents";
 import type { UiEvent } from "@/features/calendar/model/adapters";
-import type { RawItem } from "@/widgets/schedule/buildQnetGrid";
+import type { RawItem } from '@/entities/certificate/model';
+import { toRawItems } from '@/entities/certificate/lib/asRawItems';
 import type { CertificateData } from "@/entities/certificate/model/types";
 import axios from "axios";
 
@@ -32,7 +33,7 @@ export default function Certificate() {
     } = useDataFetching<{ events: UiEvent[] }>({
         fetchFn: async () => {
             const schedules = await certificateApi.getSchedule([certId]);
-            const rows = (schedules?.[0]?.schedule ?? []) as RawItem[];
+            const rows: RawItem[] = toRawItems(schedules?.[0]?.schedule);
             return { events: buildUiEvents(rows) };
         },
     });
