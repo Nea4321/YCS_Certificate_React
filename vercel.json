@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://yjs0511.synology.me:50030/api/:path*"
+      "destination": "https://api.yuhan-cert.kr/api/:path*"
     },
     {
       "source": "/(.*)",
