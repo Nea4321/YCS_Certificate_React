@@ -1,5 +1,5 @@
 export { SocialLoginRequest } from './SocialLoginRequest'
-export { SingUpRequest } from './SingUpRequest.tsx'
+export { SingUpRequest } from './SingUpRequest'
 export { LoginRequest } from './LoginRequest'
 export * from './CheckTokenRequest'
 export * from './useLogout'

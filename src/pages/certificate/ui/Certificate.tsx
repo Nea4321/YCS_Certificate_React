@@ -22,6 +22,9 @@ export default function Certificate() {
 
     useEffect(() => {
         if (!id || Number.isNaN(certId)) navigate("/", { replace: true });
+        // 즐찾 자격증 클릭 하면 URL 만 바뀌고 내용은 안 바뀜 -> 렌더링 될 때 마다 refetch 해서 데이터 다시 가져오게 변환함.
+        refetchCertificate();
+        refetchSchedule();
     }, [id, certId, navigate]);
 
     // ① 일정

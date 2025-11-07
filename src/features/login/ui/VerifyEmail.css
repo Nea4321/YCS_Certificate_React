@@ -1,0 +1,77 @@
+/* 화면 전체를 덮는 어두운 반투명 배경 */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* 팝업 본체 */
+.modalContent {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 32px;
+    width: 360px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.25s ease;
+}
+
+/* 입력 필드 */
+.modalContent input {
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+/* 버튼 스타일 */
+.modalContent button {
+    margin: 8px 4px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modalContent button:first-of-type {
+    background-color: #0078ff;
+    color: #fff;
+}
+
+.modalContent button:nth-of-type(2) {
+    background-color: #ddd;
+}
+
+.modalContent button:last-of-type {
+    background-color: #f44336;
+    color: #fff;
+}
+
+/* 에러 메시지 */
+.error {
+    color: #e53935;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

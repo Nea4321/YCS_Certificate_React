@@ -75,7 +75,7 @@ export const CertificateDetail = memo(function CertificateDetail({
                                                                  }: CertificateDetailProps) {
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const userName = useSelector((state: RootState) => state.user.userName)
     const [tagVersion, setTagVersion] = useState(0);
     const certId = Number(id);
     const [open, setOpen] = useState(false); // 기본: 접힘. 펼쳐서 시작하려면 true
@@ -268,7 +268,7 @@ export const CertificateDetail = memo(function CertificateDetail({
             <div className={certificateDetailStyles.header}>
                 <div className={certificateDetailStyles.titleBox}>
                 <h1 className={certificateDetailStyles.title}>{certName}</h1>
-                <FavoriteButton exist={certName} id={id} type={"certificate"}/>
+                    {userName ? (<FavoriteButton exist={certName} id={id} type="certificate" />) : null}
                 </div>
                 <div className={certificateDetailStyles.tagBox}>
                     {tagIds.map((tid) => {

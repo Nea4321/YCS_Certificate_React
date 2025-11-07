@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {SingUpRequest} from "@/features/login";
 import axios from "axios";
 
@@ -15,8 +15,18 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
 
+    const [showVerify, setShowVerify] = useState(false); // 이메일 인증 모달 표시 여부
+    const [verifiedEmail, setVerifiedEmail] = useState(""); // 인증 완료된 이메일 저장
+    const closeVerifyModal = () => {setShowVerify(false);};
     // 작동 방식은 LoginForm.tsx 에 있는것과 비슷함.
     // 그래서 주석 생략
+    useEffect(() => {
+        if (verifiedEmail && verifiedEmail !== formData.email) {
+            console.log("이메일 변경 감지 → 인증 초기화");
+            setVerifiedEmail("");
+        }
+    }, [formData.email, verifiedEmail]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({
@@ -56,9 +66,21 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
         e.preventDefault()
 
         if (!validateForm()) return
+        if (!verifiedEmail || verifiedEmail !== formData.email) {
+            setError("이메일 인증이 필요합니다.");
+            try {
+                setShowVerify(true);
+                await axios.post("/api/auth/send-email", null, { params: { email: formData.email } });
+                console.log("이메일 인증 요청 전송됨");
+            } catch (err) {
+                console.error("이메일 전송 실패:", err);
+                setError("이메일 인증 요청 실패");
+            }
+            return;
+        }
 
         setError("")
-        setSuccess("")
+        setSuccess("");
 
         try
         {
@@ -86,5 +108,5 @@ export const SingupForm =(onSwitchToLogin: () => void)=>{
             } else {setError("알 수 없는 오류 발생");}
         }
     }
-    return{formData,error,success,handleSubmit,handleInputChange}
+    return{formData, error, success, handleSubmit, handleInputChange, showVerify, closeVerifyModal,setShowVerify,setVerifiedEmail,verifiedEmail}
 }

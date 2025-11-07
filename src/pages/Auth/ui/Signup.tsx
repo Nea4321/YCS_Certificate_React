@@ -1,5 +1,5 @@
 import { authStyles } from "../styles"
-import {SingupForm} from "@/features/login";
+import {SingupForm, VerifyEmail} from "@/features/login";
 
 interface SignupProps {
     onSwitchToLogin: () => void
@@ -11,7 +11,7 @@ interface SignupProps {
  * 로그인 페이지와 기능이 비슷하므로 설명 스킵
  * */
 export const Signup = ({ onSwitchToLogin }: SignupProps) => {
-    const { formData,error,success,handleInputChange,handleSubmit } = SingupForm(onSwitchToLogin)
+    const { formData,error,success,handleInputChange,handleSubmit,showVerify,setShowVerify,setVerifiedEmail } = SingupForm(onSwitchToLogin)
     return (
         <div className={authStyles.formWrapper}>
             <form onSubmit={handleSubmit} className={authStyles.form}>
@@ -94,6 +94,16 @@ export const Signup = ({ onSwitchToLogin }: SignupProps) => {
                     </button>
                 </div>
             </form>
+            {showVerify && (
+                <VerifyEmail
+                    email={formData.email}
+                    onClose={() => setShowVerify(false)}
+                    onVerified={() => {
+                        setVerifiedEmail(formData.email);
+                        setShowVerify(false);
+                    }}
+                />
+            )}
         </div>
     )
 }
