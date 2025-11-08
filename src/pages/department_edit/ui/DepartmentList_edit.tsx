@@ -7,9 +7,17 @@ import {useEditSectionButton} from "@/features/department_edit/model/useEditSect
 import {Popup} from "@/shared/popup";
 import {useDispatch} from "react-redux";
 import {setFaculty_Department} from "@/shared/slice";
+import {DeptList} from "@/entities";
+
+interface DepartmentListProps {
+    data: DeptList[];
+    loading: boolean;
+    error: string | null;
+    refetch: () => Promise<void>;
+}
 
 /**학과 목록 접근 컴포넌트*/
-export const DepartmentList_edit = () => {
+export const DepartmentList_edit = ({ data, loading, error, refetch }: DepartmentListProps) => {
     const dispatch = useDispatch()
     /**학과 데이터를 가져오고 로딩, 에러, 재요청 기능을 제공하는 hooks
      * - 해당 학과의 id를 숫자로 변환하고 departmentApi.getDeptList에 전달하고
@@ -22,16 +30,11 @@ export const DepartmentList_edit = () => {
      * @property {string|null} error - 요청 실패 시의 에러 메시지
      * @property {() => Promise<void>} refetch - 데이터를 다시 요청하는 함수
      */
-    const { data, loading, error, refetch } = useDataFetching({
-        fetchFn:departmentApi.getDeptList
-    })
 
     const { data: abc } = useDataFetching({
         fetchFn:departmentApi.getDepartList_edit,
     })
     dispatch(setFaculty_Department(abc))
-    console.log("daaaaaaa",data)
-    console.log("asad",abc)
 
 
     const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(refetch)

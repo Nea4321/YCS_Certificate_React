@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
 
 export const MyPage = () => {
-    const { userInfo, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()
+    const { user, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isAdmin =  useSelector((state: RootState) => state.user.userRole);
@@ -41,11 +41,11 @@ export const MyPage = () => {
                     <div className={myPageStyles.profileCard}>
                         <div className={myPageStyles.profileHeader}>
                             <div className={myPageStyles.avatar}>
-                                <span className={myPageStyles.avatarText}>{userInfo.name.charAt(0)}</span>
+                                <span className={myPageStyles.avatarText}>{user.userName}</span>
                             </div>
                             <div className={myPageStyles.profileInfo}>
-                                <h2 className={myPageStyles.profileName}>{userInfo.name}</h2>
-                                <p className={myPageStyles.profileEmail}>{userInfo.email}</p>
+                                <h2 className={myPageStyles.profileName}>{user.userName}</h2>
+                                <p className={myPageStyles.profileEmail}>{user.userEmail}</p>
                                 {isAdmin ==="admin" && <span className={myPageStyles.adminBadge}>관리자</span>}
                             </div>
                         </div>
@@ -84,17 +84,17 @@ export const MyPage = () => {
                                         className={myPageStyles.input}
                                     />
                                 ) : (
-                                    <span className={myPageStyles.infoValue}>{userInfo.name}</span>
+                                    <span className={myPageStyles.infoValue}>{user.userName}</span>
                                 )}
                             </div>
 
                             <div className={myPageStyles.infoItem}>
                                 <label className={myPageStyles.infoLabel}>이메일</label>
-                                <span className={myPageStyles.infoValue}>{userInfo.email}</span>
+                                <span className={myPageStyles.infoValue}>{user.userEmail}</span>
                             </div>
                             <div className={myPageStyles.infoItem}>
                                 <label className={myPageStyles.infoLabel}>소셜 타입</label>
-                                <span className={myPageStyles.infoValue}>{userInfo.socialType}</span>
+                                <span className={myPageStyles.infoValue}>{user.socialType}</span>
                             </div>
                         </div>
 

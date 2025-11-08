@@ -9,7 +9,7 @@ import {useDataFetching} from "@/shared";
 
 export const Department_Edit = () => {
     const navigate = useNavigate();
-    const { refetch } = useDataFetching({fetchFn:departmentApi.getDeptList})
+    const { data, loading, error, refetch } = useDataFetching({ fetchFn: departmentApi.getDeptList });
     const {handleOpen,isopen,handleClose,name,departments_name,type} = useEditSectionButton(refetch)
 
     return (
@@ -31,10 +31,11 @@ export const Department_Edit = () => {
                 </button>
             </div>
 
-            <DepartmentList_edit />
+
+            <DepartmentList_edit data={data} loading={loading} error={error} refetch={refetch}/>
 
             <Popup isOpen={isopen}>
-             <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} />
+             <DepartmentEditSection facultyDefault={name} parentType={type} departmentOptions={departments_name} onClose={handleClose} refetch={refetch} />
             </Popup>
         </div>
     )

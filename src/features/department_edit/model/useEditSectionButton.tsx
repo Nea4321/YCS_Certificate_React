@@ -45,17 +45,6 @@ export const useEditSectionButton=(refetch: (() => void) | undefined)  =>{
 
     };
 
-    // const handleDepartmentChange = (index: number, name: string) => {
-    //
-    // };
-    //
-    // const handleAddMajor = (depIndex: number) => {
-    //
-    // };
-    //
-    // const handleMajorChange = (depIndex: number, majorIndex: number, name: string) => {
-    //
-    // };
 
     const handleSave = async (faculty: string, departments: { name: string; majors: string[] }[]) => {
         console.log("faculty,department", faculty, departments);
@@ -69,6 +58,7 @@ export const useEditSectionButton=(refetch: (() => void) | undefined)  =>{
             const response = await axios.post('/api/dept/create', payload);
             console.log(response)
             refetch?.()
+            handleClose()
         } else { console.log("컷")
         }
     };

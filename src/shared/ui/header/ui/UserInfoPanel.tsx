@@ -29,9 +29,6 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
     const favoriteSchedule = useSelector((state: RootState) => state.favorite_schedule.list);
 
-    console.log("favorite", favoriteInfo);
-    console.log("schedule", favoriteSchedule);
-
     // 즐찾 삭제 버튼 -> 삭제한 후 즐찾 목록 들고와서 redux에 저장.
     const handleDelete = async (type: "department" | "certificate", id: number) => {
         console.log(`Delete ${type} with id: ${id}`)
@@ -129,7 +126,17 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                 }`}
             >
                 <div className={userInfoPanelStyles.panelHeader}>
-                    <h2 className={userInfoPanelStyles.panelTitle}>유저 정보</h2>
+                    <div className={userInfoPanelStyles.userSummary}>
+                        <div className={userInfoPanelStyles.userText}>
+                            <h2 className={userInfoPanelStyles.panelTitle}>
+                                {userName ? userName : ""}
+                            </h2>
+                            <p className={userInfoPanelStyles.emailText}>
+                                {userEmail ? userEmail : "로그인되지 않음"}
+                            </p>
+                        </div>
+                    </div>
+
                     <button
                         className={userInfoPanelStyles.closeButton}
                         onClick={onToggle}
@@ -152,19 +159,6 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                         </div>
                     ) : (
                         <>
-                            {/* 기본 정보 섹션 */}
-                            <section className={userInfoPanelStyles.section}>
-                                <h3 className={userInfoPanelStyles.sectionTitle}>계정</h3>
-                                <div className={userInfoPanelStyles.infoItem}>
-                                    <span className={userInfoPanelStyles.infoLabel}>이름:</span>
-                                    <span className={userInfoPanelStyles.infoValue}>{userName}</span>
-                                </div>
-                                <div className={userInfoPanelStyles.infoItem}>
-                                    <span className={userInfoPanelStyles.infoLabel}>이메일:</span>
-                                    <span className={userInfoPanelStyles.infoValue}>{userEmail}</span>
-                                </div>
-                            </section>
-
                             {/* 시험 일정 섹션 */}
                             <section className={userInfoPanelStyles.section}>
                                 <h3 className={userInfoPanelStyles.sectionTitle}>시험 일정</h3>
@@ -174,7 +168,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                                 >
                                     즐겨찾기 목록 보기
                                 </button>
-                                <div style={{ marginTop: 24 }}>
+                                <div style={{ marginTop: 14 }}>
                                     <CalendarWidget
                                         events={allEvents}
                                         loading={false}
@@ -280,7 +274,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                 <User size={24} />
             </button>
 
-            {/* ✅ 포털을 이용해 panel과 overlay를 body에 렌더링 */}
+            {/* 포털을 이용해 panel과 overlay를 body에 렌더링 */}
             {ReactDOM.createPortal(panelContent, document.body)}
         </>
     )

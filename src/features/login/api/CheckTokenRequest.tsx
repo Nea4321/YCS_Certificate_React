@@ -3,6 +3,7 @@ import {jwtDecode, JwtPayload} from "jwt-decode";
 import {useDispatch} from "react-redux";
 import {setUser} from "@/shared/slice";
 import {useLogout} from "@/features/login";
+import {useRef} from "react";
 
 /**
  * 백엔드에서 받은 jwt 토큰에서 받아 서 해독할 본문 내용 인터페이스
@@ -23,7 +24,7 @@ interface MyJwtPayload extends JwtPayload {
 export const CheckTokenRequest = () => {
     const dispatch = useDispatch();         //redux 사용되는 액션.
     const { logout } = useLogout();
-    let timeoutId:  ReturnType<typeof setTimeout> | undefined;    //타이머 아이디 지정. -> 이걸로 현재 타이머 멈춤.
+    const timeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     /**
      *  리프레시 토큰을 체크하는 곳
@@ -76,7 +77,7 @@ export const CheckTokenRequest = () => {
      * */
     const checkAccessTokenExpired = async (token_expired?: number) => {
         if(!token_expired) return console.log(token_expired);
-        if (timeoutId) {clearTimeout(timeoutId);}
+        if (timeoutId.current) clearTimeout(timeoutId.current);
 
         const expireTime = token_expired * 1000 // 밀리초로 변환
 
@@ -86,7 +87,7 @@ export const CheckTokenRequest = () => {
         if (timeout <= 0) {
             await checkRefreshToken();
         } else {
-            timeoutId = setTimeout(checkRefreshToken, timeout);
+            timeoutId.current = setTimeout(checkRefreshToken, timeout);
         }
     };
 

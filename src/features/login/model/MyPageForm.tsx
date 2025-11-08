@@ -1,6 +1,8 @@
 import React, {useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
+import axios from "axios";
+import {setUser} from "@/shared/slice";
 
 // 대시보드에 들어가야할 기능들
 // 2. 개인 정보들 수정 가능 하게 하기
@@ -15,16 +17,11 @@ import {RootState} from "@/app/store";
  * 아마 카카오,네이버,깃허브 소셜 로그인 구현 후 마이페이지 만들 듯.
  * */
 export const MyPageForm =()=>{
-    const [userInfo] = useState({
-        name: useSelector((state: RootState) => state.user.userName),
-        email: useSelector((state: RootState) => state.user.userEmail),
-        socialType: useSelector((state: RootState) => state.user.socialType)
-    })
+    const dispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.user);
+
     const [isEditing, setIsEditing] = useState(false)
-    const [editData, setEditData] = useState({
-        name: userInfo.name,
-        email: userInfo.email,
-    })
+    const [editData, setEditData] = useState({name: user.userName,})
     const [message, setMessage] = useState("")
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,18 +35,12 @@ export const MyPageForm =()=>{
 
     const handleEdit = () => {
         setIsEditing(true)
-        setEditData({
-            name: userInfo.name,
-            email: userInfo.email,
-        })
+        setEditData({name:  user.userName,})
     }
 
     const handleCancel = () => {
         setIsEditing(false)
-        setEditData({
-            name: userInfo.name,
-            email: userInfo.email,
-        })
+        setEditData({name:  user.userName,})
         setMessage("")
     }
 
@@ -61,16 +52,19 @@ export const MyPageForm =()=>{
         setMessage("")
 
         try {
-            //API 호출 해야댐
-
-            console.log("프로필 업데이트:", editData)
+            const response = await axios.post('/api/auth/update',  { name: editData.name }, { withCredentials: true, headers: { 'Content-Type': 'application/json' } });
+            dispatch(setUser({
+                ...user, // 기존 user 상태 유지
+                userName: editData.name || '', // 이름만 덮어쓰기
+            }))
+            console.log("이름 업데이트:", response)
             setMessage("프로필이 성공적으로 업데이트되었습니다.")
             setIsEditing(false)
 
         } catch (error) {
             console.log(error)
-            setMessage("프로필 업데이트 중 오류가 발생했습니다.")
+            setMessage("이름 업데이트 중 오류가 발생했습니다.")
         }
     }
-    return{userInfo,isEditing,editData,message,handleInputChange,handleEdit,handleCancel,handleSave}
+    return{user,isEditing,editData,message,handleInputChange,handleEdit,handleCancel,handleSave}
 }
