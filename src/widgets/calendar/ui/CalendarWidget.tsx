@@ -18,9 +18,10 @@ interface CalendarWidgetProps {
     loading?: boolean;
     certName?: string;
     dept_map_id?: number;
+    isUserPanel?: boolean;
 }
 
-export function CalendarWidget({ events = [], loading, certName }: CalendarWidgetProps) {
+export function CalendarWidget({ events = [], loading, certName,isUserPanel }: CalendarWidgetProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const [visibleMonth, setVisibleMonth] = useState(dateUtils.startOfMonth(new Date()));
@@ -89,7 +90,7 @@ export function CalendarWidget({ events = [], loading, certName }: CalendarWidge
 
     const today = new Date();
     return (
-        <div className={calendarStyles.calendarWidget}>
+        <div className={`${calendarStyles.calendarWidget} ${isUserPanel ? calendarStyles.userPanel : ""}`}>
             <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 8 }}>
                 {certName ? `자격증: ${certName}` : "자격증"} · {currentDate.getMonth() + 1}월의 이벤트: {monthEvents.length}건
             </div>

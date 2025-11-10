@@ -1,7 +1,7 @@
 /* =================================
    BASE STYLES & VARIABLES
+   - 전체 배경 및 기본 컨테이너 설정
    ================================= */
-
 .container {
     min-height: 100vh;
     background-color: #f8f9fa;
@@ -9,8 +9,8 @@
 
 /* =================================
    LAYOUT COMPONENTS
+   - 메인 레이아웃 구조 및 콘텐츠 정렬
    ================================= */
-
 .main {
     max-width: 1200px;
     margin: 0 auto;
@@ -25,8 +25,8 @@
 
 /* =================================
    CARD COMPONENTS
+   - 카드형 레이아웃 (프로필, 정보, 계정관리 공통)
    ================================= */
-
 .profileCard,
 .infoCard,
 .accountCard {
@@ -55,14 +55,15 @@
 
 /* =================================
    PROFILE SECTION
+   - 프로필 카드 (아바타, 이름, 이메일, 관리자 뱃지)
    ================================= */
-
 .profileHeader {
     display: flex;
     align-items: center;
     gap: 1.5rem;
 }
 
+/* 아바타 스타일 */
 .avatar {
     width: 80px;
     height: 80px;
@@ -72,15 +73,12 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
-    /* 입체감과 빛 효과 */
     box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.2) inset;
-
-    /* 경계 애니메이션 */
     position: relative;
     overflow: hidden;
 }
 
+/* 아바타 빛 효과 애니메이션 */
 .avatar::before {
     content: "";
     position: absolute;
@@ -90,8 +88,8 @@
 }
 
 @keyframes shine {
-    0% { transform: rotate(0deg) translateX(0); }
-    100% { transform: rotate(360deg) translateX(0); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .avatarText {
@@ -101,9 +99,8 @@
     text-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
-.profileInfo {
-    flex: 1;
-}
+/* 프로필 정보 */
+.profileInfo { flex: 1; }
 
 .profileName {
     font-size: 1.5rem;
@@ -118,6 +115,7 @@
     margin: 0;
 }
 
+/* 관리자 뱃지 */
 .adminBadge {
     display: inline-block;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -131,8 +129,8 @@
 
 /* =================================
    FORM ELEMENTS
+   - 개인정보 수정 input / label 구성
    ================================= */
-
 .infoGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -157,6 +155,7 @@
     padding: 0.75rem 0;
 }
 
+/* 입력 필드 */
 .input {
     padding: 0.75rem;
     border: 2px solid #e2e8f0;
@@ -178,8 +177,8 @@
 
 /* =================================
    BUTTONS
+   - 버튼 스타일 (수정, 저장, 취소, 삭제 등)
    ================================= */
-
 .editButton {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -196,88 +195,23 @@
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.saveButton {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+/* 저장 / 취소 / 삭제 / 정지 / 활성화 버튼 */
+.saveButton { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); }
+.cancelButton { background: #e2e8f0; color: #4a5568; }
+.deleteButton { background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%); }
+.suspendButton { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); }
+.activateButton { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); }
+
+.saveButton, .cancelButton, .deleteButton, .suspendButton, .activateButton {
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
 }
 
-.saveButton:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
-}
-
-.cancelButton {
-    background: #e2e8f0;
-    color: #4a5568;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.cancelButton:hover:not(:disabled) {
-    background: #cbd5e0;
-}
-
-.deleteButton {
-    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-    color: white;
-    border: none;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.deleteButton:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
-}
-
-.suspendButton {
-    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
-}
-
-.suspendButton:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
-}
-
-.activateButton {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
-}
-
-.activateButton:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
-}
-
-/* Button Groups */
+/* 버튼 그룹 */
 .actionButtons {
     display: flex;
     gap: 1rem;
@@ -286,34 +220,10 @@
     border-top: 1px solid #e2e8f0;
 }
 
-.accountActions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.memberActions {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-/* Button States */
-.editButton:disabled,
-.saveButton:disabled,
-.cancelButton:disabled,
-.deleteButton:disabled,
-.suspendButton:disabled,
-.activateButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
 /* =================================
    MESSAGES & NOTIFICATIONS
+   - 성공 / 실패 메시지
    ================================= */
-
 .message {
     padding: 0.75rem 1rem;
     border-radius: 8px;
@@ -336,8 +246,8 @@
 
 /* =================================
    FAVORITES SECTION
+   - 즐겨찾기 자격증 리스트 스타일
    ================================= */
-
 .favoritesGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -361,32 +271,86 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.favoriteIcon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
+/* =================================
+   CBT RECORD SECTION
+   - 문제 풀이 기록 카드
+   ================================= */
+.cbtRecordList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
 }
 
-.favoriteInfo {
-    flex: 1;
+.cbtRecordItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 16px;
+    background-color: #f9fafb;
+    transition: background 0.2s ease;
 }
 
-.favoriteName {
-    font-size: 1rem;
+.cbtRecordItem:hover {
+    background-color: #f3f4f6;
+}
+
+.cbtRecordInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.cbtCertName {
+    font-size: 16px;
     font-weight: 600;
-    color: #2d3748;
-    margin: 0 0 0.25rem 0;
+    margin-bottom: 4px;
 }
 
-.favoriteCategory {
-    font-size: 0.875rem;
-    color: #718096;
-    margin: 0;
+.cbtMeta {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* CBT 버튼 */
+.cbtActions {
+    display: flex;
+    gap: 10px;
+}
+
+.solveButton,
+.reviewButton {
+    font-size: 13px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.solveButton {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.solveButton:hover {
+    background-color: #2563eb;
+}
+
+.reviewButton {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.reviewButton:hover {
+    background-color: #d97706;
 }
 
 /* =================================
    MEMBER MANAGEMENT
+   - 관리자 회원 관리 카드
    ================================= */
-
 .membersList {
     display: flex;
     flex-direction: column;
@@ -408,149 +372,16 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.memberInfo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex: 1;
-}
-
-.memberAvatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.memberDetails {
-    flex: 1;
-}
-
-.memberName {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #2d3748;
-    margin: 0 0 0.25rem 0;
-}
-
-.memberEmail {
-    font-size: 0.875rem;
-    color: #718096;
-    margin: 0 0 0.25rem 0;
-}
-
-.memberJoinDate {
-    font-size: 0.75rem;
-    color: #a0aec0;
-    margin: 0;
-}
-
-.memberStatus {
-    margin-left: 1rem;
-}
-
-.statusBadge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.statusActive {
-    background-color: #c6f6d5;
-    color: #2f855a;
-}
-
-.statusSuspended {
-    background-color: #fed7d7;
-    color: #c53030;
-}
-
 /* =================================
    RESPONSIVE DESIGN
+   - 모바일 및 태블릿 대응
    ================================= */
-
 @media (max-width: 768px) {
-    .main {
-        padding: 1rem;
-    }
-
-    .profileCard,
-    .infoCard,
-    .accountCard {
-        padding: 1.5rem;
-    }
-
-    .profileHeader {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
-
-    .avatar {
-        width: 60px;
-        height: 60px;
-    }
-
-    .avatarText {
-        font-size: 1.5rem;
-    }
-
-    .infoGrid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .actionButtons {
-        flex-direction: column;
-    }
-
-    .cardHeader {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .memberItem {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-    }
-
-    .memberActions {
-        justify-content: center;
-    }
-
-    .favoritesGrid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .profileHeader {
-        gap: 0.75rem;
-    }
-
-    .avatar,
-    .memberAvatar {
-        width: 50px;
-        height: 50px;
-    }
-
-    .avatarText {
-        font-size: 1.25rem;
-    }
-
-    .profileName {
-        font-size: 1.25rem;
-    }
-
-    .memberActions {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
+    .main { padding: 1rem; }
+    .profileCard, .infoCard, .accountCard { padding: 1.5rem; }
+    .profileHeader { flex-direction: column; text-align: center; gap: 1rem; }
+    .avatar { width: 60px; height: 60px; }
+    .infoGrid { grid-template-columns: 1fr; gap: 1rem; }
+    .cardHeader { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .favoritesGrid { grid-template-columns: 1fr; }
 }

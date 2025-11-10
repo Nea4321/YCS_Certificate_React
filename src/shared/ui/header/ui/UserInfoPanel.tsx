@@ -161,18 +161,22 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                         <>
                             {/* 시험 일정 섹션 */}
                             <section className={userInfoPanelStyles.section}>
-                                <h3 className={userInfoPanelStyles.sectionTitle}>시험 일정</h3>
-                                <button
-                                    className={userInfoPanelStyles.favoriteToggleButton}
-                                    onClick={() => setShowFavoriteModal(true)}
-                                >
-                                    즐겨찾기 목록 보기
-                                </button>
-                                <div style={{ marginTop: 14 }}>
+                                <div className={userInfoPanelStyles.sectionHeader}>
+                                    <h3 className={userInfoPanelStyles.sectionTitle}>시험 일정</h3>
+                                    <button
+                                        className={userInfoPanelStyles.favoriteToggleButton}
+                                        onClick={() => setShowFavoriteModal(true)}
+                                    >
+                                        즐겨찾기 목록 보기
+                                    </button>
+                                </div>
+
+                                <div>
                                     <CalendarWidget
                                         events={allEvents}
                                         loading={false}
                                         certName="즐겨찾기 전체 일정"
+                                        isUserPanel
                                     />
                                 </div>
                             </section>

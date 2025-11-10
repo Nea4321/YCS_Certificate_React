@@ -7,6 +7,11 @@
     padding-bottom: 20px;
 
 }
+{/* 유저 패널 에서 표시할때만 스케일 키우기 */}
+.userPanel {
+    transform: scale(1);
+    margin: 0 auto;
+}
 
 .calendarWidget :global(.react-calendar) {
     width: 100%;
