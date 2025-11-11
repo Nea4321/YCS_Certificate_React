@@ -58,10 +58,12 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                 <section className={departmentDetailStyles.calendarSection}>
                     <h2>자격증 시험 일정</h2>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
-                    <CalendarWidget
-                        events={events}
-                        loading={isLoading}
-                    />
+                    {!isLoading && (
+                        <CalendarWidget
+                            events={events}
+                            loading={isLoading}
+                        />
+                    )}
                 </section>
 
                 <section className={departmentDetailStyles.certificatesSection}>

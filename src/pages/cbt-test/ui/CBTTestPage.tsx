@@ -14,6 +14,9 @@ export const CBTTestPage: React.FC = () => {
     const navigate = useNavigate();
 
     const { ui, mode, date, start, end, certName, certificateId } = getCbtParams(location.search);
+    const search = new URLSearchParams(location.search);
+    const showCorrect = search.get("showCorrect") === "1";
+
     const questions = useMemo(() => {
         return allQuestions.filter(q => q.certificate_id === Number(certificateId));
     }, [certificateId]);
@@ -53,6 +56,17 @@ export const CBTTestPage: React.FC = () => {
     }, [fontZoom]);  // 글자 크기 변경 시 페이지 크기 조정
 
     const { answers, setAnswer } = useAnswers(totalQuestions);
+
+    useEffect(() => {
+        if (!showCorrect) return;
+
+        questions.forEach((q, qIndex) => {
+            const correctIdx = q.answers?.findIndex((a) => a.bool) ?? -1;
+            if (correctIdx >= 0) {
+                setAnswer(qIndex, correctIdx + 1);
+            }
+        });
+    }, [showCorrect, questions, setAnswer]);
 
     // 시험 전용: 전역 크롬/타이머
     useExamChrome(ui);

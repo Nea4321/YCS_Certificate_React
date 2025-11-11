@@ -20,7 +20,7 @@ export const Main = () => {
             {isMobile ? (
                 <MobileBannerSlider
                     categories={mobileSlides}
-                    maxItems={4} /* 반응형에서 5개 고정 */
+                    maxItems={4}
                 />
             ) : (
             <CertificateCategorySlider />

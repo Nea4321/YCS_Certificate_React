@@ -70,6 +70,8 @@ export function ExamResultPage() {
         ? "합격을 축하합니다!"
         : "다음 기회에 꼭 합격하시길 기원합니다.";
 
+    const isPerfect = result.totalScore === 100;
+
     return (
         <div className={ExamResultStyles.wrap}>
             <div className={ExamResultStyles.panel}>
@@ -98,7 +100,7 @@ export function ExamResultPage() {
                     <tr>
                         <td className={ExamResultStyles.tdName}>{candidateName}</td>
                         <td>{certName}</td>
-                        <td className={result.isPassed ? '' : ExamResultStyles.txtRed}>{result.totalScore}</td>
+                        <td className={result.isPassed ? ExamResultStyles.pass : ExamResultStyles.txtRed}>{result.totalScore}</td>
                         <td className={result.isPassed ? ExamResultStyles.pass : ExamResultStyles.txtRed}>
                             {result.isPassed ? "합격" : "불합격"}
                         </td>
@@ -138,7 +140,7 @@ export function ExamResultPage() {
                         backgroundSize: "contain",
                     }}
                 >
-                    오답노트
+                    {isPerfect ? "문제 검토" : "오답노트"}
                 </button>
             </div>
         </div>

@@ -175,10 +175,7 @@
     background: #d9dee6;
 }
 .layoutTwoColNarrow .qblock { break-inside: avoid; }
-.layoutOneCol .paper {
-    column-count: 1;
-    column-gap: 0;
-}
+
 
 .qblock { padding: 8px 0 16px; }
 .qnum   { font-size: calc(16px * var(--qScaleQ)); margin-bottom: 6px; width: 450px}
@@ -189,17 +186,20 @@
 .optLabel { display: inline-flex; align-items: center; gap: 8px; }
 
 .content {
+    --box-w: 300px;
+    width: calc(var(--box-w) * var(--qScaleQ, 1));
     padding: 16px;
     margin: 16px 0;
-    border: 1px solid #999;
-    width: 300px;
     border-radius: 0;
+    border: 1px solid #999;
     background-color: #fff;
     white-space: pre-wrap;
     font-family: monospace;
-    overflow-x: auto;
+    font-size: calc(14px * var(--qScaleQ, 1));
     line-height: 1.5;
+    overflow-x: auto;
 }
+
 /* 네이티브 라디오 숨김(접근성 유지) */
 .optRadio {
     position: absolute;

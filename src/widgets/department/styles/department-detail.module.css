@@ -108,9 +108,208 @@
     background-color: var(--certificate-bg);
     border-radius: 8px;
 }
+.container {
+    --link-blue: #2563eb; /* 지역 변수로 선언 */
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
+/* 이 규칙은 .container 범위 안에서만 전역 .certificate-content a를 조준 */
+.container :global(.certificate-content) a {
+    color: var(--link-blue);
+    text-decoration: none;
+}
+.container :global(.certificate-content) a:visited {
+    color: var(--link-blue);
+}
+.container :global(.certificate-content) a:hover,
+.container :global(.certificate-content) a:focus {
+    text-decoration: none;
+    opacity: .9;
+}
+
+/* 섹션 간 여백 */
+.basicInfoSection {
+    margin-top: 16px;
+}
+
+/* 바깥 카드: 그림자/라운드/배경 */
+.basicInfoCard {
+    background: var(--surface-color, #fff);
+    border-radius: 12px;                 /* 헤더와 동일 */
+    box-shadow: 0 4px 6px var(--shadow-color);  /* 헤더와 동일 */
+    overflow: visible;
+}
+
+/* 안쪽 컨텐츠(실제 내용) */
+.cardInner {
+    padding: 24px 24px 8px;
+}
+
+/* 2줄 줄임(접힘 상태에서만 붙여서 사용) */
+.clamp2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;       /* 줄 수 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 접힘 상태: 높이 제한 + 아래쪽 페이드(그림자 안 잘림) */
+.collapsed {
+    max-height: 360px;     /* 필요시 높이 조절 */
+    overflow: hidden;
+    position: relative;
+}
+
+/* ← 클램프 상태에선 페이드 제거 */
+.noFade::after{ display:none; }
+.collapsed::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 64px;
+    /* 배경색과 자연스럽게 이어지는 그라데이션 */
+    background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0),
+            var(--surface-color, #fff)
+    );
+}
+
+/* 펼치기/접기 바(카드 하단 정렬) */
+.expandBar {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 14px;
+}
+
+
+.header {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    text-align: center;
+}
+
+/* 헤더 안에 있을 때 달력/제목을 좌측 정렬로 리셋 */
+.header .calendarSection {
+    text-align: left;
+    margin-top: 24px;      /* 헤더 제목과 간격 */
+}
+
+/* 달력 섹션의 제목도 왼쪽 정렬로 강제 */
+.header .calendarSection h2 {
+    text-align: left;
+    margin-left: 0;
+}
+
+/* 헤더 안에 있을 때도 좌측 정렬로 강제 */
+.header .empty {
+    text-align: left;
+    margin-top: 24px; /* 제목/달력과 간격 */
+}
+
+.header .empty h2,
+.header .empty p {
+    text-align: left;
+    margin-left: 0;
+}
+
+
+.title {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+.titleBox {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 (원하면 flex-start로 바꿔도 됨) */
+    gap: 10px; /* 제목과 버튼 사이 간격 */
+}
+.id {
+    color: var(--text-secondary);
+    font-size: 1.1em;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.certificatesSection,
+.calendarSection,
+.contentsSection{
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    margin-bottom: 30px;
+    max-height: 1000px;
+}
+
+.descriptionSection h2,
+.certificatesSection h2,
+.calendarSection h2,
+.contentsSection h2{
+    color: var(--primary-color);
+    font-size: 1.5em;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--secondary-color);
+}
+
+
+.certificateGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.certificateCard {
+    background-color: var(--certificate-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.certificateCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.certificateName {
+    color: var(--primary-color);
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.certificateId {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.noCertificates {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 40px;
+    background-color: var(--certificate-bg);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px){
+
     .container {
         padding: 15px;
     }
@@ -133,4 +332,3 @@
         padding: 20px;
     }
 }
-

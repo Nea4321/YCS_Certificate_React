@@ -89,19 +89,6 @@
 
 /* ====== 우측: 답안 표기란 ====== */
 .answerPanel { padding: 16px; }
-.answerPanelHead {
-    background: #a8c9a7; color: #fff; font-weight: 800; text-align: center;
-    padding: 10px 12px; border-radius: 8px 8px 0 0;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.05) inset;
-}
-
-/* 실제 표 영역 */
-.answerSheet {
-    background: #f2f7f1; border: 1px solid #cadac8; border-top: none;
-    padding: 8px 10px 14px; border-radius: 0 0 8px 8px;
-    max-height: calc(100vh - 96px); overflow: auto;
-
-}
 
 /* 각 줄 */
 .answerRowClassic {
@@ -134,8 +121,7 @@
 .submitClassic:hover { filter: brightness(0.95); }
 /* 바탕 배경 */
 
-.paperRight{ background:#fff; border-left:1px solid #e5e9e5; max-width:225px; margin-left: 30px;}
-.answerSheet{ background:#fff; border:1px solid #e4e9e4; border-top:none; }
+
 
 /* ▶ 가운데 시험지(종이) */
 .examPaper{
@@ -197,6 +183,8 @@
     background:#93a68f; /* 스샷의 그린 톤 */
     padding:24px;
     border-left:1px solid #cfd8d3;
+    max-width:225px;
+    margin-left: 30px;
 }
 .answerPanelHead{
     background:#a8c9a7; color:#fff; font-weight:800; text-align:center;
@@ -205,7 +193,6 @@
     margin-bottom:0;
 }
 
-/* AnswerSheet 내부 박스가 종이 안쪽처럼 붙도록 */
 .answerSheet{
     background:#f2f7f1; border:1px solid #cadac8; border-top:none;
     padding:8px 10px 14px; border-radius:0 0 6px 6px;
@@ -326,7 +313,7 @@
     /* 중앙 블록 높이 + 여백 */
     padding-top: calc(var(--head-center-h));
     padding-bottom: 12px;
-    border-top: 2px solid #b8c7b2;
+    border-top: 2px solid #795548;
     background: transparent;
     display: flex;
     justify-content: space-between;
@@ -364,7 +351,6 @@
     /* 기존에 height:100vh 같은 게 있으면 제거하세요 */
 }
 
-/* ✅ 3) AnswerSheet만 내부 스크롤을 갖도록 (우측 컬럼은 키우지 않음) */
 .answerSheet {
     max-height: calc(100vh - 140px);  /* 헤더/상단 여백을 제외한 가용 높이 */
     overflow: auto;
@@ -504,4 +490,160 @@
     .examTitle { font-size: 22px; }
     .paperMeta { font-size: 13px; gap: 10px; }
 
+}
+
+/* ==============================================
+   전체 배경 및 시험지 요소 (아이보리/세피아 톤)
+   ============================================== */
+
+/* 페이지 전체 배경 */
+.pageBg {
+    background: #fbf8f2; /* 부드러운 크림/아이보리 배경 */
+    min-height: 100vh;
+}
+
+/* 시험지 상단 바 (날짜, 타이틀 등) */
+.examPaperHead {
+    background: #f7f3e8; /* 배경보다 살짝 짙은 종이색 */
+    border-bottom: 1px solid #e0d9d5;
+}
+
+/* 상단 '자격증 보러가기' 버튼 */
+.headCta {
+    background: #ede7dd; /* 옅은 흙색 */
+    border: 1px solid #d7ccc8;
+    color: #795548; /* 짙은 브라운 글씨 */
+}
+.headCta:hover {
+    background: #e7e0d8;
+    border-color: #c0b8b0;
+}
+.headCtaDisabled {
+    opacity: 0.6;
+}
+
+/* 날짜 뱃지 */
+.centerDate {
+    background: #f3efe5;
+    border: 1px solid #e0d9d5;
+    color: #8d6e63;
+}
+
+/* 중앙 타이틀 */
+.centerTitle {
+    color: #5d4037; /* 짙은 브라운 (잉크색) */
+}
+
+/* ==============================================
+   좌측 문제 영역
+   ============================================== */
+
+/* 문제 리스트 테두리 */
+.questionList {
+    border: 1px solid #d7ccc8; /* 연한 브라운 테두리 */
+}
+
+/* 문제 번호 및 텍스트 */
+.qNumber, .qTitle, .qText {
+    color: #4e342e; /* 가독성 높은 짙은 잉크색 */
+}
+
+/* 선택 옵션 불렛 */
+.optBullet {
+    border: 1px solid #c0b8b0;
+    background: #fdfdfc; /* 밝은 종이색 */
+    color: #8a7b70;
+}
+
+/* 선택된 옵션 불렛 (포인트 컬러) */
+.optLabel input[type="radio"]:checked + .optBullet {
+    background: #795548; /* 메인 브라운 */
+    border-color: #5d4037;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* ==============================================
+   우측 답안 표기란 (겉은 진하게, 안은 연하게)
+   ============================================== */
+
+.paperRight {
+    background: #a1887f; /* 겉부분: 짙은 웜 그레이-브라운 */
+    border-left: 1px solid #8d6e63;
+}
+
+.answerPanelHead {
+    background: #d7ccc8; /* 내부: 연한 베이지-브라운 */
+    color: #5d4037; /* 짙은 잉크색 */
+    box-shadow: 0 2px 0 rgba(0,0,0,.05) inset;
+}
+
+.answerSheet {
+    background: #fefdfa; /* 답안지는 밝은 종이색 */
+    border: 1px solid #d7ccc8;
+    border-top: none;
+}
+
+.answerRowClassic {
+    background: #fefdfa;
+    border-bottom: 1px solid #f1eeed; /* 아주 연한 경계선 */
+}
+.answerRowClassic:hover {
+    background: #f9f6f2; /* 호버 시 */
+}
+
+.answerNo {
+    background: #f7f5f2;
+    border: 1px solid #d7ccc8;
+    color: #795548;
+}
+
+.dotCircle {
+    background: #fefdfa;
+    border: 1px solid #c0b8b0;
+    color: #8a7b70;
+}
+
+.dotLabel input:checked + .dotCircle {
+    background: #795548; /* 메인 브라운 */
+    border-color: #5d4037;
+    color: #ffffff;
+}
+
+/* ==============================================
+   페이지네이션 바 (하단)
+   ============================================== */
+
+.paginationBar {
+    background: #f7f3e8; /* 상단 헤더와 동일 */
+    border: 1px solid #e0d9d5;
+}
+
+.paginationBtn {
+    background: #795548; /* 메인 브라운 버튼 */
+    color: #ffffff;
+}
+.paginationBtn:disabled {
+    background: #e0d9d5; /* 비활성화 */
+    color: #a1887f;
+}
+.paginationBtn:not(:disabled):hover {
+    filter: brightness(0.95);
+}
+
+.paginationInfo {
+    color: #795548; /* 짙은 브라운 */
+}
+
+/* ==============================================
+   모바일 및 최종 채점하기 버튼
+   ============================================== */
+
+.mobileSubmitBtn,
+.submitClassic {
+    background: #795548; /* 메인 브라운 */
+    color: #ffffff;
+}
+.submitClassic:hover {
+    filter: brightness(0.95);
 }

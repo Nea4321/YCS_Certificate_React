@@ -133,7 +133,7 @@
         margin: 0 auto 10px;
     }
     .head { gap: 8px; padding: 4px 4px 10px; }
-    .headIcon { width: 63px; height: 63px; }
+    .headIcon { width: 55px; height: 63px; }
     .headText { font-size: clamp(16px, 4.2vw, 20px); }
 
     /* 표를 카드 레이아웃으로 */
@@ -181,8 +181,7 @@
     /* 버튼은 가로 꽉 차게 */
     .actionsOutside { width: 100%; }
     .doneBtn {
-        width: 100%;
-        min-width: 0;
+        min-width: 172px;
         height: 46px;
         font-size: 16px;
         border-radius: 24px;

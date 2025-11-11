@@ -20,19 +20,19 @@ export function ExamToolbar({
                 <button
                     className={`${ExamStyles.percentBtn} ${fontZoom===0.75?ExamStyles.percentBtnActive:""}`}
                     onClick={()=>setFontZoom(0.75)}
-                    style={{ backgroundImage: fontZoom===0.75 ? `url('/CBTExamView/fontzoom100%select.png')` : `url('/CBTExamView/fontzoom100%.png')`, backgroundSize:"cover" }}
+                    style={{ backgroundImage: fontZoom===0.75 ? `url('/CBTExamView/fontzoom100select.png')` : `url('/CBTExamView/fontzoom100.png')`, backgroundSize:"cover" }}
                     aria-label="글자 100%"
                 />
                 <button
                     className={`${ExamStyles.percentBtn} ${fontZoom===1?ExamStyles.percentBtnActive:""}`}
                     onClick={()=>setFontZoom(1)}
-                    style={{ backgroundImage: fontZoom===1 ? `url('/CBTExamView/fontzoom150%select.png')` : `url('/CBTExamView/fontzoom150%.png')`, backgroundSize:"cover" }}
+                    style={{ backgroundImage: fontZoom===1 ? `url('/CBTExamView/fontzoom150select.png')` : `url('/CBTExamView/fontzoom150.png')`, backgroundSize:"cover" }}
                     aria-label="글자 150%"
                 />
                 <button
                     className={`${ExamStyles.percentBtn} ${fontZoom===1.25?ExamStyles.percentBtnActive:""}`}
                     onClick={()=>setFontZoom(1.25)}
-                    style={{ backgroundImage: fontZoom===1.25 ? `url('/CBTExamView/fontzoom200%select.png')` : `url('/CBTExamView/fontzoom200%.png')`, backgroundSize:"cover" }}
+                    style={{ backgroundImage: fontZoom===1.25 ? `url('/CBTExamView/fontzoom200select.png')` : `url('/CBTExamView/fontzoom200.png')`, backgroundSize:"cover" }}
                     aria-label="글자 200%"
                 />
             </div>

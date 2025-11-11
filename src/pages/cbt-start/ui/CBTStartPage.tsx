@@ -23,6 +23,7 @@ export const CBTStartPage: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<string>(''); // 기출문제 일자
     const [startDate, setStartDate] = useState<string>(''); // 랜덤문제 시작일자
     const [endDate, setEndDate] = useState<string>(''); // 랜덤문제 종료일자
+    const [showCorrect, setShowCorrect] = useState<boolean>(false);
 
     /** 추가: 연습/시험 UI 모드 (연습 practice / 시험 exam) */
     const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('exam');
@@ -62,6 +63,12 @@ export const CBTStartPage: React.FC = () => {
             if (!startDate || !endDate) return alert('시작일자와 종료일자를 모두 선택해주세요');
             params.set('start', startDate); // 랜덤 시작
             params.set('end', endDate);     // 랜덤 종료
+        }
+
+        if (showCorrect) {
+            params.set('showCorrect', '1');
+        } else {
+            params.delete('showCorrect');
         }
 
         navigate(`/cbt/test?${params.toString()}`, {
@@ -202,6 +209,16 @@ export const CBTStartPage: React.FC = () => {
                                 연습 모드
                             </label>
                         </div>
+                    </div>
+                    <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
+                        <label>정답 시연</label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={showCorrect}
+                                onChange={(e) => setShowCorrect(e.target.checked)}
+                            /> 모두 정답
+                        </label>
                     </div>
                 </div>
             )}

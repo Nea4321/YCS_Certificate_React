@@ -37,9 +37,10 @@ export function CalendarWidget({ events = [], loading, certName,isUserPanel }: C
     }, [isExpanded]);
 
     useEffect(() => {
+        if (loading) return;
         const id = requestAnimationFrame(() => setViewReady(true));
         return () => cancelAnimationFrame(id);
-    }, []);
+    }, [loading, events.length]);
 
     useEffect(() => {
         if (!isExpanded) {
@@ -61,7 +62,7 @@ export function CalendarWidget({ events = [], loading, certName,isUserPanel }: C
         restorePrevOnExpand: false,
     });
 
-    useCalendarAnimation({ calRef, isExpanded, viewReady });
+    useCalendarAnimation({ calRef, isExpanded, viewReady, deps: [events.length, loading] });
 
     const tileClassName = getTileClassName(events);
 
@@ -85,8 +86,6 @@ export function CalendarWidget({ events = [], loading, certName,isUserPanel }: C
         setVisibleMonth(dateUtils.startOfMonth(now));
         setView("month");
     }, []);
-
-    if (loading) return <div className={calendarStyles.loading}>일정을 불러오는 중...</div>;
 
     const today = new Date();
     return (

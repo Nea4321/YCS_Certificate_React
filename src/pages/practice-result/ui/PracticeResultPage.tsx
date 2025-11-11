@@ -77,6 +77,8 @@ export function PracticeResultPage() {
         );
     }
 
+    const isPerfect = result.totalScore === 100;
+
     return (
         <div className={PracticeStyles.pageBg} style={{ padding: "40px 0" }}>
             <div className={PracticeStyles.examPaper} style={{ paddingTop: 0 }}>
@@ -134,7 +136,7 @@ export function PracticeResultPage() {
                         <tbody>
                         {Object.entries(result.subjectScores).map(([sid, score]) => (
                             <tr key={sid}>
-                                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eef2ee" }}>{sid}</td>
+                                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eef2ee" }}>{sid} 과목</td>
                                 <td style={{ padding: "10px 8px", borderBottom: "1px solid #eef2ee" }}>{score}</td>
                             </tr>
                         ))}
@@ -152,7 +154,7 @@ export function PracticeResultPage() {
                                 navigate("/cbt/review", { state: { certName, questions, userAnswers } })
                             }
                         >
-                            오답노트
+                            {isPerfect ? "문제 검토" : "오답노트"}
                         </button>
                     </div>
                 </div>
