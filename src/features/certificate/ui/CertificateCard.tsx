@@ -16,9 +16,11 @@ export const CertificateCard: React.FC<Props> = ({ cert }) => {
     const imageUrl = getImageForCertificate(cert.certificate_name);
     const navigate = useNavigate();
 
-    const tagMap = useSelector((s: RootState) =>
-        new Map(s.tag.list.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }]))
-    );
+    const tag_Map = useSelector((s: RootState) => s.tag.list);
+
+    const tagMap = useMemo(() => {
+        return new Map(tag_Map.map(t => [t.tag_id, { name: t.tag_Name, color: t.tag_color }]));
+    }, [tag_Map]);
 
     const tagIds: number[] = useMemo(() => {
         const anyCert = cert as Certificate;

@@ -53,7 +53,7 @@ export const DepartmentEditSection = ({
             setDepartments([...departments, { name: facultyDefault, majors: [] }]);
         }
 
-    }, []);
+    }, [departments, facultyDefault, parentType]);
 
     return (
         <div className={`${departmentEditStyles.facultyItem} ${departmentEditStyles.addForm}`}>

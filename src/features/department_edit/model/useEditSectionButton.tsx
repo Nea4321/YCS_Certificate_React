@@ -55,11 +55,9 @@ export const useEditSectionButton=(refetch: (() => void) | undefined)  =>{
         };
 
         if (result) {
-            const response = await axios.post('/api/dept/create', payload);
-            console.log(response)
+             await axios.post('/api/dept/create', payload);
+            setIsopen(false);
             refetch?.()
-            handleClose()
-        } else { console.log("컷")
         }
     };
 

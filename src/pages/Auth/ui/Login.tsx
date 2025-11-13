@@ -93,16 +93,16 @@ export const Login = ({ onSwitchToSignup }: LoginProps) => {
                         Google로 로그인
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => handleSocialLogin("naver")}
-                        className={`${authStyles.socialButton} ${authStyles.naverButton}`}
-                    >
-                        <svg className={authStyles.socialIcon} viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M4 4h5.6l4.8 7.2V4H20v16h-5.6l-4.8-7.2V20H4V4z" />
-                        </svg>
-                        네이버로 로그인
-                    </button>
+                    {/*<button*/}
+                    {/*    type="button"*/}
+                    {/*    onClick={() => handleSocialLogin("naver")}*/}
+                    {/*    className={`${authStyles.socialButton} ${authStyles.naverButton}`}*/}
+                    {/*>*/}
+                    {/*    <svg className={authStyles.socialIcon} viewBox="0 0 24 24" fill="currentColor">*/}
+                    {/*        <path d="M4 4h5.6l4.8 7.2V4H20v16h-5.6l-4.8-7.2V20H4V4z" />*/}
+                    {/*    </svg>*/}
+                    {/*    네이버로 로그인*/}
+                    {/*</button>*/}
 
                     <button
                         type="button"

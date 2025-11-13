@@ -32,7 +32,7 @@
     box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
     z-index: 1001;
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
 }
 
