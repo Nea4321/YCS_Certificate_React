@@ -1,12 +1,11 @@
 import { myPageStyles } from "../styles"
-import { MyPageForm } from "@/features/login"
+import {CbtHistoryList, MyPageForm} from "@/features/login"
 import {useEffect} from "react"
 import {useNavigate} from "react-router-dom";
 import {FavoriteInfoRequest} from "@/features/favorite";
 import {setFavoriteInfo} from "@/shared/slice";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
-import CbtHistoryList from "@/features/login/ui/CbtHistoryList.tsx";
 
 export const MyPage = () => {
     const { user, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()

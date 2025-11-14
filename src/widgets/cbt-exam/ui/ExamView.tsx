@@ -26,7 +26,7 @@ export interface ExamViewProps {
     setCurrentPage: (p: number) => void;
     answers: (number | null)[];
     setAnswer: (index: number, opt: number | null) => void;
-    timer: { leftTime: string; limitMin: number };
+    timer: { leftTime: string; limitMin: number; leftSec:number};
     questions: Question[];
     fontZoom: 0.75 | 1 | 1.25;
     setFontZoom: React.Dispatch<React.SetStateAction<0.75 | 1 | 1.25>>;

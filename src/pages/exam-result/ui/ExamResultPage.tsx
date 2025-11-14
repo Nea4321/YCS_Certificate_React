@@ -5,7 +5,7 @@ import {Question} from "@/entities/cbt";
 import {SaveUserCbt} from "@/features/login";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
-import {clearCbtHistory, setCbtHistory} from "@/shared/slice";
+import {setCbtHistory} from "@/shared/slice";
 
 interface ScoreResult {
     totalScore: number;

@@ -32,7 +32,7 @@ const formatDate = (iso: string) => {
 };
 
 // 컴포넌트
-const CbtHistoryList: React.FC = () => {
+export const CbtHistoryList: React.FC = () => {
     const [cbtRecords, setCbtRecords] = useState<UserCbtHistory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -98,4 +98,3 @@ const CbtHistoryList: React.FC = () => {
     );
 };
 
-export default CbtHistoryList;
