@@ -1,5 +1,7 @@
 export { SocialLoginRequest } from './SocialLoginRequest'
 export { SingUpRequest } from './SingUpRequest'
 export { LoginRequest } from './LoginRequest'
+export {UserAddCbtHistory} from './UserAddCbtHistory'
+export {UserGetCbtHistory} from './UserGetCbtHistory'
 export * from './CheckTokenRequest'
 export * from './useLogout'

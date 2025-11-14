@@ -6,33 +6,7 @@ import {FavoriteInfoRequest} from "@/features/favorite";
 import {setFavoriteInfo} from "@/shared/slice";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
-
-const cbtRecords = [
-    {
-        id: 1,
-        certName: "정보처리기사",
-        date: "2025-11-05 14:23",
-        score: 85,
-        correctCount: 17,
-        totalCount: 20,
-    },
-    {
-        id: 2,
-        certName: "빅데이터분석기사",
-        date: "2025-10-30 19:10",
-        score: 72,
-        correctCount: 13,
-        totalCount: 20,
-    },
-    {
-        id: 3,
-        certName: "SQLD",
-        date: "2025-09-22 09:42",
-        score: 95,
-        correctCount: 19,
-        totalCount: 20,
-    },
-];
+import CbtHistoryList from "@/features/login/ui/CbtHistoryList.tsx";
 
 export const MyPage = () => {
     const { user, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()
@@ -44,7 +18,7 @@ export const MyPage = () => {
         FavoriteInfoRequest()
             .then((a) => dispatch(setFavoriteInfo(a)))
             .catch((err) => console.error("즐겨찾기 정보 로드 실패:", err));
-    }, [dispatch]); // ✅ 처음 마운트 시 1번만 실행
+    }, [dispatch]); // 처음 마운트 시 1번만 실행
 
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
@@ -160,43 +134,7 @@ export const MyPage = () => {
                         </div>
                     </div>
 
-                    {/* cbt 푼 기록 */}
-                    <div className={myPageStyles.infoCard}>
-                        <div className={myPageStyles.cardHeader}>
-                            <h3 className={myPageStyles.cardTitle}>CBT 문제 풀이 기록</h3>
-                        </div>
-
-                        <div className={myPageStyles.cbtRecordList}>
-                            {cbtRecords.map((record) => (
-                                <div key={record.id} className={myPageStyles.cbtRecordItem}>
-                                    <div className={myPageStyles.cbtRecordInfo}>
-                                        <h4 className={myPageStyles.cbtCertName}>{record.certName}</h4>
-                                        <p className={myPageStyles.cbtMeta}>
-                                            <span>🕒 {record.date}</span>
-                                            <span> | 걸린 시간 : 2분 30초</span>
-                                            <span> | 점수: {record.score}점</span>
-                                            <span> | 맞힌 문제: {record.correctCount}/{record.totalCount}</span>
-                                        </p>
-                                    </div>
-
-                                    <div className={myPageStyles.cbtActions}>
-                                        <button
-                                            className={myPageStyles.solveButton}
-                                            onClick={() => navigate(`/cbt/${record.id}`)}
-                                        >
-                                            문제 풀러가기
-                                        </button>
-                                        <button
-                                            className={myPageStyles.reviewButton}
-                                            onClick={() => navigate(`/cbt/${record.id}/wrong`)}
-                                        >
-                                            오답노트 보기
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                   <CbtHistoryList/>
 
 
                     {/*/!* 계정 관리 섹션 *!/*/}

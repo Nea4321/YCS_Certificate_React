@@ -71,8 +71,8 @@ export const CBTTestPage: React.FC = () => {
     // 시험 전용: 전역 크롬/타이머
     useExamChrome(ui);
 
-    const { leftTime, limitMin} = useExamTimer(ui === "exam", 60 * 60);
-    const timer = { leftTime, limitMin };
+    const { leftTime, limitMin, leftSec} = useExamTimer(ui === "exam", 60 * 60);
+    const timer = { leftTime, limitMin, leftSec };
 
 
     return (

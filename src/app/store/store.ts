@@ -1,7 +1,15 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // localStorage 사용
-import {Faculty_DepartmentSlice, FavoriteListSlice, FavoriteScheduleSlice, userSlice, OrganizationSlice, TagSlice} from "@/shared/slice";
+import {
+    Faculty_DepartmentSlice,
+    FavoriteListSlice,
+    FavoriteScheduleSlice,
+    userSlice,
+    OrganizationSlice,
+    TagSlice,
+    CbtHistorySlice
+} from "@/shared/slice";
 
 /**
  * 아래 3개 설정 설명
@@ -15,7 +23,7 @@ import {Faculty_DepartmentSlice, FavoriteListSlice, FavoriteScheduleSlice, userS
 const persistConfig = {
     key: "root",         // localStorage key 이름
     storage,             // localStorage 사용
-    whitelist: ["user","tag","organization"], // user만 persist (faculty는 굳이 저장 안 해도 되면 제외)
+    whitelist: ["user","tag","organization","userCbtHistory"], // user만 persist (faculty는 굳이 저장 안 해도 되면 제외)
 };
 
 // 🔹 모든 slice 합치기
@@ -26,6 +34,7 @@ const rootReducer = combineReducers({
     tag: TagSlice.reducer,
     favorite: FavoriteListSlice.reducer,
     favorite_schedule: FavoriteScheduleSlice.reducer,
+    userCbtHistory: CbtHistorySlice.reducer,
 });
 
 // 🔹 persist 기능을 루트 리듀서에 적용

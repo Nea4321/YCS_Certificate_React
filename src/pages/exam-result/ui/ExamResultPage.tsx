@@ -2,6 +2,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { ExamResultStyles } from "../styles";
 import {useMemo} from "react";
 import {Question} from "@/entities/cbt";
+import {SaveUserCbt} from "@/features/login";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "@/app/store";
+import {clearCbtHistory, setCbtHistory} from "@/shared/slice";
 
 interface ScoreResult {
     totalScore: number;
@@ -12,6 +16,9 @@ interface ScoreResult {
 export function ExamResultPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
+    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
+    const user = useSelector((state: RootState) => state.user);
 
     const { certName, userAnswers, questions } = location.state || {
         certName: "정보를 불러올 수 없습니다.",
@@ -45,6 +52,9 @@ export function ExamResultPage() {
             }
         });
 
+        // 맞힌 정답 갯수 redux에 저장
+        dispatch(setCbtHistory({...cbtHistory, correct_count: totalCorrect || 0,}))
+
         const subjectScores: { [key: number]: number } = {};
         Object.keys(subjectTotalCounts).forEach(id => {
             const subjectId = Number(id);
@@ -64,7 +74,23 @@ export function ExamResultPage() {
 
     const candidateName = "수험자 (00000000)";
 
-    const handleDone = () => navigate("/cbt");
+    const handleDone = async () => {
+        if (!user || !user.userEmail) {
+            navigate("/cbt")
+        }
+
+        await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
+
+        navigate("/cbt")
+    }
+    // 오답노트로 가는 버튼
+    const handleDone_Review = async () => {
+        if (!user || !user.userEmail) {
+            navigate("/cbt/review", { state: { certName, questions, userAnswers } })
+        }
+            await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
+        navigate("/cbt/review", { state: { certName, questions, userAnswers } })
+    }
 
     const finalMessage = result.isPassed
         ? "합격을 축하합니다!"
@@ -130,9 +156,7 @@ export function ExamResultPage() {
                 <button
                     type="button"
                     className={ExamResultStyles.reviewBtn}
-                    onClick={() =>
-                        navigate("/cbt/review", { state: { certName, questions, userAnswers } })
-                    }
+                    onClick={handleDone_Review}
                     style={{
                         backgroundImage: "url('/CBTExamView/submit_bg.png')",
                         backgroundRepeat: "no-repeat",

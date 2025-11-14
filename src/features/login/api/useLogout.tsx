@@ -1,6 +1,6 @@
 import axios from "axios";
 import {useDispatch} from "react-redux";
-import {clearUser} from "@/shared/slice";
+import {clearCbtHistory, clearFavoriteInfo, clearFavoriteSchedule, clearUser} from "@/shared/slice";
 import {persistor} from "@/app/store";
 
 /**
@@ -20,6 +20,9 @@ export const useLogout = () => {
             console.log("리프레시 토큰 삭제 실패", error);
         } finally {
             dispatch(clearUser());   // redux 저장소 초기화
+            dispatch(clearCbtHistory());
+            dispatch(clearFavoriteInfo());
+            dispatch(clearFavoriteSchedule());
             await persistor.purge(); // redux-persist  초기화
         }
     }
