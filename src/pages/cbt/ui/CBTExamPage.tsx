@@ -39,7 +39,6 @@ export const CBTExamPage: React.FC = () => {
         []
     );
     const dispatch = useDispatch();
-    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
     /**자격증 목록을 가져와 certificate_id을 기반으로 태그를 부여함
      * 만약 certificate_id가 없는 자격증은 빈 배열
      */
@@ -89,7 +88,7 @@ export const CBTExamPage: React.FC = () => {
      */
     const handleStartClick = (cert: Certificate) => {
         // cbt 시작하기 눌렀을 때 redux에 자격증 아이디 저장
-        dispatch(setCbtHistory({...cbtHistory, certificate_id: cert.certificate_id || 0,}))
+        dispatch(setCbtHistory({certificate_id: cert.certificate_id || 0,}))
         const query = new URLSearchParams({
             certificateId: cert.certificate_id.toString(),
             certName: cert.certificate_name

@@ -53,7 +53,7 @@ export function ExamResultPage() {
         });
 
         // 맞힌 정답 갯수 redux에 저장
-        dispatch(setCbtHistory({...cbtHistory, correct_count: totalCorrect || 0,}))
+        dispatch(setCbtHistory({ correct_count: totalCorrect || 0,}))
 
         const subjectScores: { [key: number]: number } = {};
         Object.keys(subjectTotalCounts).forEach(id => {

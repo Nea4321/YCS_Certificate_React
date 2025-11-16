@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {myPageStyles} from "@/pages/dashboard/styles";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/app/store";
 
 
 export interface UserCbtHistory {
@@ -21,7 +23,8 @@ export const UserGetCbtHistory = async (): Promise<UserCbtHistory[]> => {
 
 // 시간을 "mm분 ss초" 포맷으로 바꾸는 함수
 const formatDuration = (sec: number) => {
-    const m = Math.floor(sec / 60);
+    const left_time = 3600 - sec
+    const m = Math.floor(left_time / 60);
     const s = sec % 60;
     return `${m}분 ${s}초`;
 };
@@ -31,12 +34,14 @@ const formatDate = (iso: string) => {
     return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 };
 
+
 // 컴포넌트
 export const CbtHistoryList: React.FC = () => {
     const [cbtRecords, setCbtRecords] = useState<UserCbtHistory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
 
     useEffect(() => {
         const fetchCbtHistory = async () => {
@@ -84,12 +89,12 @@ export const CbtHistoryList: React.FC = () => {
                             >
                                 문제 풀러가기
                             </button>
-                            {/*<button*/}
-                            {/*    className={myPageStyles.reviewButton}*/}
-                            {/*    onClick={() => navigate(`/cbt/${record.certificate_id}/wrong`)}*/}
-                            {/*>*/}
-                            {/*    오답노트 보기*/}
-                            {/*</button>*/}
+                            <button
+                                className={myPageStyles.reviewButton}
+                                onClick={() => navigate("/cbt/review", { state: { certName: record.certificate_name, questions: cbtHistory.questions, userAnswers: cbtHistory.answers } })}
+                            >
+                                오답노트 보기
+                            </button>
                         </div>
                     </div>
                 ))}
