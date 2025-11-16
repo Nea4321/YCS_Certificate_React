@@ -1,13 +1,18 @@
 import styles from '../styles/PreferencePanel.module.css';
 import { adaptPreference } from './adaptPreference';
+import { EmptyState } from '@/widgets/common/EmptyState';
+import { hasNonEmptyValue } from '@/widgets/common/utils/hasNonEmpty';
 
 export function PreferencePanel({ data }: { data: unknown }) {
-    const rows = adaptPreference(data);
+    // 원본 rows
+    const rowsRaw = adaptPreference(data);
+    // ✅ 실제 내용 있는 행만 남기기
+    const rows = rowsRaw.filter((r) => hasNonEmptyValue(r));
 
     if (!rows.length) {
         return (
             <div className={styles.wrap}>
-                <div className={styles.empty}>우대현황(법령) 데이터가 없습니다.</div>
+                <EmptyState message="우대현황 법령 데이터가 없습니다." height={120} />
             </div>
         );
     }

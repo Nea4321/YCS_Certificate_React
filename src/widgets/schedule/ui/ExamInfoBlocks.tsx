@@ -1,9 +1,14 @@
 import React from 'react';
 import type { ExamInfoDto} from '@/entities/certificate/model/types';
+import { hasNonEmptyValue } from '@/widgets/common/utils/hasNonEmpty';
+import { EmptyState } from '@/widgets/common/EmptyState';
 
 
 export const ExamInfoBlocks: React.FC<{ data?: ExamInfoDto }> = ({ data }) => {
-    if (!data) return null;
+
+    if (!data || !hasNonEmptyValue(data)) {
+        return <EmptyState message="등록된 시험정보가 없습니다." height={120} />;
+    }
 
     const docFee = data.fee?.doc ?? '';
     const pracFee = data.fee?.prac ?? '';

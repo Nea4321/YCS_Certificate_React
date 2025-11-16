@@ -364,15 +364,18 @@ export const CertificateDetail = memo(function CertificateDetail({
                             )}
 
                             {active === 'benefit' && (
-                                <div id="benefit-root" ref={benefitRef} className={`${certificateDetailStyles.benefitSection} certificate-content`}>
+                                <div
+                                    id="benefit-root"
+                                    ref={benefitRef}
+                                    className={certificateDetailStyles.benefitSection}
+                                >
                                     <h2>우대현황</h2>
-                                    {prefRows.length > 0
-                                        ? <PreferencePanel data={prefData}/>
-                                        : <div style={{color:'#6b7280',fontSize:14,padding:'10px 2px'}}>
-                                                우대현황(법령) 데이터가 없습니다.
-                                               </div>}
+
+                                    {/* ✅ 항상 PreferencePanel에게 맡긴다 */}
+                                    <PreferencePanel data={prefData} />
                                 </div>
                             )}
+
 
 
                         </Tabs>

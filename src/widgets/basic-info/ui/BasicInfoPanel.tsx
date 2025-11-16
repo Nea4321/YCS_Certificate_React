@@ -1,7 +1,9 @@
-// widgets/basic-info/BasicInfoPanel.tsx
-import { adaptBasicInfo, type InfoBlock } from './adaptBasicInfo.ts';
+// widgets/basic-info/ui/BasicInfoPanel.tsx
+import { adaptBasicInfo, type InfoBlock } from './adaptBasicInfo';
+import { EmptyState } from '@/widgets/common/EmptyState';
+import { isDict, hasNonEmptyValue, type Dict } from '@/widgets/common/utils/hasNonEmpty';
 
-// widgets/basic-info/BasicInfoPanel.tsx
+// ---- 내부 컴포넌트들 ----
 function DlRow({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <>
@@ -15,7 +17,6 @@ function DlRow({ label, children }: { label: string; children: React.ReactNode }
     );
 }
 
-
 function Block({ b }: { b: InfoBlock }) {
     switch (b.type) {
         case 'kv':
@@ -27,7 +28,6 @@ function Block({ b }: { b: InfoBlock }) {
                 </div>
             );
 
-        // BasicInfoPanel.tsx - Block의 agency 케이스
         case 'agency':
             return (
                 <div className="space-y-2">
@@ -35,7 +35,12 @@ function Block({ b }: { b: InfoBlock }) {
                         <>
                             <h4 className="font-semibold">실시기관 홈페이지</h4>
                             <p>
-                                <a href={b.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline break-all">
+                                <a
+                                    href={b.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 underline break-all"
+                                >
                                     {b.url}
                                 </a>
                             </p>
@@ -49,8 +54,6 @@ function Block({ b }: { b: InfoBlock }) {
                     )}
                 </div>
             );
-
-
 
         case 'table': {
             const keys = Object.keys(b.rows[0] ?? {});
@@ -102,7 +105,11 @@ function Block({ b }: { b: InfoBlock }) {
             return (
                 <figure>
                     <img src={b.url} alt={b.caption ?? ''} className="max-h-96 rounded border" />
-                    {b.caption && <figcaption className="text-xs text-gray-500">{b.caption}</figcaption>}
+                    {b.caption && (
+                        <figcaption className="text-xs text-gray-500">
+                            {b.caption}
+                        </figcaption>
+                    )}
                 </figure>
             );
 
@@ -113,22 +120,40 @@ function Block({ b }: { b: InfoBlock }) {
         default:
             return (
                 <pre className="bg-gray-50 p-3 rounded border text-xs overflow-auto">
-          {JSON.stringify(b.raw, null, 2)}
-        </pre>
+                    {JSON.stringify(b.raw, null, 2)}
+                </pre>
             );
     }
 }
 
-type Dict = Record<string, unknown>;
-const isDict = (v: unknown): v is Dict =>
-    typeof v === 'object' && v !== null && !Array.isArray(v);
-
+// ---- 메인 컴포넌트 ----
 export function BasicInfoPanel({ data }: { data: unknown }) {
-    const candidate = isDict(data) && 'basic_info' in data ? (data as Dict).basic_info : data;
+    const candidate = isDict(data) && 'basic_info' in data
+        ? (data as Dict).basic_info
+        : data;
+
+    const renderEmpty = () => (
+        <EmptyState message="등록된 기본정보가 없습니다." height={120} />
+    );
+
+    // 전체가 null/빈 문자열/빈 객체/빈 배열이면 "없음" 문구 표시
+    if (!hasNonEmptyValue(candidate)) {
+        return renderEmpty();
+    }
+
     const blocks = adaptBasicInfo(candidate);
+
+    if (!blocks.length) {
+        return renderEmpty();
+    }
+
     return (
         <div className="rounded border p-4 space-y-6">
-            {blocks.map((b, i) => <Block key={i} b={b} />)}
+            {blocks.map((b, i) => (
+                <Block key={i} b={b} />
+            ))}
         </div>
     );
 }
+
+

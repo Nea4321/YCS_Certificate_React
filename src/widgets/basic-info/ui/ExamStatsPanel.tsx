@@ -1,5 +1,7 @@
 import { memo, useMemo } from 'react';
 import styles from '../styles/ExamStatsPanel.module.css';
+import { EmptyState } from '@/widgets/common/EmptyState';
+import { hasNonEmptyValue } from '@/widgets/common/utils/hasNonEmpty';
 
 export type ExamStatsRow = Record<string, string | number>;
 export interface ExamStatsPanelProps {
@@ -54,25 +56,46 @@ const sortRows = (rows: ExamStatsRow[]) => {
 };
 
 const cx = (...xs: Array<string | false | undefined>) => xs.filter(Boolean).join(' ');
-
 export const ExamStatsPanel = memo(function ExamStatsPanel({
                                                                data,
                                                                title = '종목별 검정현황',
                                                            }: ExamStatsPanelProps) {
-    // ✅ Hooks는 항상 호출 (조건부 X)
-    const rows = useMemo(() => sortRows(Array.isArray(data) ? data : []), [data]);
-    const cols = useMemo(() => (rows[0] ? pickCols(rows[0]) : pickCols({} as ExamStatsRow)), [rows]);
+    const rows = useMemo(
+        () =>
+            sortRows(
+                Array.isArray(data) ? data.filter((row) => hasNonEmptyValue(row)) : []
+            ),
+        [data]
+    );
+    const cols = useMemo(
+        () => (rows[0] ? pickCols(rows[0]) : pickCols({} as ExamStatsRow)),
+        [rows]
+    );
 
-    // 내용 없으면 렌더 스킵
-    if (rows.length === 0) return null;
+    // ✅ 내용이 없으면 공통 EmptyState 표시
+    if (rows.length === 0) {
+        return (
+            <section className={styles.qstatsWrap} aria-label={title}>
+                <h3 className={styles.qstatsTitle}>{title}</h3>
+                <EmptyState message="등록된 검정통계가 없습니다." height={120} />
+            </section>
+        );
+    }
 
+    // ✅ 내용 있을 때만 테이블 렌더링
     return (
         <section className={styles.qstatsWrap} aria-label={title}>
             <h3 className={styles.qstatsTitle}>{title}</h3>
             <div className={styles.qstatsScroll}>
                 <table className={styles.qstats}>
                     <colgroup className={styles.cols}>
-                           <col /><col /><col /><col /><col /><col /><col />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
                     </colgroup>
                     <thead>
                     <tr className={styles.group}>
@@ -96,12 +119,24 @@ export const ExamStatsPanel = memo(function ExamStatsPanel({
                         return (
                             <tr key={i} className={isTotal ? styles.total : undefined}>
                                 <th className={styles.year}>{year}</th>
-                                <td className={styles.num}>{fmtNum(cols.dApplyKey ? r[cols.dApplyKey] : '')}</td>
-                                <td className={cx(styles.num, isTotal && styles.bold)}>{fmtNum(cols.dPassKey ? r[cols.dPassKey] : '')}</td>
-                                <td className={styles.num}>{fmtRate(cols.dRateKey ? r[cols.dRateKey] : '')}</td>
-                                <td className={styles.num}>{fmtNum(cols.pApplyKey ? r[cols.pApplyKey] : '')}</td>
-                                <td className={cx(styles.num, isTotal && styles.bold)}>{fmtNum(cols.pPassKey ? r[cols.pPassKey] : '')}</td>
-                                <td className={styles.num}>{fmtRate(cols.pRateKey ? r[cols.pRateKey] : '')}</td>
+                                <td className={styles.num}>
+                                    {fmtNum(cols.dApplyKey ? r[cols.dApplyKey] : '')}
+                                </td>
+                                <td className={cx(styles.num, isTotal && styles.bold)}>
+                                    {fmtNum(cols.dPassKey ? r[cols.dPassKey] : '')}
+                                </td>
+                                <td className={styles.num}>
+                                    {fmtRate(cols.dRateKey ? r[cols.dRateKey] : '')}
+                                </td>
+                                <td className={styles.num}>
+                                    {fmtNum(cols.pApplyKey ? r[cols.pApplyKey] : '')}
+                                </td>
+                                <td className={cx(styles.num, isTotal && styles.bold)}>
+                                    {fmtNum(cols.pPassKey ? r[cols.pPassKey] : '')}
+                                </td>
+                                <td className={styles.num}>
+                                    {fmtRate(cols.pRateKey ? r[cols.pRateKey] : '')}
+                                </td>
                             </tr>
                         );
                     })}
@@ -111,3 +146,4 @@ export const ExamStatsPanel = memo(function ExamStatsPanel({
         </section>
     );
 });
+
