@@ -53,12 +53,14 @@ export default function Certificate() {
         initialData: null,
     });
 
-    // ✅ 엔진 트리거 + 폴링
     const handleRunEngine = async () => {
-        if (!id) return;
+        if (!id || running) return; // 이미 실행중이면 무시
+
         try {
             setRunning(true);
+
             await certificateApi.runPublic(certId); // 1) 엔진 트리거
+
             // 2) DB 저장될 때까지 폴링 (최대 60초)
             const deadline = Date.now() + 60_000;
             while (Date.now() < deadline) {
@@ -66,12 +68,11 @@ export default function Certificate() {
                 if (data) {
                     await refetchCertificate();
                     await refetchSchedule();
-                    setRunning(false);
                     return;
                 }
                 await new Promise(r => setTimeout(r, 2000));
             }
-            setRunning(false);
+
             alert("엔진 실행은 성공했지만 데이터가 아직 저장되지 않았어요. 잠시 후 새로고침해보세요.");
         } catch (e: unknown) {
             console.error(e);
@@ -85,6 +86,7 @@ export default function Certificate() {
         }
     };
 
+
     const loading = scheduleLoading || certLoading;
     const scheduleDone = !scheduleLoading;
     const certDone = !certLoading;
@@ -96,6 +98,35 @@ export default function Certificate() {
             </button>
         </div>
     );
+
+    // 🔥 엔진 실행 중일 때: 스페셜 로딩 화면
+    if (running) {
+        return (
+            <div className={certificateStyles.certificateContainer}>
+                {TopBar}
+                <div className={certificateStyles.engineLoadingWrapper}>
+                    <div className={certificateStyles.engineLoadingSpinner} />
+                    <h2>자격증 정보를 불러오는 중입니다</h2>
+                    <p>개요 · 시험일정 · 시험정보 · 종목별 검정현황 · 우대현황을 준비하고 있어요…</p>
+
+                    <ul className={certificateStyles.engineLoadingSteps}>
+                        <li className={certificateStyles.engineLoadingStep}>
+                            <span className={certificateStyles.engineStepBullet}>1</span>
+                            <span>기본 정보 가져오는 중…</span>
+                        </li>
+                        <li className={certificateStyles.engineLoadingStep}>
+                            <span className={certificateStyles.engineStepBullet}>2</span>
+                            <span>시험일정 · 시험정보 정리 중…</span>
+                        </li>
+                        <li className={certificateStyles.engineLoadingStep}>
+                            <span className={certificateStyles.engineStepBullet}>3</span>
+                            <span>우대현황 · 종목별 검정현황 불러오는 중…</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        );
+    }
 
     // 로딩
     if (loading) {
