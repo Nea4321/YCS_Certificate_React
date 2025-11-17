@@ -42,7 +42,7 @@ export function toRawItems(rows?: Row[]): RawItem[] {
                 발표: pass,
                 서류제출기간: sharedDocs,
                 의견제시기간: sharedObj,
-                '최종정답 발표기간': sharedAnswer,
+                '정답발표': sharedAnswer,
             });
         }
     }
