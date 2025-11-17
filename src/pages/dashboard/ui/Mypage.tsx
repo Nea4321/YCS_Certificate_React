@@ -1,14 +1,15 @@
 import { myPageStyles } from "../styles"
 import {CbtHistoryList, MyPageForm} from "@/features/login"
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom";
-import {FavoriteInfoRequest} from "@/features/favorite";
-import {setFavoriteInfo} from "@/shared/slice";
+import {FavoriteDeleteRequest, FavoriteInfoRequest, FavoriteModal, FavoriteScheduleRequest} from "@/features/favorite";
+import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
 
 export const MyPage = () => {
     const { user, isEditing, message, editData, handleEdit, handleSave, handleCancel, handleInputChange } = MyPageForm()
+    const [showFavoriteModal, setShowFavoriteModal] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isAdmin =  useSelector((state: RootState) => state.user.userRole);
@@ -21,16 +22,15 @@ export const MyPage = () => {
 
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
-    // const handleMemberAction = (memberId: number, action: "delete" | "suspend" | "activate") => {
-    //     console.log(`${action} member with ID: ${memberId}`)
-    //     // 실제 구현에서는 API 호출
-    // }
+    const handleDelete = async (type: "department" | "certificate", id: number) => {
+        console.log(`Delete ${type} with id: ${id}`)
+        await FavoriteDeleteRequest(type, id);
+        const favorite_data = await FavoriteInfoRequest();
+        const favorite_schedule = await FavoriteScheduleRequest();
+        dispatch(setFavoriteInfo(favorite_data))
+        dispatch(setFavoriteSchedule(favorite_schedule))
+    }
 
-    // const handleFavoriteClick = (url: string) => {
-    //     console.log(`Navigate to: ${url}`)
-    //     navigate(`/${url}`)
-    //     // 실제 구현에서는 router.push(url) 사용
-    // }
 
     return (
         <div className={myPageStyles.container}>
@@ -114,6 +114,7 @@ export const MyPage = () => {
                     <div className={myPageStyles.infoCard}>
                         <div className={myPageStyles.cardHeader}>
                             <h3 className={myPageStyles.cardTitle}>즐겨찾기 자격증</h3>
+                            <button className={myPageStyles.viewButton}  onClick={() => setShowFavoriteModal(true)}>목록 확인</button>
                         </div>
                         <div className={myPageStyles.favoritesGrid}>
                             {favoriteInfo.map((favorite) => (
@@ -133,7 +134,16 @@ export const MyPage = () => {
                         </div>
                     </div>
 
+                    {/*cbt 기록 컴포넌트 */}
                    <CbtHistoryList/>
+
+
+                    <FavoriteModal
+                        show={showFavoriteModal}
+                        onClose={() => setShowFavoriteModal(false)}
+                        favoriteInfo={favoriteInfo}
+                        handleDelete={handleDelete}
+                    />
 
 
                     {/*/!* 계정 관리 섹션 *!/*/}

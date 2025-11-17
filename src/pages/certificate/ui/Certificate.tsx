@@ -12,11 +12,14 @@ import type { RawItem } from '@/entities/certificate/model';
 import { toRawItems } from '@/entities/certificate/lib/asRawItems';
 import type { CertificateData } from "@/entities/certificate/model/types";
 import axios from "axios";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/app/store";
 
 export default function Certificate() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const certId = Number(id);
+    const role = useSelector((state: RootState) => state.user.userRole);
 
     const [running, setRunning] = useState(false); // ← 엔진 동작중 표시
 
@@ -85,6 +88,8 @@ export default function Certificate() {
         }
     };
 
+    const delete_certdate = async (id:number) => { await axios.get(`/api/cert/delete/${id}`);}
+
     const loading = scheduleLoading || certLoading;
     const scheduleDone = !scheduleLoading;
     const certDone = !certLoading;
@@ -94,6 +99,9 @@ export default function Certificate() {
             <button onClick={() => navigate(-1)} className={certificateStyles.backButton}>
                 ← 뒤로가기
             </button>
+            {role === "admin" ? (
+            <button onClick={() => {delete_certdate(certId).then(r => console.log(r)) }} className={certificateStyles.rightButton}> 삭제하기 (관리자) </button>
+            ):null}
         </div>
     );
 

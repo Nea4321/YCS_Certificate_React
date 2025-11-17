@@ -1,0 +1,1 @@
+export { FavoriteModal } from './FavoriteModal'

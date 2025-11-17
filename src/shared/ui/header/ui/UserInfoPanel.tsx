@@ -1,11 +1,11 @@
-import { User, X, Trash2 } from "lucide-react"
+import { User, X} from "lucide-react"
 import ReactDOM from "react-dom"
 import {useDispatch, useSelector} from "react-redux"
 import type { RootState } from "@/app/store"
 import { userInfoPanelStyles } from "./styles"
 import {
     FavoriteDeleteRequest,
-    FavoriteInfoRequest,
+    FavoriteInfoRequest, FavoriteModal,
     FavoriteScheduleRequest
 } from "@/features/favorite";
 import {useEffect, useState} from "react";
@@ -191,79 +191,12 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
             )}
 
             {/* 즐겨찾기 모달 */}
-            {showFavoriteModal && (
-                <div className={userInfoPanelStyles.modalOverlay}>
-                    <div className={userInfoPanelStyles.modal}>
-                        <div className={userInfoPanelStyles.modalHeader}>
-                            <h3>즐겨찾기 목록</h3>
-                            <button
-                                className={userInfoPanelStyles.modalClose}
-                                onClick={() => setShowFavoriteModal(false)}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className={userInfoPanelStyles.modalContent}>
-                            {/* 학과 */}
-                            <section>
-                                <h4>학과</h4>
-                                <ul className={userInfoPanelStyles.favoriteList}>
-                                    {favoriteInfo
-                                        .filter((f) => f.type === "department")
-                                        .map((f) => (
-                                            <li
-                                                key={f.type_id}
-                                                className={userInfoPanelStyles.favoriteItem}
-                                            >
-                                                    <span
-                                                        style={{ cursor: "pointer", color: "#2563eb" }}
-                                                        onClick={() => navigate(`/departments/${f.type_id}`)}
-                                                    >
-                                                      {f.name}
-                                                    </span>
-                                                <button
-                                                    className={userInfoPanelStyles.deleteButton}
-                                                    onClick={() => handleDelete("department", f.type_id)}
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </li>
-                                        ))}
-                                </ul>
-                            </section>
-
-                            {/* 자격증 */}
-                            <section style={{ marginTop: 16 }}>
-                                <h4>자격증</h4>
-                                <ul className={userInfoPanelStyles.favoriteList}>
-                                    {favoriteInfo
-                                        .filter((f) => f.type === "certificate")
-                                        .map((f) => (
-                                            <li
-                                                key={f.type_id}
-                                                className={userInfoPanelStyles.favoriteItem}
-                                            >
-                                                    <span
-                                                        style={{ cursor: "pointer", color: "#2563eb" }}
-                                                        onClick={() => navigate(`/certificate/${f.type_id}`)}
-                                                    >
-                                                      {f.name}
-                                                    </span>
-                                                <button
-                                                    className={userInfoPanelStyles.deleteButton}
-                                                    onClick={() => handleDelete("certificate", f.type_id)}
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </li>
-                                        ))}
-                                </ul>
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <FavoriteModal
+                show={showFavoriteModal}
+                onClose={() => setShowFavoriteModal(false)}
+                favoriteInfo={favoriteInfo}
+                handleDelete={handleDelete}
+            />
         </>
     )
 
