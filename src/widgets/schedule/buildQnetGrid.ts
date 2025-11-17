@@ -17,7 +17,7 @@ const SHARED_COLS = ["DOCS", "OBJECTION", "ANSWER"] as const;
 const SHARED_LABEL: Record<(typeof SHARED_COLS)[number], string> = {
     DOCS: "서류제출기간",
     OBJECTION: "의견제시기간",
-    ANSWER: "최종정답 발표기간",
+    ANSWER: "최종정답 발표기간",   // ← 여기만 바꾸기
 };
 
 function push(row: GridRow, id: string, v?: string | null) {
@@ -40,7 +40,7 @@ export function buildQnetGrid(items: RawItem[]): { headers: GridHeader[]; rows: 
     const hasShared: Record<(typeof SHARED_COLS)[number], boolean> = {
         DOCS: items.some(i => i.서류제출기간),
         OBJECTION: items.some(i => i.의견제시기간),
-        ANSWER: items.some(i => i["최종정답 발표기간"]),
+        ANSWER: items.some(i => i["정답발표"]),
     };
 
     // 3) 헤더 구성
@@ -73,7 +73,7 @@ export function buildQnetGrid(items: RawItem[]): { headers: GridHeader[]; rows: 
         // 공용(단일 컬럼)
         push(row, `SHARED:DOCS`, it.서류제출기간 || undefined);
         push(row, `SHARED:OBJECTION`, it.의견제시기간 || undefined);
-        push(row, `SHARED:ANSWER`, it["최종정답 발표기간"] || undefined);
+        push(row, `SHARED:ANSWER`, it["정답발표"] || undefined);
 
         byRound.set(round, row);
     }

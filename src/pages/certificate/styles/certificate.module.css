@@ -190,6 +190,11 @@
     color: #6b7280;
 }
 
+.engineLoadingNote {
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
 .engineLoadingSteps {
     list-style: none;
     padding: 0;

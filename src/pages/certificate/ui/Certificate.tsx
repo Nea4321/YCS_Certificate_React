@@ -107,7 +107,13 @@ export default function Certificate() {
                 <div className={certificateStyles.engineLoadingWrapper}>
                     <div className={certificateStyles.engineLoadingSpinner} />
                     <h2>자격증 정보를 불러오는 중입니다</h2>
-                    <p>개요 · 시험일정 · 시험정보 · 종목별 검정현황 · 우대현황을 준비하고 있어요…</p>
+                    <p>개요 · 시험일정 · 시험정보 · 종목별 검정현황 · 우대현황을 준비하고 있어요…
+                        <br />
+                        <span className={certificateStyles.engineLoadingNote}>
+                        평균 약 10초 정도 소요될 수 있습니다.
+                    </span>
+                    </p>
+
 
                     <ul className={certificateStyles.engineLoadingSteps}>
                         <li className={certificateStyles.engineLoadingStep}>

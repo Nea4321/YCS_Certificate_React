@@ -84,7 +84,7 @@ export interface RawItem {
     발표?: string | null;
     서류제출기간?: string | null;
     의견제시기간?: string | null;
-    "최종정답 발표기간"?: string | null;
+    정답발표?: string | null;
 }
 
 
