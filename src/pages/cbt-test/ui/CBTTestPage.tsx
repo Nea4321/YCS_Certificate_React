@@ -7,7 +7,7 @@ import { useAnswers } from "@/features/cbt-exam/hooks/useAnswers";
 import { ExamView } from "@/widgets/cbt-exam/ui/ExamView";
 import { PracticeView } from "@/widgets/cbt-practice/ui/PracticeView";
 import { CBTTestStyle } from "@/pages/cbt-test/styles";
-import {QuestionDTO, PreviousDTO} from "@/entities/cbt/model/types.ts";
+import {QuestionDTO, PreviousDTO,UserPreviousDTO} from "@/entities/cbt/model/types.ts";
 
 export const CBTTestPage: React.FC = () => {
 
@@ -23,6 +23,7 @@ export const CBTTestPage: React.FC = () => {
     const showCorrect = search.get("showCorrect") === "1";
     const questionInfoId = search.get("questionInfoId");
     const certificateId = search.get("certificateId");
+    const previous_id = search.get("previousId");
 
     const [questions, setQuestions] = useState<UiQuestion[]>([]);
     const [previousId, setPreviousId] = useState<number | null>(null);
@@ -48,42 +49,66 @@ export const CBTTestPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!questionInfoId) {
-            setError("questionInfoId가 없습니다. 다시 시험을 시작해 주세요.");
-            return;
-        }
-
         setLoading(true);
         setError(null);
 
-        fetch(`/api/user/cbt?question_info_id=${questionInfoId}`, {
-            credentials: "include", // JWT가 쿠키에 있을 경우
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`Failed to fetch CBT questions: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then((data: PreviousDTO) => {
-                setPreviousId(data.previous_id);
+        if (previous_id) {
+            // 기록 회차 재생
+            const previousIdNum = parseInt(previous_id, 10);
+            fetch(`/api/user/cbt/previous/${previousIdNum}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(res.statusText);
+                    return res.json();
+                })
+                .then((data: UserPreviousDTO) => {
+                    const qList: UiQuestion[] =
+                        data.previous.list.question_types.flatMap(qt =>
+                            qt.questions.map(q => ({
+                                ...q,
+                                question_type_id: qt.question_type_id,
+                                question_type_name: qt.question_type_name,
+                            }))
+                        );
 
-                const qList: UiQuestion[] =
-                    data.list?.question_types?.flatMap((qt) =>
-                        (qt.questions ?? []).map<UiQuestion>((q) => ({
-                            ...q,
-                            question_type_id: qt.question_type_id,
-                            question_type_name: qt.question_type_name,
-                        }))
-                    ) ?? [];
-                setQuestions(qList);
-            })
-            .catch((e) => {
-                console.error(e);
-                setError("문제를 불러오지 못했습니다.");
-            })
-            .finally(() => setLoading(false));
-    }, [questionInfoId]);
+                    setQuestions(qList);
+                })
+                .catch(e => {
+                    console.error(e);
+                    setError("문제를 불러오지 못했습니다.");
+                })
+                .finally(() => setLoading(false));
+
+        } else if (questionInfoId) {
+            // 새 CBT 랜덤 문제
+            fetch(`/api/user/cbt?question_info_id=${questionInfoId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`Failed to fetch CBT questions: ${res.status}`);
+                    return res.json();
+                })
+                .then((data: PreviousDTO) => {
+                    setPreviousId(data.previous_id);
+
+                    const qList: UiQuestion[] =
+                        data.list?.question_types?.flatMap(qt =>
+                            (qt.questions ?? []).map(q => ({
+                                ...q,
+                                question_type_id: qt.question_type_id,
+                                question_type_name: qt.question_type_name,
+                            }))
+                        ) ?? [];
+                    setQuestions(qList);
+                })
+                .catch(e => {
+                    console.error(e);
+                    setError("문제를 불러오지 못했습니다.");
+                })
+                .finally(() => setLoading(false));
+
+        } else {
+            setError("questionInfoId 또는 previousId가 없습니다. 다시 시험을 시작해 주세요.");
+            setLoading(false);
+        }
+    }, [questionInfoId, previous_id]);
 
     const calculatePageSize = () => {
         const windowHeight = window.innerHeight;

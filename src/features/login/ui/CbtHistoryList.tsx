@@ -26,7 +26,7 @@ export const UserGetCbtHistory = async (): Promise<UserCbtHistoryCert[]> => {
 
 // 시간을 "mm분 ss초" 포맷으로
 const formatDuration = (sec: number) => {
-    const left_time = 3600 - sec;
+    const left_time = 5400 - sec;
     const m = Math.floor(left_time / 60);
     const s = left_time % 60;
     return `${m}분 ${s}초`;
@@ -43,6 +43,8 @@ export const CbtHistoryList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<string[]>([]);
+    const params = new URLSearchParams(location.search);
+
 
     const navigate = useNavigate();
     // const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
@@ -109,14 +111,20 @@ export const CbtHistoryList: React.FC = () => {
                                         </button>
                                     <button
                                         className={myPageStyles.solveButton}
-                                        onClick={() => {} }
+                                        onClick={() => navigate(`/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(cert.certificate_name)}`)}
                                     >
                                         문제 풀기
                                     </button>
 
                                     <button
                                         className={myPageStyles.wrongReviewButton}
-                                        onClick={() => {}}
+                                        onClick={() =>
+                                            navigate(
+                                                `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
+                                                    cert.certificate_name
+                                                )}`
+                                            )
+                                        }
                                     >
                                         오답노트
                                     </button>
@@ -139,7 +147,7 @@ export const CbtHistoryList: React.FC = () => {
                                         {/* 가운데: 기록 정보 */}
                                         <p className={myPageStyles.cbtMeta}>
                                             <span>🕒 {formatDate(record.created_at)}</span>
-                                            <span> | 시간 : {formatDuration(record.left_time)}</span>
+                                            <span> | 걸린 시간 : {formatDuration(record.left_time)}</span>
                                             <span> | 점수: {record.score}점</span>
                                             <span> | 맞힌 문제: {record.correct_count}개</span>
                                         </p>
@@ -148,22 +156,21 @@ export const CbtHistoryList: React.FC = () => {
                                         <div className={myPageStyles.cbtActions}>
                                             <button
                                                 className={myPageStyles.retryButton}
-                                                onClick={() => navigate(`/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(cert.certificate_name)}`)}
+                                                onClick={() =>  {
+                                                    params.set('previousId', record.previous_id.toString());
+                                                    navigate(`/cbt/test?${params.toString()}`);}
+                                            }
                                             >
                                                 문제 다시 풀기
                                             </button>
 
                                             <button
                                                 className={myPageStyles.reviewButton}
-                                                // onClick={() =>
-                                                //     navigate("/cbt/review", {
-                                                //         state: {
-                                                //             certName: cert.certificate_name,
-                                                //             questions: cbtHistory.questions,
-                                                //             userAnswers: cbtHistory.answers,
-                                                //         },
-                                                //     })
-                                                // }
+                                                onClick={() =>
+                                                    navigate(`/cbt/review/previous/${record.previous_id}`, {
+                                                        state: { certName: cert.certificate_name },
+                                                    })
+                                                }
                                             >
                                                 문제 검토
                                             </button>
