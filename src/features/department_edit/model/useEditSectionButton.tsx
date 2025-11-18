@@ -47,7 +47,6 @@ export const useEditSectionButton=(refetch: (() => void) | undefined)  =>{
 
 
     const handleSave = async (faculty: string, departments: { name: string; majors: string[] }[]) => {
-        console.log("faculty,department", faculty, departments);
         const result = confirm("저장 하시겠습니까?")
         const payload: FacultyCreateRequestDTO = {
             facultyName: faculty,         // string

@@ -31,7 +31,6 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
 
     // 즐찾 삭제 버튼 -> 삭제한 후 즐찾 목록 들고와서 redux에 저장.
     const handleDelete = async (type: "department" | "certificate", id: number) => {
-        console.log(`Delete ${type} with id: ${id}`)
         await FavoriteDeleteRequest(type, id);
         const favorite_data = await FavoriteInfoRequest();
         const favorite_schedule = await FavoriteScheduleRequest();

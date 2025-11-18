@@ -50,7 +50,6 @@ export const SocialLoginHandler = () => {
             //slice 에 유저 데이터 저장
             if(data === null){
                 setStatus('FAIL')
-                console.log('Login error')
             }
             else {
                 setStatus('SUCCESS')

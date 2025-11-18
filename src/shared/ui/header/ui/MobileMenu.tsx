@@ -87,7 +87,7 @@ export const MobileMenu = ({ isOpen, onToggle }: MobileMenuProps) => {
               <Link
                   to="/dashboard"
                   className={`${mobileMenuStyles.mobileNavLink}${
-                      isActivePage("/dashboard") ? mobileMenuStyles.activeLink : ""
+                      isActivePage("/dashboard") && !isActivePage("/") ? mobileMenuStyles.activeLink : ""
                   }`}
                   onClick={handleLinkClick}
               >

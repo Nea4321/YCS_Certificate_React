@@ -363,6 +363,20 @@
 }
 
 /* 문제 풀러가기 버튼 */
+.buttonGroup {
+    display: flex;
+    gap: 8px; /* 버튼 사이 간격 */
+}
+.retryButton {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #66ead6 0%, #4b88a2 100%);
+    color: white;
+    font-size: 15px;
+}
+
 .solveButton {
     padding: 8px 12px;
     border-radius: 6px;
@@ -370,48 +384,38 @@
     cursor: pointer;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 /* 오답노트 보기 버튼 (다른 색) */
-.reviewButton {
+.wrongReviewButton {
     padding: 8px 12px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
     background: linear-gradient(135deg, #d67b7b 0%, #cf4242 100%);
     color: white;
-    font-size: 13px;
-}
-
-.solveButton {
-    background-color: #3b82f6;
-    color: white;
-}
-
-.solveButton:hover {
-    background-color: #2563eb;
-}
+    font-size: 15px;}
 
 .reviewButton {
-    background-color: #f59e0b;
-    color: white;
-}
-
-.reviewButton:hover {
-    background-color: #d97706;
-}
-
-
-.toggleButton {
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #eaa266 0%, #b64e16 100%);
     color: white;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+}
+
+.toggleButton {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, rgb(161, 220, 92) 0%, rgb(74, 154, 6) 100%);
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    font-size: 15px;
 }
 .collapseWrapper {
     width: 100%;

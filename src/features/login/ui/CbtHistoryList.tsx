@@ -100,13 +100,29 @@ export const CbtHistoryList: React.FC = () => {
                             {!isOpen && (
                                 <div className={myPageStyles.cbtRecordItem}>
                                     <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
+                                    <div className={myPageStyles.buttonGroup}>
+                                        <button
+                                            className={myPageStyles.toggleButton}
+                                            onClick={() => toggle(cert.certificate_name)}
+                                        >
+                                            문제 기록 확인
+                                        </button>
+                                    <button
+                                        className={myPageStyles.solveButton}
+                                        onClick={() => {} }
+                                    >
+                                        문제 풀기
+                                    </button>
 
                                     <button
-                                        className={myPageStyles.toggleButton}
-                                        onClick={() => toggle(cert.certificate_name)}
+                                        className={myPageStyles.wrongReviewButton}
+                                        onClick={() => {}}
                                     >
-                                        문제 기록 확인
+                                        오답노트
                                     </button>
+
+
+                                    </div>
                                 </div>
                             )}
 
@@ -131,40 +147,25 @@ export const CbtHistoryList: React.FC = () => {
                                         {/* 오른쪽: 버튼 2개 */}
                                         <div className={myPageStyles.cbtActions}>
                                             <button
-                                                className={myPageStyles.solveButton}
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(
-                                                            cert.certificate_name
-                                                        )}`
-                                                    )
-                                                }
+                                                className={myPageStyles.retryButton}
+                                                onClick={() => navigate(`/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(cert.certificate_name)}`)}
                                             >
-                                                문제 풀러가기
+                                                문제 다시 풀기
                                             </button>
 
                                             <button
                                                 className={myPageStyles.reviewButton}
-                                                onClick={() =>
-                                                    navigate(`/cbt/review/previous/${record.previous_id}`, {
-                                                        state: { certName: cert.certificate_name },
-                                                    })
-                                                }
+                                                // onClick={() =>
+                                                //     navigate("/cbt/review", {
+                                                //         state: {
+                                                //             certName: cert.certificate_name,
+                                                //             questions: cbtHistory.questions,
+                                                //             userAnswers: cbtHistory.answers,
+                                                //         },
+                                                //     })
+                                                // }
                                             >
                                                 문제 검토
-                                            </button>
-
-                                            <button
-                                                className={myPageStyles.reviewButton}
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
-                                                            cert.certificate_name
-                                                        )}`
-                                                    )
-                                                }
-                                            >
-                                                오답노트
                                             </button>
                                         </div>
                                     </div>

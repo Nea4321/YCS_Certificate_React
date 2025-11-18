@@ -8,7 +8,6 @@ import {RootState} from "@/app/store";
 export const DepartmentListPage = () => {
     const navigate = useNavigate();
     const role = useSelector((state: RootState) => state.user.userRole);
-    console.log("role:",role)
     return (
         <div className={deptListStyles.container}>
             <h1>학과 목록</h1>

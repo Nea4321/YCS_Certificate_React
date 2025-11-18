@@ -23,7 +23,6 @@ export const MyPage = () => {
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
     const handleDelete = async (type: "department" | "certificate", id: number) => {
-        console.log(`Delete ${type} with id: ${id}`)
         await FavoriteDeleteRequest(type, id);
         const favorite_data = await FavoriteInfoRequest();
         const favorite_schedule = await FavoriteScheduleRequest();
