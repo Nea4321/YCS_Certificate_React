@@ -1,4 +1,5 @@
-import {memo} from "react"
+import { memo, useState } from "react"
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { DeptMapData } from "@/entities/department/model"
 import { departmentDetailStyles } from "../styles"
 import { Link } from "react-router-dom"
@@ -36,6 +37,11 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
     const descriptionObject = department.description as unknown as Record<string, string>;
     const introduction = descriptionObject?.["학과소개"];
     const userName = useSelector((state: RootState) => state.user.userName)
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const toggle = () => {
+        setIsExpanded(prev => !prev);
+    };
 
     return (
         <div className={departmentDetailStyles.container}>
@@ -50,9 +56,31 @@ export const DepartmentDetail = memo(({ department }: DepartmentDetailProps) => 
                 {introduction && (
                     <section className={departmentDetailStyles.descriptionSection}>
                         <h2>학과 소개</h2>
-                        <div className={departmentDetailStyles.description}>
-                        <p className={departmentDetailStyles.descriptionText}>{introduction}</p>
+
+                        <div
+                            className={`${departmentDetailStyles.descriptionBox} ${
+                                isExpanded ? departmentDetailStyles.expanded : departmentDetailStyles.collapsed
+                            }`}
+                        >
+                            <p className={departmentDetailStyles.descriptionText}>
+                                {introduction}
+                            </p>
                         </div>
+                        <button
+                            className={departmentDetailStyles.mobileToggleBtn}
+                            onClick={toggle}
+                            aria-expanded={isExpanded}
+                        >
+                            {isExpanded ? (
+                                <>
+                                    <ChevronUp size={20} />
+                                </>
+                            ) : (
+                                <>
+                                    <ChevronDown size={20} />
+                                </>
+                            )}
+                        </button>
                     </section>
                 )}
                 <section className={departmentDetailStyles.calendarSection}>

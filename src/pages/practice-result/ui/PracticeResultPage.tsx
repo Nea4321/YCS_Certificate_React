@@ -1,69 +1,94 @@
-import {useEffect, useMemo} from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { Question } from "@/entities/cbt";
+import type { QuestionDTO } from "@/entities/cbt";
 import { PracticeStyles } from "@/widgets/cbt-practice/styles";
+
+// UI에서 쓰는 확장 타입: 각 문제에 과목 정보가 붙어 있다고 가정
+type UiQuestion = QuestionDTO & {
+    question_type_id: number;
+    question_type_name: string;
+};
 
 type LocState = {
     certName: string;
     userAnswers: (number | null)[];
-    questions: Question[];
+    questions: UiQuestion[];
 };
+
+interface SubjectResult {
+    typeId: number;
+    typeName: string;
+    correct: number;
+    total: number;
+    score: number; // 0~100
+}
 
 export function PracticeResultPage() {
     const nav = useNavigate();
-    const { state } = useLocation();
     const navigate = useNavigate();
+    const { state } = useLocation();
     const { certName, userAnswers, questions } = (state || {}) as LocState;
+
+    // ✅ 뒤로가기 시 /cbt로 강제 이동 (useEffect는 컴포넌트 최상단에서만)
+    useEffect(() => {
+        const onPop = () => navigate("/cbt", { replace: true });
+        window.addEventListener("popstate", onPop);
+        return () => window.removeEventListener("popstate", onPop);
+    }, [navigate]);
 
     const result = useMemo(() => {
         if (!questions || !userAnswers || questions.length === 0) {
             return {
                 totalCorrect: 0,
                 totalScore: 0,
-                subjectScores: {} as Record<number, number>,
+                subjectResults: [] as SubjectResult[],
                 isPassed: false,
             };
         }
 
-        useEffect(() => {
-            const onPop = () => navigate("/cbt", { replace: true });
-            window.addEventListener("popstate", onPop);
-            return () => window.removeEventListener("popstate", onPop);
-        }, [navigate]);
-
-        const subjectCorrectCounts: Record<number, number> = {};
-        const subjectTotalCounts: Record<number, number> = {};
         let totalCorrect = 0;
+        const subjectMap = new Map<number, SubjectResult>();
 
         questions.forEach((q, idx) => {
             const userChoice = userAnswers[idx]; // 1~4 or null
-            const correctChoiceIndex = q.answers.findIndex(a => a.bool); // 0~3
-            const subjectId = q.question_type_id;
+            const correctChoiceIndex = q.answers.findIndex((a) => a.bool); // 0~3
 
-            if (!subjectTotalCounts[subjectId]) {
-                subjectTotalCounts[subjectId] = 0;
-                subjectCorrectCounts[subjectId] = 0;
+            const typeId = q.question_type_id;
+            const typeName = q.question_type_name;
+
+            if (!subjectMap.has(typeId)) {
+                subjectMap.set(typeId, {
+                    typeId,
+                    typeName,
+                    correct: 0,
+                    total: 0,
+                    score: 0,
+                });
             }
-            subjectTotalCounts[subjectId]++;
+            const subj = subjectMap.get(typeId)!;
+            subj.total += 1;
 
             if (userChoice != null && userChoice === correctChoiceIndex + 1) {
-                totalCorrect++;
-                subjectCorrectCounts[subjectId]++;
+                totalCorrect += 1;
+                subj.correct += 1;
             }
         });
 
-        const subjectScores: Record<number, number> = {};
-        Object.keys(subjectTotalCounts).forEach(k => {
-            const sid = Number(k);
-            const score = (subjectCorrectCounts[sid] / subjectTotalCounts[sid]) * 100;
-            subjectScores[sid] = Math.round(score);
-        });
+        const subjectResults: SubjectResult[] = Array.from(subjectMap.values())
+            .map((s) => ({
+                ...s,
+                score: s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+            }))
+            // 과목 순서는 question_type_id 기준 정렬 (원하면 priority 기준으로도 가능)
+            .sort((a, b) => a.typeId - b.typeId);
 
-        const totalScore = Math.round((totalCorrect / questions.length) * 100);
-        const hasFailedSubject = Object.values(subjectScores).some(s => s < 40);
+        const totalScore = Math.round(
+            (totalCorrect / questions.length) * 100
+        );
+        const hasFailedSubject = subjectResults.some((s) => s.score < 40);
         const isPassed = totalScore >= 60 && !hasFailedSubject;
 
-        return { totalCorrect, totalScore, subjectScores, isPassed };
+        return { totalCorrect, totalScore, subjectResults, isPassed };
     }, [questions, userAnswers]);
 
     // state 없을 때 방어
@@ -86,7 +111,9 @@ export function PracticeResultPage() {
                 <div className={PracticeStyles.examPaperHead}>
                     <div className={PracticeStyles.headCenter}>
                         <div className={PracticeStyles.centerDate}>연습 모드</div>
-                        <h2 className={PracticeStyles.centerTitle}>{certName ?? "연습 결과"}</h2>
+                        <h2 className={PracticeStyles.centerTitle}>
+                            {certName ?? "연습 결과"}
+                        </h2>
                     </div>
                 </div>
 
@@ -101,11 +128,18 @@ export function PracticeResultPage() {
                             marginBottom: 16,
                         }}
                     >
-                        <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>
-                            총점: {result.totalScore}점 ({result.totalCorrect}/{questions.length})
+                        <div
+                            style={{
+                                fontWeight: 800,
+                                fontSize: 18,
+                                marginBottom: 8,
+                            }}
+                        >
+                            총점: {result.totalScore}점 (
+                            {result.totalCorrect}/{questions.length})
                         </div>
                         <div style={{ color: "#58635a" }}>
-                            * 과목별 40점 미만, 총 60점 미만이면 불합격 기준 (연습 모드)
+                            * 과목별 40점 미만, 총 60점 미만이면 불합격 기준
                         </div>
                     </div>
 
@@ -120,7 +154,7 @@ export function PracticeResultPage() {
                                     borderBottom: "1px solid #e2e8e2",
                                 }}
                             >
-                                과목 ID
+                                과목
                             </th>
                             <th
                                 style={{
@@ -134,24 +168,43 @@ export function PracticeResultPage() {
                         </tr>
                         </thead>
                         <tbody>
-                        {Object.entries(result.subjectScores).map(([sid, score]) => (
-                            <tr key={sid}>
-                                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eef2ee" }}>{sid} 과목</td>
-                                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eef2ee" }}>{score}</td>
+                        {result.subjectResults.map((s) => (
+                            <tr key={s.typeId}>
+                                <td
+                                    style={{
+                                        padding: "10px 8px",
+                                        borderBottom: "1px solid #eef2ee",
+                                    }}
+                                >
+                                    {s.typeName}
+                                </td>
+                                <td
+                                    style={{
+                                        padding: "10px 8px",
+                                        borderBottom: "1px solid #eef2ee",
+                                    }}
+                                >
+                                    {s.score}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
 
                     <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                        <button className={PracticeStyles.paginationBtn} onClick={() => nav("/cbt")}>
+                        <button
+                            className={PracticeStyles.paginationBtn}
+                            onClick={() => nav("/cbt")}
+                        >
                             목록으로
                         </button>
                         <button
                             type="button"
                             className={PracticeStyles.paginationBtn}
                             onClick={() =>
-                                navigate("/cbt/review", { state: { certName, questions, userAnswers } })
+                                navigate("/cbt/review", {
+                                    state: { certName, questions, userAnswers },
+                                })
                             }
                         >
                             {isPerfect ? "문제 검토" : "오답노트"}

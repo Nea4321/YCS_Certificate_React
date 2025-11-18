@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { ExamStyles } from "@/widgets/cbt-exam/styles";
-import type { Question } from "@/entities/cbt/model/types";
 import {
     useExamPaging,
     useUnanswered,
@@ -10,11 +9,13 @@ import {
     QuestionPaper,
     AnswerSheet,
     UnansweredModal,
-    FooterBar, useExamViewMobile,
+    FooterBar,
+    useExamViewMobile,
 } from "@/features/cbt-exam";
 import { SubmitConfirmModal } from "@/features/cbt-exam";
 import { Calculator } from "@/features/cbt-exam";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { QuestionDTO, UserAnswerDTO, UserCbtHistoryDTO } from "@/entities/cbt";
 
 export interface ExamViewProps {
     certName: string;
@@ -23,10 +24,14 @@ export interface ExamViewProps {
     setCurrentPage: (p: number) => void;
     answers: (number | null)[];
     setAnswer: (index: number, opt: number | null) => void;
-    timer: { leftTime: string; limitMin: number; leftSec:number};
-    questions: Question[];
+    timer: { leftTime: string; limitMin: number; leftSec: number };
+    questions: QuestionDTO[];
     fontZoom: 0.75 | 1 | 1.25;
     setFontZoom: React.Dispatch<React.SetStateAction<0.75 | 1 | 1.25>>;
+    ui: "exam" | "practice";
+    onToggleUi: () => void;
+    previousId: number | null;
+    certificateId: number;
 }
 
 export function ExamView({
@@ -40,18 +45,21 @@ export function ExamView({
                              questions,
                              fontZoom,
                              setFontZoom,
+                             onToggleUi,
+                             previousId,
+                             certificateId,
                          }: ExamViewProps) {
-    const { leftTime, limitMin } = timer;
+    const { leftTime, limitMin, leftSec } = timer;
+
     type LayoutMode = "twoCol" | "narrowSheet" | "oneCol";
     const [layout, setLayout] = useState<LayoutMode>("twoCol");
     const [showUnanswered, setShowUnanswered] = useState(false);
     const [showCalc, setShowCalc] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+
     const navigate = useNavigate();
     const { bodyRef, headerRef, footerRef, toolbarRef } = useStickyHeights();
     const { isMobile, effectivePageSize } = useExamViewMobile(pageSize);
-
-    // const dispatch = useDispatch();
 
     const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
         useUnanswered(answers);
@@ -60,15 +68,85 @@ export function ExamView({
         if (isMobile && layout !== "oneCol") setLayout("oneCol");
     }, [isMobile, layout]);
 
-    const { totalPages, startIdx, currentSlice, onLayoutChange, goToQuestion } =
-        useExamPaging(
-            layout,
-            effectivePageSize,
-            currentPage,
-            setCurrentPage,
-            questions.length,
-            questions,
-        );
+    const {
+        totalPages,
+        startIdx,
+        currentSlice,
+        onLayoutChange,
+        goToQuestion,
+    } = useExamPaging(
+        layout,
+        effectivePageSize,
+        currentPage,
+        setCurrentPage,
+        questions.length,
+        questions
+    );
+
+    const totalQuestions = questions.length;
+
+    /** 제출 버튼 클릭 → 확인 모달 열기 */
+    const handleSubmitClick = () => {
+        setShowConfirm(true);
+    };
+
+    /** 모달에서 "제출" 확정 시 → 채점 + 기록 저장 + 결과 페이지 이동 */
+    const handleSubmitConfirm = async () => {
+        let correctCount = 0;
+        const userAnswerPayload: UserAnswerDTO[] = [];
+
+        questions.forEach((q, idx) => {
+            const userChoice = answers[idx]; // 1~4 or null
+            if (userChoice == null) return;  // 미응답은 기록 안 함
+
+            const answerIndex = userChoice - 1;
+            const selectedAnswer = q.answers[answerIndex];
+            if (!selectedAnswer) return;
+
+            const isCorrect = selectedAnswer.bool;
+            if (isCorrect) correctCount++;
+
+            userAnswerPayload.push({
+                answer_id: selectedAnswer.answer_id,
+                bool: isCorrect,
+            });
+        });
+
+        const score = Math.round((correctCount / totalQuestions) * 100);
+        const left_time = leftSec ?? 0;
+
+        if (previousId != null) {
+            const payload: UserCbtHistoryDTO = {
+                certificate_id: certificateId,
+                score,
+                correct_Count: correctCount,
+                left_time,
+                previous_id: previousId,
+                answers: userAnswerPayload,
+            };
+
+            try {
+                await fetch("/api/user/cbt/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(payload),
+                });
+            } catch (e) {
+                console.error("CBT 기록 저장 실패", e);
+            }
+        }
+
+        setShowConfirm(false);
+        navigate("/cbt/exam/result", {
+            replace: true,
+            state: {
+                certName,
+                userAnswers: answers,
+                questions,
+            },
+        });
+    };
 
     const wrapCls = [
         ExamStyles.examWrap,
@@ -78,24 +156,6 @@ export function ExamView({
     ]
         .filter(Boolean)
         .join(" ");
-
-    const handleSubmitClick = () => {
-        setShowConfirm(true);
-    };
-
-    const handleSubmitConfirm = () => {
-        // 남은 시간 redux에 저장
-        // dispatch(setCbtHistory( { left_time: leftSec || 0, answers: answers, questions: questions } ) );
-        setShowConfirm(false);
-        navigate('/cbt/exam/result', {
-            replace: true,
-            state: {
-                certName: certName,
-                userAnswers: answers,
-                questions: questions,
-            }
-        });
-    };
 
     return (
         <div className={wrapCls} style={{ ["--qScale" as any]: fontZoom }}>
@@ -108,14 +168,19 @@ export function ExamView({
                 />
 
                 <div className={ExamStyles.paperCol}>
+                    <div className={ExamStyles.modeSwitchBar}></div>
+
                     {!isMobile && (
                         <ExamToolbar
-                            fontZoom={fontZoom} setFontZoom={setFontZoom}
-                            layout={layout} setLayout={setLayout}
+                            fontZoom={fontZoom}
+                            setFontZoom={setFontZoom}
+                            layout={layout}
+                            setLayout={setLayout}
                             onLayoutChange={onLayoutChange}
                             totalQuestions={questions.length}
                             unanswered={unanswered}
                             toolbarRef={toolbarRef}
+                            onToggleUi={onToggleUi}
                         />
                     )}
 
@@ -170,11 +235,14 @@ export function ExamView({
 
             {/* 계산기 모달 */}
             {showCalc && (
-                <div className={ExamStyles.overlay} style={{ pointerEvents: 'none' }}>
+                <div
+                    className={ExamStyles.overlay}
+                    style={{ pointerEvents: "none" }}
+                >
                     <div
                         className={`${ExamStyles.calcDialog} ${ExamStyles.calcLegacy} ${ExamStyles.calcCompact} ${ExamStyles.calcWide} ${ExamStyles.calcFlush}`}
                         onClick={(e) => e.stopPropagation()}
-                        style={{ pointerEvents: 'auto' }}
+                        style={{ pointerEvents: "auto" }}
                     >
                         <Calculator onClose={() => setShowCalc(false)} />
                     </div>

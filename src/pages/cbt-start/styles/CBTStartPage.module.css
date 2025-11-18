@@ -178,6 +178,119 @@
     cursor: not-allowed;
 }
 
+.optionsContainer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border-radius: 16px;
+    padding: 24px 32px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto 32px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 카드 안에 살짝 포인트 되는 라이트 */
+.optionsContainer::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 55%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ✅ 새 헤더 영역 */
+.optionsHeader {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+/* 아이콘 배지 */
+.optionsIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    color: #1d4ed8;
+    font-size: 22px;
+}
+
+/* 타이틀 – 가운데 정렬 대신 헤더 안에서 좌측 정렬 */
+.optionsTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+    text-align: left;
+}
+
+/* 설명 텍스트 */
+.optionsSubtitle {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* 옵션 한 줄 */
+.optionRow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 6px 0;
+}
+
+/* 라벨 / 입력 스타일 약간 정리 */
+.optionsContainer label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* 라디오/체크보스 텍스트는 조금 더 가볍게 */
+.optionRow label input {
+    margin-right: 4px;
+}
+
+/* 하단 버튼도 살짝 업그레이드 */
+.footerButton {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+    transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            opacity 0.15s ease;
+}
+
+.footerButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.45);
+    opacity: 0.96;
+}
+
+
 @media (max-width: 768px) {
     .page {
         padding: 24px 12px;
@@ -250,5 +363,30 @@
         max-width: 420px;
         padding: 14px 18px;
         border-radius: 12px;
+    }
+    .optionsContainer {
+        width: 92%;
+        padding: 18px 16px;
+        border-radius: 14px;
+        gap: 10px;
+    }
+
+    .optionsHeader {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .optionsIcon {
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+    }
+
+    .optionsTitle {
+        font-size: 16px;
+    }
+
+    .optionsSubtitle {
+        font-size: 12px;
     }
 }

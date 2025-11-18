@@ -20,7 +20,7 @@
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,.1);
-    padding: 1.5rem;
+    padding: 28px;
 }
 
 .calendarWidget :global(.react-calendar__navigation) {
@@ -294,7 +294,7 @@
 }
 
 .calendarWrapper.collapsed {
-    max-height: 196px;
+    max-height: 200px;
 }
 
 .expandIconWrapper {
@@ -475,13 +475,20 @@
     position: relative;
     z-index: 2;
 }
-:global(.react-calendar__tile.calendar-tile--banded[class*="calendar-tile--round-left-"]) {
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-left-doc-reg),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-left-doc-exam),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-left-prac-reg),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-left-prac-exam) {
     border-left: 0 !important;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
 
-:global(.react-calendar__tile.calendar-tile--banded[class*="calendar-tile--round-right-"]) {
+/* 오른쪽 라운드 + banded → 접수/시험 타입만 우측선 제거 */
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-right-doc-reg),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-right-doc-exam),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-right-prac-reg),
+:global(.react-calendar__tile.calendar-tile--banded.calendar-tile--round-right-prac-exam) {
     border-right: 0 !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
@@ -502,7 +509,9 @@
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,.12);
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* 헤더 */
@@ -541,6 +550,8 @@
     padding: 12px;
     list-style: none;      /* ● 불릿 제거 */
     margin: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
 }
 
 .popoverItem {
@@ -551,14 +562,15 @@
 
 .popoverItemRow {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
+    gap: 8px;          /* 이름과 칩 사이 간격 */
 }
 
 .popoverItemName {
     font-size: 18px;
     font-weight: 700;
+    flex: 1 1 auto;    /* 남는 공간 다 사용 */
+    min-width: 0;
 }
 
 .popoverItemChip {
@@ -567,6 +579,11 @@
     border-radius: 999px;
     border: 1px solid #e5e7eb;
     background: #fff;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    white-space: nowrap;
 }
 
 .popoverItemPeriod {
@@ -582,4 +599,9 @@
         right: 12px;
         max-height: 700vh;
     }
+    .popoverList {
+        max-height: 360px;   /* 필요하면 320~380 사이로 조절 */
+        overflow-y: auto;
+    }
+
 }

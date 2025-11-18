@@ -1,10 +1,10 @@
-import type { Question } from "@/entities/cbt/model/types";
+import type { QuestionDTO } from "@/entities/cbt/model/types";
 import { ExamStyles } from "@/widgets/cbt-exam/styles"
 
 export function QuestionPaper({
                                   slice, startIdx, answers, setAnswer, fontZoom,
                               }:{
-    slice: Question[]; startIdx:number;
+    slice: QuestionDTO[]; startIdx:number;
     answers:(number|null)[]; setAnswer:(i:number,v:number|null)=>void;
     fontZoom:0.75|1|1.25;
 }){
@@ -16,7 +16,7 @@ export function QuestionPaper({
                 const questionNo = gi + 1;
                 return (
                     <div key={q.question_id} id={`q-${questionNo}`} className={ExamStyles.qblock}>
-                        <div className={ExamStyles.qnum}>{q.question_id}. {q.text}</div>
+                        <div className={ExamStyles.qnum}>{questionNo}. {q.text}</div>
                         {q.content &&
                             <div className={ExamStyles.content}>{q.content}</div>
                         }

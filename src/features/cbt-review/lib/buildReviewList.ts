@@ -1,15 +1,15 @@
-import type { Question } from "@/entities/cbt";
+import type { QuestionDTO } from "@/entities/cbt";
 
 export type ReviewItem = {
     index: number;
-    question: Question;
+    question: QuestionDTO;
     user: number | null;
     correct: number;
     isCorrect: boolean;
 };
 
 export function buildReviewList(
-    questions: Question[],
+    questions: QuestionDTO[],
     userAnswers: (number | null)[]
 ): ReviewItem[] {
     if (!questions?.length) return [];

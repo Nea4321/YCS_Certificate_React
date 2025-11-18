@@ -1,236 +1,215 @@
-// CBT 시험 시작 전 문제 유형, 시험 일자 결정하는 페이지
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CBTStartStyles } from '../styles';
 
-// 시험 날짜 하드코딩
-const examDates = [
-    '2018/03/18',
-    '2019/06/23',
-    '2020/10/11',
-    '2021/11/07',
-    '2022/04/17',
-    '2023/07/30'
-];
+type QuestionInfoOption = {
+    question_info_id: number;
+    question_info_name: string;
+    main: boolean;
+};
 
-/**사용자가 CBTExamPage에서 선택한 자격증의 CBT 초기 설정을 결정하는 페이지*/
+/** CBT 시작 전 화면 모드 / 정답 시연, 회차 선택 페이지 */
 export const CBTStartPage: React.FC = () => {
-    const navigate = useNavigate(); // CBT 테스트 페이지 이동을 위한 navigate
+    const navigate = useNavigate();
     const location = useLocation();
 
-    const [selectedMode, setSelectedMode] = useState<'past' | 'random' | null>(null); // 문제 유형 상태
-    const [selectedDate, setSelectedDate] = useState<string>(''); // 기출문제 일자
-    const [startDate, setStartDate] = useState<string>(''); // 랜덤문제 시작일자
-    const [endDate, setEndDate] = useState<string>(''); // 랜덤문제 종료일자
+    // 화면 모드: 시험 / 연습
+    const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('exam');
+    // 정답 시연(모두 정답) 옵션
     const [showCorrect, setShowCorrect] = useState<boolean>(false);
 
-    /** 추가: 연습/시험 UI 모드 (연습 practice / 시험 exam) */
-    const [selectedUi, setSelectedUi] = useState<'practice' | 'exam'>('exam');
+    // 🔹 /api/cbt?cert_id= 에서 가져올 question_info 리스트
+    const [questionInfos, setQuestionInfos] = useState<QuestionInfoOption[]>([]);
+    const [selectedQuestionInfoId, setSelectedQuestionInfoId] = useState<number | null>(null);
 
-    /**사용자가 문제 유형, 시험일자, 시작일자, 종료일자, UI 모드를 선택하고
-     * 선택한 조건을 쿼리스트링에 담아 CBTTestPage 에 전달하는 함수
-     *
-     * - mode 는 필수이며 값은 'past' 또는 'random'
-     * - ui 는 필수이며 값은 'practice' 또는 'exam'
-     * - past mode 라면 selectedDate 를 선택
-     * - random mode 라면 startDate, endDate 를 선택
-     *
-     * @example
-     * selectedMode: past, selectedUi: practice
-     * selectedDate: 2024/07/21
-     * navigate(`/cbt/test?mode=past&date=2024/07/21&ui=practice`)
-     *
-     * selectedMode: random, selectedUi: exam
-     * startDate: 2023/03/12, endDate: 2024/07/21
-     * navigate(`/cbt/test?mode=random&start=2023/03/12&end=2024/07/21&ui=exam`)
-     */
+    // 필요하면 로딩/에러 상태도 관리 가능
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // URL 쿼리에서 certificateId 가져오기
+    const searchParams = new URLSearchParams(location.search);
+    const certificateId = searchParams.get('certificateId');
+    const certName = searchParams.get('certName') ?? ''; // 썸네일/타이틀에 쓸 수도 있음
+
+    /** 컴포넌트 마운트 시 해당 자격증의 question_info 목록 조회 */
+    useEffect(() => {
+        if (!certificateId) return; // 잘못 들어온 경우
+
+        setLoading(true);
+        setError(null);
+
+        fetch(`/api/cbt?cert_id=${certificateId}`)
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch /api/cbt?cert_id=${certificateId}`);
+                }
+                return res.json();
+            })
+            .then((data: QuestionInfoOption[]) => {
+                setQuestionInfos(data);
+
+                if (data.length > 0) {
+                    // main == true 인 항목이 있으면 기본 선택, 없으면 첫 번째 선택
+                    const mainItem = data.find((d) => d.main);
+                    setSelectedQuestionInfoId(
+                        (mainItem ?? data[0]).question_info_id
+                    );
+                }
+            })
+            .catch((e) => {
+                console.error(e);
+                setError('시험 회차 정보를 불러오지 못했습니다.');
+            })
+            .finally(() => setLoading(false));
+    }, [certificateId]);
+
+    /** 선택한 옵션을 쿼리스트링에 담아서 CBTTestPage로 이동 */
     const handleStart = () => {
-        if (!selectedMode) return;
+        if (!certificateId) {
+            alert('자격증 정보가 없습니다. 목록에서 다시 진입해 주세요.');
+            return;
+        }
+
+        if (!selectedQuestionInfoId) {
+            alert('시험 회차를 선택해 주세요.');
+            return;
+        }
 
         const params = new URLSearchParams(location.search);
-        params.set('mode', selectedMode); // 문제 유형(기출문제, 랜덤문제)
 
-        // UI 모드(연습/시험) 추가
+        // 화면 모드
         params.set('ui', selectedUi);
 
-        if (selectedMode === 'past') {
-            if (!selectedDate) return alert('시험 일자를 선택해주세요');
-            params.set('date', selectedDate); // 기출 시험 일자
-        }
-
-        if (selectedMode === 'random') {
-            if (!startDate || !endDate) return alert('시작일자와 종료일자를 모두 선택해주세요');
-            params.set('start', startDate); // 랜덤 시작
-            params.set('end', endDate);     // 랜덤 종료
-        }
-
+        // 정답 시연
         if (showCorrect) {
             params.set('showCorrect', '1');
         } else {
             params.delete('showCorrect');
         }
 
+        // 🔹 선택한 question_info_id 도 같이 전달
+        params.set('questionInfoId', selectedQuestionInfoId.toString());
+
         navigate(`/cbt/test?${params.toString()}`, {
             state: { ui: selectedUi },
             replace: false,
-        }); // 쿼리스트링으로 테스트 페이지 이동
+        });
     };
 
     return (
         <div className={CBTStartStyles.page}>
             <h2 className={CBTStartStyles.title}>CBT 시험 시작</h2>
-            <p className={CBTStartStyles.subtitle}>원하는 시험 유형을 선택해주세요</p>
+            {certName && (
+                <p className={CBTStartStyles.subtitle}>
+                    <strong>{certName}</strong> 시험 설정을 선택해주세요
+                </p>
+            )}
+            {!certName && (
+                <p className={CBTStartStyles.subtitle}>
+                    원하는 시험 설정을 선택해주세요
+                </p>
+            )}
 
-            <div className={CBTStartStyles.cardWrapper}>
-                <div
-                    className={`${CBTStartStyles.card} ${selectedMode === 'past' ? CBTStartStyles.selected : ''}`}
-                    onClick={() => {
-                        setSelectedMode('past'); // 기출 선택
-                        setSelectedDate(examDates[0]);
-                        setStartDate('');
-                        setEndDate('');
-                    }}
-                >
-                    <div className={CBTStartStyles.icon}>📘</div>
-                    <h3 className={CBTStartStyles.cardTitle}>기출문제</h3>
-                    <p className={CBTStartStyles.cardDesc}>실제 시험에 출제되었던 문제들로 연습하세요</p>
-                    <div className={CBTStartStyles.tags}>
-                        <span className={CBTStartStyles.tagBlue}>실전 대비</span>
-                        <span className={CBTStartStyles.tagGreen}>출제 경향 파악</span>
+            {/* 시험 설정 카드 */}
+            <div className={CBTStartStyles.optionsContainer}>
+                <div className={CBTStartStyles.optionsHeader}>
+                    <div className={CBTStartStyles.optionsIcon}>📝</div>
+                    <div>
+                        <h4 className={CBTStartStyles.optionsTitle}>시험 설정</h4>
+                        <p className={CBTStartStyles.optionsSubtitle}>
+                            CBT 환경과 정답 시연 방식을 선택한 뒤 시험을 시작해 보세요.
+                        </p>
                     </div>
-                    <ul className={CBTStartStyles.bullets}>
-                        <li>최근 5년간 기출문제</li>
-                        <li>난이도별 분류</li>
-                        <li>상세한 해설 제공</li>
-                    </ul>
                 </div>
 
-                <div
-                    className={`${CBTStartStyles.card} ${selectedMode === 'random' ? CBTStartStyles.selected : ''}`}
-                    onClick={() => {
-                        setSelectedMode('random'); // 랜덤 선택
-                        setSelectedDate('');
-                        setStartDate(examDates[0]);
-                        setEndDate(examDates[1]);
-                    }}
-                >
-                    <div className={CBTStartStyles.icon}>🔄</div>
-                    <h3 className={CBTStartStyles.cardTitle}>랜덤문제</h3>
-                    <p className={CBTStartStyles.cardDesc}>다양한 유형의 문제를 무작위로 풀어보세요</p>
-                    <div className={CBTStartStyles.tags}>
-                        <span className={CBTStartStyles.tagPurple}>빠른 학습</span>
-                        <span className={CBTStartStyles.tagOrange}>시간 단축</span>
-                    </div>
-                    <ul className={CBTStartStyles.bullets}>
-                        <li>전체 문제 풀에서 선별</li>
-                        <li>약점 보완 문제 추천</li>
-                        <li>맞춤형 난이도 조절</li>
-                    </ul>
-                </div>
-            </div>
-
-            {selectedMode && (
-                <div className={CBTStartStyles.optionsContainer}>
-                    <h4 className={CBTStartStyles.optionsTitle}>시험 설정</h4>
-
-                    {selectedMode === 'past' && (
-                        <div className={CBTStartStyles.optionRow}>
-                            <label>시험 일자</label> {/*기출문제 선택 시 시험 일자 선택 드롭다운*/}
+                {/* 🔹 시험 회차(QuestionInfo 선택) 드롭다운 */}
+                <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
+                    <label>시험 회차</label>
+                    <div>
+                        {loading ? (
+                            <span>회차 정보를 불러오는 중입니다...</span>
+                        ) : error ? (
+                            <span style={{ color: 'red' }}>{error}</span>
+                        ) : (
                             <select
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
+                                className={CBTStartStyles.select}
+                                value={selectedQuestionInfoId ?? ''}
+                                onChange={(e) =>
+                                    setSelectedQuestionInfoId(
+                                        e.target.value
+                                            ? Number(e.target.value)
+                                            : null
+                                    )
+                                }
                             >
-                                {examDates.map((date) => (
-                                    <option key={date} value={date}>{date}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-
-                    {selectedMode === 'random' && (
-                        <>
-                            <div className={CBTStartStyles.optionRow}>
-                                <label>시작 일자</label>
-                                <select
-                                    value={startDate}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setStartDate(val);
-                                        const i = examDates.indexOf(val);
-                                        setEndDate(examDates[i + 1] ?? '');
-                                    }}
-                                >
-                                    {examDates.slice(0,-1).map((date) => (
-                                        <option key={date} value={date}>{date}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className={CBTStartStyles.optionRow}>
-                                <label>종료 일자</label> {/*랜덤문제 선택 시 종료 일자 선택 드롭다운*/}
-                                <select
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    disabled={!startDate}
-                                >
-                                    {examDates
-                                        .filter((date) => date > startDate)
-                                        .map((date) => (
-                                            <option key={date} value={date}>{date}</option>
+                                {/* 기본 안내 옵션 */}
+                                {questionInfos.length === 0 && (
+                                    <option value="">
+                                        선택 가능한 시험 회차가 없습니다
+                                    </option>
+                                )}
+                                {questionInfos.length > 0 && (
+                                    <>
+                                        {questionInfos.map((info) => (
+                                            <option
+                                                key={info.question_info_id}
+                                                value={info.question_info_id}
+                                            >
+                                                {info.question_info_name}
+                                            </option>
                                         ))}
-                                </select>
-                            </div>
-                        </>
-                    )}
-
-                    {/* 추가: 연습/시험 UI 모드 라디오 */}
-                    <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
-                        <label>화면 모드</label>
-                        <div>
-                            <label style={{ marginRight: 12 }}>
-                                <input
-                                    type="radio"
-                                    name="ui"
-                                    value="exam"
-                                    checked={selectedUi === 'exam'}
-                                    onChange={() => setSelectedUi('exam')}
-                                />{' '}
-                                시험 모드
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="ui"
-                                    value="practice"
-                                    checked={selectedUi === 'practice'}
-                                    onChange={() => setSelectedUi('practice')}
-                                />{' '}
-                                연습 모드
-                            </label>
-                        </div>
+                                    </>
+                                )}
+                            </select>
+                        )}
                     </div>
-                    <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
-                        <label>정답 시연</label>
+                </div>
+
+                {/* 화면 모드 */}
+                <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
+                    <label>화면 모드</label>
+                    <div>
+                        <label style={{ marginRight: 12 }}>
+                            <input
+                                type="radio"
+                                name="ui"
+                                value="exam"
+                                checked={selectedUi === 'exam'}
+                                onChange={() => setSelectedUi('exam')}
+                            />{' '}
+                            시험 모드
+                        </label>
                         <label>
                             <input
-                                type="checkbox"
-                                checked={showCorrect}
-                                onChange={(e) => setShowCorrect(e.target.checked)}
-                            /> 모두 정답
+                                type="radio"
+                                name="ui"
+                                value="practice"
+                                checked={selectedUi === 'practice'}
+                                onChange={() => setSelectedUi('practice')}
+                            />{' '}
+                            연습 모드
                         </label>
                     </div>
                 </div>
-            )}
+
+                {/* 정답 시연 */}
+                <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
+                    <label>정답 시연</label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={showCorrect}
+                            onChange={(e) => setShowCorrect(e.target.checked)}
+                        />{' '}
+                        모두 정답
+                    </label>
+                </div>
+            </div>
 
             <button
                 className={CBTStartStyles.footerButton}
                 onClick={handleStart}
-                disabled={ // 문제 유형 및 날짜 선택이 완료된 경우만 활성화
-                    !selectedMode ||
-                    (selectedMode === 'past' && !selectedDate) ||
-                    (selectedMode === 'random' && (!startDate || !endDate))
-                }
+                disabled={loading}
             >
                 CBT 시험 시작하기
             </button>

@@ -12,7 +12,29 @@
     --toolbarH:40px;
     --qScaleQ: 1;
 }
+.toolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.modeSwitchBtn {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.modeSwitchBtn:hover {
+    background: #e0edff;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
 .examWrap button,
 .examWrap input,
 .examWrap select,
@@ -194,7 +216,7 @@
     border: 1px solid #999;
     background-color: #fff;
     white-space: pre-wrap;
-    font-family: monospace;
+    font-family: Consolas, "Courier New", monospace;
     font-size: calc(14px * var(--qScaleQ, 1));
     line-height: 1.5;
     overflow-x: auto;

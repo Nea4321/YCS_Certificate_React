@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 
 /** 답안 상태 관리 훅
  *
@@ -9,6 +9,10 @@ export function useAnswers(totalQuestions: number) {
     const [answers, setAnswers] = useState<(number | null)[]>(
         Array(totalQuestions).fill(null)
     );
+
+    useEffect(() => {
+        setAnswers(Array(totalQuestions).fill(null));
+    }, [totalQuestions]);
 
     /** 특정 번호의 답안 설정
      * @param index - 0-based index

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import type { Question } from "@/entities/cbt/model/types";
+import type { QuestionDTO } from "@/entities/cbt/model/types";
 
 export type LayoutMode = "twoCol" | "narrowSheet" | "oneCol";
 
@@ -9,7 +9,7 @@ export function useExamPaging(
     currentPage: number,
     setCurrentPage: (p: number) => void,
     totalQuestions: number,
-    questions: Question[],
+    questions: QuestionDTO[],
 ) {
     const effPageSize = layout === "oneCol" ? 1 : pageSize;
     const totalPages = Math.ceil(totalQuestions / effPageSize);

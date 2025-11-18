@@ -19,7 +19,8 @@ import {ProtecteRouteMypage} from "@/app/router/ProtecteRouteMypage.tsx";
 import {ExamResult} from "@/pages/exam-result";
 import {ProtecteRouteDepartment_edit} from "@/app/router/ProtecteRouteDepartment_edit.tsx";
 import {PracticeResult} from "@/pages/practice-result";
-import {ReviewPage} from "@/features/cbt-review";
+import {PreviousReviewPage, ReviewPage} from "@/features/cbt-review";
+import {IncorrectPracticePage} from "@/widgets/cbt-exam/ui";
 
 
 export const Router = () => {
@@ -42,6 +43,8 @@ export const Router = () => {
                             <Route path="/cbt/exam/result" element={<ExamResult/>} /> {/* cbt 답안 제출 페이지 */}
                             <Route path="/cbt/practice/result" element={<PracticeResult/>} /> {/* cbt 답안 제출 페이지 */}
                             <Route path="/cbt/review" element={<ReviewPage/>} />
+                            <Route path="/cbt/review/previous/:previousId" element={<PreviousReviewPage />}/>
+                            <Route path="/cbt/incorrect" element={<IncorrectPracticePage />} />
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
                             <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}

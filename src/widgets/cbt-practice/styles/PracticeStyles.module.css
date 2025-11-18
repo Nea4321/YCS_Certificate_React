@@ -14,7 +14,25 @@
     background: #e7efe5; /* 은은한 그린톤 */
     border-left: 1px solid #d9e2d7;
 }
+.modeSwitchBtn {
+    margin-left: auto;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #f9fafb;
+    color: #334155;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    margin-right: 20px;
+}
 
+.modeSwitchBtn:hover {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+    color: #0369a1;
+}
 /* 우측 장식 패턴(스크린샷의 사선무늬 대용) */
 .rightDecor {
     margin: 16px; border-radius: 12px;
@@ -259,7 +277,7 @@
     border-radius: 0;
     background-color: #fff;
     white-space: pre-wrap;
-    font-family: monospace;
+    font-family: Consolas, "Courier New", monospace;
     overflow-x: auto;
     line-height: 1.5;
 }

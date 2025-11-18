@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React from "react";
 import { PracticeStyles } from "@/widgets/cbt-practice/styles";
 import { usePracticePaging } from "@/features/cbt-exam/model/usePracticePaging";
 import { Header } from "@/shared/ui/header/Header";
@@ -6,13 +6,13 @@ import { QuestionCard } from "@/features/cbt/question/ui/QuestionCard";
 import { AnswerSheet } from "@/features/cbt/select-answer/ui/AnswerSheet";
 import { TestPagination } from "@/features/cbt/test-pagination/ui/TestPagination";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import { questions as mockQuestions } from "@/entities/cbt/lib/mockQuestions";
+import {QuestionDTO, UserAnswerDTO, UserCbtHistoryDTO} from "@/entities/cbt/model/types.ts";
 
 export interface PracticeViewProps {
     certName: string;
-    modeLabel: string;
     totalQuestions: number;
     pageSize: number;                  // 연습 모드: 5 등
+    questions: QuestionDTO[];
     currentPage: number;
     setCurrentPage: (p: number) => void;
     answers: (number | null)[];
@@ -20,40 +20,41 @@ export interface PracticeViewProps {
     date?: string;
     start?: string;
     end?: string;
-    certificateId?: number | string;
+    ui: "exam" | "practice";
+    onToggleUi: () => void;
+    previousId: number | null;
+    certificateId: number | string;
 }
 
 export const PracticeView: React.FC<PracticeViewProps> = ({
                                                               certName,
+                                                              questions,
                                                               totalQuestions,
                                                               pageSize,
                                                               currentPage,
                                                               setCurrentPage,
                                                               answers,
                                                               setAnswer,
-                                                              date,
+                                                              onToggleUi,
+                                                              previousId,
+                                                              certificateId
                                                           }) => {
     const [sp] = useSearchParams();
     const certificateIdStr = sp.get("certificateId");
     const navigate = useNavigate();
-    const allQuestions = mockQuestions.slice(0, totalQuestions);
 
-    const certificateId = useMemo(() => {
-        const n = Number(certificateIdStr);
-        return Number.isFinite(n) ? n : null;
-    }, [certificateIdStr]);
+    const certIdNum =
+        typeof certificateId === "number"
+            ? certificateId
+            : Number(certificateIdStr ?? certificateId);
 
-    const filteredQuestions = useMemo(() => {
-        if (!certificateId) return mockQuestions;
-        return mockQuestions.filter((q: { certificate_id: number; }) => q.certificate_id === certificateId);
-    }, [certificateId]);
-
-    const total = totalQuestions ?? filteredQuestions.length;
+    // 🔹 이제 questions는 이미 CBTTestPage에서 필터된 상태이므로 그대로 사용
+    const total = totalQuestions ?? questions.length;
 
     const { totalPages, currentQuestionNumbers, goToQuestion } =
         usePracticePaging(pageSize, currentPage, setCurrentPage, total);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const unansweredCount = answers.filter((a) => a == null).length;
         const ok = window.confirm(
             unansweredCount > 0
@@ -62,11 +63,60 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         );
         if (!ok) return;
 
+        let correctCount = 0;
+        const userAnswerPayload: UserAnswerDTO[] = [];
+
+        questions.forEach((q, idx) => {
+            const userChoice = answers[idx]; // 1~4 or null
+            if (userChoice == null) return;
+
+            const answerIndex = userChoice - 1;
+            const selectedAnswer = q.answers[answerIndex];
+            if (!selectedAnswer) return;
+
+            const isCorrect = selectedAnswer.bool;
+            if (isCorrect) correctCount++;
+
+            userAnswerPayload.push({
+                answer_id: selectedAnswer.answer_id,
+                bool: isCorrect,
+            });
+        });
+
+        const totalQuestionsCount = questions.length;
+        const score = Math.round(
+            (correctCount / totalQuestionsCount) * 100
+        );
+
+        const left_time = 0;
+
+        if (previousId != null && Number.isFinite(certIdNum)) {
+            const payload: UserCbtHistoryDTO = {
+                certificate_id: certIdNum as number,
+                score,
+                correct_Count: correctCount,
+                left_time,
+                previous_id: previousId,
+                answers: userAnswerPayload,
+            };
+
+            try {
+                await fetch("/api/user/cbt/add", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    credentials: "include",
+                    body: JSON.stringify(payload),
+                });
+            } catch (e) {
+                console.error("연습 모드 CBT 기록 저장 실패", e);
+            }
+        }
+
         navigate("/cbt/practice/result", {
             state: {
                 certName,
                 userAnswers: answers,
-                questions: allQuestions,
+                questions: questions,   // 🔹 여기서도 props.questions 사용
                 from: "practice",
             },
             replace: true,
@@ -75,14 +125,21 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
     return (
         <div className={PracticeStyles.pageBg}>
-            {/* 가운데 정렬된 시험지 */}
             <div className={PracticeStyles.examPaper}>
-                {/* 상단 바 (필요 없으면 숨겨도 됨) */}
+                {/* 상단 바 */}
                 <div className={PracticeStyles.examPaperHead}>
                     <div className={PracticeStyles.headCenter}>
-                        {date && <div className={PracticeStyles.centerDate}>{date}</div>}
-                        <h2 className={PracticeStyles.centerTitle}>{certName || "CBT 시험"}</h2>
+                        <h2 className={PracticeStyles.centerTitle}>
+                            {certName || "CBT 시험"}
+                        </h2>
                     </div>
+                    <button
+                        type="button"
+                        className={PracticeStyles.modeSwitchBtn}
+                        onClick={onToggleUi}
+                    >
+                        화면모드 전환
+                    </button>
 
                     {certificateId ? (
                         <Link
@@ -92,36 +149,51 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                             {certName} 자격증 보러가기&nbsp;»
                         </Link>
                     ) : (
-                        <span className={`${PracticeStyles.headCta} ${PracticeStyles.headCtaDisabled}`}>
-                        자격증 보러가기&nbsp;»
+                        <span
+                            className={`${PracticeStyles.headCta} ${PracticeStyles.headCtaDisabled}`}
+                        >
+                            자격증 보러가기&nbsp;»
                         </span>
                     )}
                 </div>
-                {/* 종이 내부: 좌측 문제 / 우측 답안 표기란 */}
+
+                {/* 문제 + 답안 그리드 */}
                 <div className={PracticeStyles.examGrid}>
                     {/* 좌측 문제 리스트 */}
                     <section className={PracticeStyles.paperLeft}>
                         <Header />
                         <ol
                             className={PracticeStyles.questionList}
-                            start={currentQuestionNumbers.length ? currentQuestionNumbers[0] + 1 : 1}
+                            start={
+                                currentQuestionNumbers.length
+                                    ? currentQuestionNumbers[0] + 1
+                                    : 1
+                            }
                         >
                             {currentQuestionNumbers.map((qi) => {
-                                const q = filteredQuestions[qi];
+                                const q = questions[qi];   // 🔹 mock이 아니라 props.questions
                                 if (!q) return null;
 
-                                const options = q.answers.map((a: { content: string; }) => a.content.trim());
+                                const options = q.answers.map((a) =>
+                                    a.content.trim()
+                                );
 
                                 return (
-                                    <li key={q.question_id} id={`question-${qi + 1}`} className={PracticeStyles.questionItem}>
+                                    <li
+                                        key={q.question_id}
+                                        id={`question-${qi + 1}`}
+                                        className={PracticeStyles.questionItem}
+                                    >
                                         <QuestionCard
                                             number={qi + 1}
                                             text={q.text}
                                             content={q.content ?? undefined}
                                             img={q.img ?? undefined}
-                                            options={options}                       // ← 보기 주입
-                                            selectedAnswer={answers[qi] ?? null}     // ← 현재 선택한 보기(1~4)
-                                            onSelect={(opt) => setAnswer(qi, opt)}  // ← 선택 저장
+                                            options={options}
+                                            selectedAnswer={answers[qi] ?? null}
+                                            onSelect={(opt) =>
+                                                setAnswer(qi, opt)
+                                            }
                                         />
                                     </li>
                                 );
@@ -136,6 +208,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                             buttonClassName={PracticeStyles.paginationBtn}
                             pageInfoClassName={PracticeStyles.paginationInfo}
                         />
+
                         <div className={PracticeStyles.mobileSubmitBar}>
                             <button
                                 type="button"
@@ -148,16 +221,22 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                         </div>
                     </section>
 
-                    {/* 우측 답안 표기란 (종이 안쪽) */}
+                    {/* 우측 답안 표기란 */}
                     <aside className={PracticeStyles.paperRight}>
-                        <div className={PracticeStyles.answerPanelHead}>답안 표기란</div>
+                        <div className={PracticeStyles.answerPanelHead}>
+                            답안 표기란
+                        </div>
                         <AnswerSheet
                             totalQuestions={totalQuestions}
                             answers={answers}
                             setAnswer={setAnswer}
                             onJump={goToQuestion}
                         />
-                        <button type="button" className={PracticeStyles.submitClassic} onClick={handleSubmit}>
+                        <button
+                            type="button"
+                            className={PracticeStyles.submitClassic}
+                            onClick={handleSubmit}
+                        >
                             채점하기
                         </button>
                     </aside>

@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { Question } from "@/entities/cbt";
+import type { QuestionDTO } from "@/entities/cbt";
 import { buildReviewList, type ReviewItem } from "../lib/buildReviewList";
 import styles from "./styles/reviewStyles.module.css";
 
 type LocState = {
     certName: string;
-    questions: Question[];
+    questions: QuestionDTO[];
     userAnswers: (number | null)[];
 };
 

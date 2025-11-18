@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import '@/features/certificate/ui/CertificateCategorySlider.css';
 import { originalCategories } from "@/entities/certificate/lib/slidesData.ts";
 import {getImageForCertificate} from "@/entities/certificate/lib/getImageForCertificate.ts";
-
+import { certificateApi } from "@/entities/certificate/api/certificate-api";
+import { Link } from "react-router-dom";
+import { Certificate } from "@/entities/certificate/model/types.ts"
 
 /**무한 슬라이더를 위해 만든 가상 슬라이더를 추가한 배열*/
 const categories = [
@@ -28,8 +30,10 @@ export const CertificateCategorySlider: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(2);
     const [isAnimating, setIsAnimating] = useState(false);
     const sliderTrackRef = useRef<HTMLDivElement>(null);
-
     const [slideWidthPct, setSlideWidthPct] = useState(45);
+    const [certMap, setCertMap] = useState<Record<number, Certificate>>({});
+    const [isCertLoading, setIsCertLoading] = useState(false);
+    const [certError, setCertError] = useState<string | null>(null);
 
     useEffect(() => {
         const update = () => {
@@ -75,6 +79,11 @@ export const CertificateCategorySlider: React.FC = () => {
     const dragDeltaX = useRef(0);
 
     const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest("a, button")) {
+            return;
+        }
+
         if (isAnimating) return;
         setIsDragging(true);
         dragStartX.current = e.clientX;
@@ -116,6 +125,34 @@ export const CertificateCategorySlider: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        const controller = new AbortController();
+        const loadCertificates = async () => {
+            try {
+                setIsCertLoading(true);
+                setCertError(null);
+
+                const list = await certificateApi.getCertificate(controller.signal);
+                const map: Record<number, Certificate> = {};
+
+                list.forEach((c) => {
+                    map[c.certificate_id] = c;
+                });
+
+                setCertMap(map);
+                setCertError(null);
+            } catch (e) {
+                console.error(e);
+                setCertError("자격증 목록을 불러오는 중 오류가 발생했습니다.");
+            } finally {
+                setIsCertLoading(false);
+            }
+        };
+
+        loadCertificates();
+        return () => controller.abort();
+    }, []);
+
     const onPointerUp: React.PointerEventHandler<HTMLDivElement> = () => endDrag('release');
     const onPointerCancel: React.PointerEventHandler<HTMLDivElement> = () => endDrag('cancel');
 
@@ -146,10 +183,12 @@ export const CertificateCategorySlider: React.FC = () => {
 
     return (
         <div className="slider-wrapper">
-            <button onClick={handlePrev} className="slider-arrow left">{'<'}</button>
+            <button onClick={handlePrev} className="slider-arrow left">
+                {"<"}
+            </button>
 
             <div
-                className={`slider-track ${isDragging ? 'dragging' : ''}`}
+                className={`slider-track ${isDragging ? "dragging" : ""}`}
                 ref={sliderTrackRef}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
@@ -157,43 +196,87 @@ export const CertificateCategorySlider: React.FC = () => {
                 onPointerCancel={onPointerCancel}
                 style={{
                     transform: finalTransform,
-                    transition: isDragging ? 'none' : (isAnimating ? 'transform 0.25s ease' : 'none'),
+                    transition: isDragging
+                        ? "none"
+                        : isAnimating
+                            ? "transform 0.25s ease"
+                            : "none",
                 }}
             >
                 {categories.map((category, index) => {
                     const displayTitle = isMobile
-                        ? category.title.replace(/TOP\s*\d+/i, 'TOP 5')
+                        ? category.title.replace(/TOP\s*\d+/i, "TOP 5")
                         : category.title;
-                    const displayItems = isMobile ? category.items.slice(0, 5) : category.items;
+
+                    // ✅ items: number[] (certificate_id 배열)
+                    const allItems: number[] = category.items;
+                    const displayItems = isMobile ? allItems.slice(0, 5) : allItems;
 
                     return (
                         <div
-                            className={`slide ${index === currentIndex && index > 1 && index < categories.length - 2}`}
+                            className={`slide ${
+                                index === currentIndex &&
+                                index > 1 &&
+                                index < categories.length - 2
+                                    ? "is-active"
+                                    : ""
+                            }`}
                             key={`${category.title}-${index}`}
                         >
                             <h3>{displayTitle}</h3>
+
+                            {/* 로딩/에러 간단 표시 (선택사항) */}
+                            {certError && !Object.keys(certMap).length && (
+                                <p className="error-text">{certError}</p>
+                            )}
+                            {isCertLoading && !Object.keys(certMap).length && (
+                                <p className="loading-text">자격증 정보를 불러오는 중...</p>
+                            )}
+
                             <ol>
-                                {displayItems.map((item, i) => {
-                                    const imgUrl = getImageForCertificate(item); // ← 자격증명으로 이미지 URL 얻기
+                                {displayItems.map((certId) => {
+                                    const cert = certMap[certId];
+
+                                    // 맵에 아직 없는 경우(데이터 로딩 중이거나 ID 미존재)
+                                    if (!cert) {
+                                        return (
+                                            <li key={certId} className="m-pill m-pill--placeholder">
+                                                <span className="m-pill__label">로딩 중...</span>
+                                            </li>
+                                        );
+                                    }
+
+                                    const imgUrl = getImageForCertificate(
+                                        cert.certificate_name
+                                    );
+
                                     return (
-                                        <li key={i} className="m-pill">
-                                            <span
-                                                className="m-pill__thumb"
-                                                style={{ backgroundImage: `url("${imgUrl}")` }}
-                                                aria-hidden
-                                            />
-                                            <span className="m-pill__label">{item}</span>
+                                        <li key={certId}>
+                                            <Link
+                                                to={`/certificate/${cert.certificate_id}`}
+                                                className="m-pill"
+                                            >
+                        <span
+                            className="m-pill__thumb"
+                            style={{ backgroundImage: `url("${imgUrl}")` }}
+                            aria-hidden
+                        />
+                                                <span className="m-pill__label">
+                          {cert.certificate_name}
+                        </span>
+                                            </Link>
                                         </li>
                                     );
                                 })}
                             </ol>
-
                         </div>
                     );
                 })}
             </div>
 
-            <button onClick={handleNext} className="slider-arrow right">{'>'}</button>
+            <button onClick={handleNext} className="slider-arrow right">
+                {">"}
+            </button>
         </div>
     );
 };

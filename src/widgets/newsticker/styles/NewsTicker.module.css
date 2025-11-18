@@ -5,28 +5,48 @@
     align-items: center;
 }
 
+/* 타원 전체 */
 .tickerItem {
-    width: auto;
+    /* width: 100%;  <-- 이 줄은 효과가 덮어쓰이게 둘 거라 주석 안 해도 되지만,
+                         헷갈리면 아예 지워도 괜찮음 */
+    max-width: 800px;
     display: flex;
-    justify-content: center;
-    gap: 16px;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
     background-color: #f8f9fa;
-    padding: 10px 24px;
+    padding: 10px 24px 8px;
     margin-top: 30px;
     border-radius: 30px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    max-height: 72px; /* 접힌 높이 */
+    transition: max-height 0.35s ease, border-radius 0.35s ease, width 0.35s ease;
 }
 
+/* 펼쳐졌을 때 타원이 아래로 쭉 늘어나도록 */
+.tickerItemExpanded {
+    width: 100%;
+    max-width: 800px;
+    max-height: 420px; /* 필요하면 조절 */
+    border-radius: 24px;
+    align-items: stretch;
+}
+/* 한 줄짜리 롤링 영역 */
 .tickerContent {
     display: flex;
     gap: 16px;
     align-items: center;
+}
+.tickerItem:not(.tickerItemExpanded) {
+    width: fit-content;
+    align-items: center;
+}
+/* 애니메이션은 접혀 있을 때만 붙이기 위해 분리 */
+.tickerContentAnimated {
     animation: vertical-ticker 4s ease-in-out forwards;
 }
-
 
 .name {
     font-weight: 600;
@@ -40,20 +60,17 @@
     color: #007bff;
 }
 
-.toggleButtonContainer {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-}
-
+/* 타원 안에 붙어 있는 토글 버튼 */
 .toggleButton {
+    align-self: center;
+    margin-top: 4px;
     background-color: transparent;
     border: none;
     color: #868e96;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 2px 6px;
     transition: color 0.2s ease;
 }
 
@@ -61,39 +78,25 @@
     color: #343a40;
 }
 
-.expandedContainer {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 12px;
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
-}
-
-.expandedContainer.show {
-    max-height: 500px;
-    opacity: 1;
-    overflow-y: auto;
-}
-
+/* 펼쳐진 리스트 영역 (타원 안) */
 .scheduleCount {
-    padding: 12px 16px;
+    padding: 4px 0 6px;
     font-size: 0.9rem;
     font-weight: 600;
     color: #495057;
-    background-color: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
+}
+
+.expandedList {
+    margin-top: 4px;
+    max-height: 260px; /* 리스트 스크롤 높이 */
+    overflow-y: auto;
 }
 
 .expandedItem {
     display: flex;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 8px 0;
     border-bottom: 1px solid #f1f3f5;
 }
 
@@ -102,6 +105,7 @@
 }
 
 .expandedName {
+    font-weight: 600;
     font-size: 0.95rem;
     color: #495057;
 }
@@ -112,12 +116,14 @@
     color: #007bff;
 }
 
+/* 롤링 애니메이션은 그대로 사용 */
 @keyframes vertical-ticker {
     0% {
         transform: translateY(-100%);
         opacity: 0;
     }
-    10%, 90% {
+    10%,
+    90% {
         transform: translateY(0);
         opacity: 1;
     }
@@ -126,3 +132,44 @@
         opacity: 0;
     }
 }
+/* ====== 모바일 대응 (가로 768px 이하) ====== */
+@media (max-width: 768px) {
+
+    /* 전체 타원 컨테이너 */
+    .tickerItem {
+        padding: 8px 16px 6px;      /* 좌우 패딩 줄이기 */
+        margin-top: 20px;
+        max-height: 120px;          /* 2줄 + 버튼까지 보이도록 여유 있게 */
+    }
+
+    /* 접힌 상태일 때 너비 / 정렬 */
+    .tickerItem:not(.tickerItemExpanded) {
+        width: calc(100% - 32px);   /* 좌우 16px 정도 여백 */
+        align-self: center;         /* 가운데 정렬 */
+    }
+
+    /* 펼친 상태일 때도 양옆 여백 유지 + 높이 약간 줄이기 */
+    .tickerItemExpanded {
+        width: calc(100% - 32px);
+        max-height: 380px;          /* 필요하면 350~420 사이로 조절 */
+        margin-top: 16px;
+    }
+
+    /* 접힌 상태 한 줄 뉴스티커 폰트 크기 줄이기 */
+    .name,
+    .content {
+        font-size: 1rem;
+    }
+
+    /* 펼쳤을 때 리스트 폰트 크기 줄이기 */
+    .expandedName,
+    .expandedContent {
+        font-size: 0.85rem;
+    }
+
+    /* 펼친 리스트 내부 높이도 조금 줄여서 스크롤 영역 조절 */
+    .expandedList {
+        max-height: 220px;          /* 모바일에서 너무 길게 안 보이게 */
+    }
+}
+

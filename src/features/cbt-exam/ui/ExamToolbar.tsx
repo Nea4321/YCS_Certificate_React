@@ -4,12 +4,13 @@ import type { LayoutMode } from "@/features/cbt-exam/model/useExamPaging";
 
 export function ExamToolbar({
                                 fontZoom, setFontZoom, layout, setLayout, onLayoutChange,
-                                totalQuestions, unanswered, toolbarRef,
+                                totalQuestions, unanswered, toolbarRef, onToggleUi,
                             }:{
     fontZoom:0.75|1|1.25; setFontZoom:React.Dispatch<React.SetStateAction<0.75|1|1.25>>;
     layout:LayoutMode; setLayout:(m:LayoutMode)=>void; onLayoutChange:(m:LayoutMode)=>void;
     totalQuestions:number; unanswered:number;
     toolbarRef: React.Ref<HTMLDivElement>;
+    onToggleUi?: () => void;
 }){
     const change = (next:LayoutMode) => { setLayout(next); onLayoutChange(next); };
 
@@ -57,6 +58,16 @@ export function ExamToolbar({
                     style={{ backgroundImage: layout==="oneCol" ? `url('/CBTExamView/layout3_on.png')` : `url('/CBTExamView/layout3_off.png')`, backgroundSize:"cover" }}
                 />
             </div>
+            <div className={ExamStyles.toolbarDivider} />
+            {onToggleUi && (
+                <button
+                    type="button"
+                    className={ExamStyles.modeSwitchBtn}
+                    onClick={onToggleUi}
+                >
+                    화면모드 전환
+                </button>
+            )}
 
             <div className={ExamStyles.toolbarCounters}>
                 <div className={ExamStyles.counterRow}>

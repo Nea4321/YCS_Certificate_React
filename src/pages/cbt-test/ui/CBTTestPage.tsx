@@ -1,64 +1,117 @@
-import React, { useMemo, useState, useEffect } from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getCbtParams } from "@/shared/lib/url/getCbtParams";
 import { useExamChrome } from "@/features/cbt-exam/hooks/useExamChrome";
 import { useExamTimer } from "@/features/cbt-exam/hooks/useExamTimer";
 import { useAnswers } from "@/features/cbt-exam/hooks/useAnswers";
 import { ExamView } from "@/widgets/cbt-exam/ui/ExamView";
 import { PracticeView } from "@/widgets/cbt-practice/ui/PracticeView";
-import { questions as allQuestions } from "@/entities/cbt/lib/mockQuestions";
 import { CBTTestStyle } from "@/pages/cbt-test/styles";
+import {QuestionDTO, PreviousDTO} from "@/entities/cbt/model/types.ts";
 
 export const CBTTestPage: React.FC = () => {
+
+    type UiQuestion = QuestionDTO & {
+        question_type_id: number;
+        question_type_name: string;
+    };
+
     const location = useLocation();
     const navigate = useNavigate();
-
-    const { ui, mode, date, start, end, certName, certificateId } = getCbtParams(location.search);
+    const { ui, certName } = getCbtParams(location.search);
     const search = new URLSearchParams(location.search);
     const showCorrect = search.get("showCorrect") === "1";
+    const questionInfoId = search.get("questionInfoId");
+    const certificateId = search.get("certificateId");
 
-    const questions = useMemo(() => {
-        return allQuestions.filter(q => q.certificate_id === Number(certificateId));
-    }, [certificateId]);
+    const [questions, setQuestions] = useState<UiQuestion[]>([]);
+    const [previousId, setPreviousId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    if (questions.length === 0) return (
-        <div className={CBTTestStyle.notFound}>
-            <h2>CBT 문제를 찾을 수 없습니다.</h2>
-            <p>요청하신 문제 데이터가 존재하지 않습니다.</p>
-            <button className={CBTTestStyle.backButton} onClick={() => navigate("/cbt")}>
-                CBT 목록으로 돌아가기
-            </button>
-        </div>
-    )
-    const modeLabel = useMemo(() => (mode === "past" ? "기출문제" : "랜덤문제"), [mode]);
     const totalQuestions = questions.length;
 
-    const [fontZoom, setFontZoom] = useState<0.75 | 1 | 1.25>(1);  // 글자 크기 상태
-    const [pageSize, setPageSize] = useState(3);  // 기본 페이지 크기
-    const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
+    const [fontZoom, setFontZoom] = useState<0.75 | 1 | 1.25>(1);
+    const [examPageSize, setExamPageSize] = useState(3);
+    const PRACTICE_PAGE_SIZE = 4;
+    const [currentPage, setCurrentPage] = useState(1);
 
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!questionInfoId) {
+            setError("questionInfoId가 없습니다. 다시 시험을 시작해 주세요.");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        fetch(`/api/user/cbt?question_info_id=${questionInfoId}`, {
+            credentials: "include", // JWT가 쿠키에 있을 경우
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch CBT questions: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data: PreviousDTO) => {
+                setPreviousId(data.previous_id);
+
+                const qList: UiQuestion[] =
+                    data.list?.question_types?.flatMap((qt) =>
+                        (qt.questions ?? []).map<UiQuestion>((q) => ({
+                            ...q,
+                            question_type_id: qt.question_type_id,
+                            question_type_name: qt.question_type_name,
+                        }))
+                    ) ?? [];
+                setQuestions(qList);
+            })
+            .catch((e) => {
+                console.error(e);
+                setError("문제를 불러오지 못했습니다.");
+            })
+            .finally(() => setLoading(false));
+    }, [questionInfoId]);
 
     const calculatePageSize = () => {
         const windowHeight = window.innerHeight;
         const baseProblemHeight = 150;
         const adjustedHeight = windowHeight * 0.6;
-
-        // 글자 크기 조정
         const adjustedProblemHeight = baseProblemHeight * fontZoom;
-
-        // 한 화면에 들어갈 수 있는 문제 개수 계산
         return Math.floor(adjustedHeight / adjustedProblemHeight);
+    };
+
+    const toggleUi = () => {
+        const params = new URLSearchParams(location.search);
+        const nextUi = ui === "exam" ? "practice" : "exam";
+        params.set("ui", nextUi);
+        navigate(`${location.pathname}?${params.toString()}`, {
+            replace: true,
+        });
     };
 
     useEffect(() => {
         const dynamicPageSize = calculatePageSize();
-        setPageSize(dynamicPageSize);  // 동적으로 계산된 페이지 크기 업데이트
-    }, [fontZoom]);  // 글자 크기 변경 시 페이지 크기 조정
+        setExamPageSize(dynamicPageSize);
+    }, [fontZoom]);
 
     const { answers, setAnswer } = useAnswers(totalQuestions);
 
     useEffect(() => {
         if (!showCorrect) return;
+        if (!questions.length) return;
 
         questions.forEach((q, qIndex) => {
             const correctIdx = q.answers?.findIndex((a) => a.bool) ?? -1;
@@ -66,43 +119,83 @@ export const CBTTestPage: React.FC = () => {
                 setAnswer(qIndex, correctIdx + 1);
             }
         });
-    }, [showCorrect, questions, setAnswer]);
+    }, [showCorrect, questions]);
 
-    // 시험 전용: 전역 크롬/타이머
     useExamChrome(ui);
-
-    const { leftTime, limitMin, leftSec} = useExamTimer(ui === "exam", 60 * 60);
+    const { leftTime, limitMin, leftSec } = useExamTimer(ui === "exam", 90 * 60);
     const timer = { leftTime, limitMin, leftSec };
 
+    if (loading) {
+        return (
+            <div className={CBTTestStyle.notFound}>
+                <h2>CBT 문제를 불러오는 중입니다...</h2>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={CBTTestStyle.notFound}>
+                <h2>CBT 문제를 찾을 수 없습니다.</h2>
+                <p>{error}</p>
+                <button
+                    className={CBTTestStyle.backButton}
+                    onClick={() => navigate("/cbt")}
+                >
+                    CBT 목록으로 돌아가기
+                </button>
+            </div>
+        );
+    }
+
+    if (questions.length === 0) {
+        return (
+            <div className={CBTTestStyle.notFound}>
+                <h2>CBT 문제를 찾을 수 없습니다.</h2>
+                <p>요청하신 문제 데이터가 존재하지 않습니다.</p>
+                <button
+                    className={CBTTestStyle.backButton}
+                    onClick={() => navigate("/cbt")}
+                >
+                    CBT 목록으로 돌아가기
+                </button>
+            </div>
+        );
+    }
 
     return (
         <>
             {ui === "exam" ? (
                 <ExamView
                     certName={certName}
-                    pageSize={pageSize}  // 동적으로 계산된 pageSize 전달
-                    currentPage={currentPage}  // 현재 페이지 전달
-                    setCurrentPage={setCurrentPage}  // 페이지 이동 처리 함수 전달
+                    pageSize={examPageSize}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                     answers={answers}
                     setAnswer={setAnswer}
                     timer={timer}
                     questions={questions}
                     fontZoom={fontZoom}
-                    setFontZoom={setFontZoom}  // 글자 크기 변경 함수 전달
+                    setFontZoom={setFontZoom}
+                    ui={ui}
+                    onToggleUi={toggleUi}
+                    previousId={previousId}
+                    certificateId={Number(certificateId)}
                 />
             ) : (
                 <PracticeView
                     certName={certName}
-                    modeLabel={modeLabel}
                     totalQuestions={totalQuestions}
-                    pageSize={pageSize}  // 동적으로 계산된 pageSize 전달
-                    currentPage={currentPage}  // 현재 페이지 전달
-                    setCurrentPage={setCurrentPage}  // 페이지 이동 처리 함수 전달
+                    questions={questions}
+                    pageSize={PRACTICE_PAGE_SIZE}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                     answers={answers}
                     setAnswer={setAnswer}
-                    date={mode === "past" ? date : undefined}
-                    start={mode === "random" ? start : undefined}
-                    end={mode === "random" ? end : undefined}
+                    ui={ui}
+                    onToggleUi={toggleUi}
+                    previousId={previousId}
+                    certificateId={Number(certificateId)}
                 />
             )}
         </>

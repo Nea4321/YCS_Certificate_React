@@ -145,17 +145,26 @@ export const CbtHistoryList: React.FC = () => {
 
                                             <button
                                                 className={myPageStyles.reviewButton}
-                                                // onClick={() =>
-                                                //     navigate("/cbt/review", {
-                                                //         state: {
-                                                //             certName: cert.certificate_name,
-                                                //             questions: cbtHistory.questions,
-                                                //             userAnswers: cbtHistory.answers,
-                                                //         },
-                                                //     })
-                                                // }
+                                                onClick={() =>
+                                                    navigate(`/cbt/review/previous/${record.previous_id}`, {
+                                                        state: { certName: cert.certificate_name },
+                                                    })
+                                                }
                                             >
-                                                오답노트 보기
+                                                문제 검토
+                                            </button>
+
+                                            <button
+                                                className={myPageStyles.reviewButton}
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
+                                                            cert.certificate_name
+                                                        )}`
+                                                    )
+                                                }
+                                            >
+                                                오답노트
                                             </button>
                                         </div>
                                     </div>

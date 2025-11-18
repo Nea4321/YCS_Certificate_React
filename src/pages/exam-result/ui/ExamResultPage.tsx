@@ -1,7 +1,7 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import { ExamResultStyles } from "../styles";
 import {useMemo} from "react";
-import {Question} from "@/entities/cbt";
+import {QuestionDTO} from "@/entities/cbt";
 
 
 interface ScoreResult {
@@ -32,10 +32,10 @@ export function ExamResultPage() {
         const subjectTotalCounts: { [key: number]: number } = {};
         let totalCorrect = 0;
 
-        questions.forEach((q: Question, index: number) => {
+        questions.forEach((q: QuestionDTO, index: number) => {
             const userChoice = userAnswers[index]; // 사용자가 선택한 답 (1, 2, 3, 4)
             const correctChoiceIndex = q.answers.findIndex(ans => ans.bool); // 정답의 인덱스 (0, 1, 2, 3)
-            const subjectId = q.question_type_id;
+            const subjectId = q.question_id;
 
             if (!subjectTotalCounts[subjectId]) {
                 subjectTotalCounts[subjectId] = 0;

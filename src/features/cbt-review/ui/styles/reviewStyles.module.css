@@ -84,6 +84,7 @@
     overflow: auto;
     overflow-x: hidden;
     white-space: pre-wrap;
+    font-family: Consolas, "Courier New", monospace;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
