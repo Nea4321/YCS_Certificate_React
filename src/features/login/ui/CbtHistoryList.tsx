@@ -118,13 +118,13 @@ export const CbtHistoryList: React.FC = () => {
 
                                     <button
                                         className={myPageStyles.wrongReviewButton}
-                                        onClick={() =>
-                                            navigate(
-                                                `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
-                                                    cert.certificate_name
-                                                )}`
-                                            )
-                                        }
+                                        // onClick={() =>
+                                        //     navigate(
+                                        //         `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
+                                        //             cert.certificate_name
+                                        //         )}`
+                                        //     )
+                                        // }
                                     >
                                         오답노트
                                     </button>
