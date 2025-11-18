@@ -25,7 +25,7 @@ export const DepartmentListSection = ({ department }: DepartmentCardProps) => {
     return (
         <ul className={deptListStyles.facultyItem}>
             <div className={deptListStyles.facultyName}>
-                {department.parent_name} ({department.parent_type})
+                {department.parent_name}
             </div>
             <div className={deptListStyles.departmentList}>
                 {department.child.map((child) => (
@@ -33,7 +33,7 @@ export const DepartmentListSection = ({ department }: DepartmentCardProps) => {
                         className={deptListStyles.departmentItem}>
                         <Link to={`/departments/${child.dept_map_id}`}
                               className={deptListStyles.departmentLink} data-id={child.child_id}>
-                            {child.child_name} ({child.child_type})
+                            {child.child_name}
                         </Link>
                     </li>
                 ))}

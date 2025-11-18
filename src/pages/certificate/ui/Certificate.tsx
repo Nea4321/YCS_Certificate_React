@@ -12,11 +12,14 @@ import type { RawItem } from '@/entities/certificate/model';
 import { toRawItems } from '@/entities/certificate/lib/asRawItems';
 import type { CertificateData } from "@/entities/certificate/model/types";
 import axios from "axios";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/app/store";
 
 export default function Certificate() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const certId = Number(id);
+    const role = useSelector((state: RootState) => state.user.userRole);
 
     const [running, setRunning] = useState(false); // ← 엔진 동작중 표시
 
@@ -53,14 +56,12 @@ export default function Certificate() {
         initialData: null,
     });
 
+    // ✅ 엔진 트리거 + 폴링
     const handleRunEngine = async () => {
-        if (!id || running) return; // 이미 실행중이면 무시
-
+        if (!id) return;
         try {
             setRunning(true);
-
             await certificateApi.runPublic(certId); // 1) 엔진 트리거
-
             // 2) DB 저장될 때까지 폴링 (최대 60초)
             const deadline = Date.now() + 60_000;
             while (Date.now() < deadline) {
@@ -68,11 +69,12 @@ export default function Certificate() {
                 if (data) {
                     await refetchCertificate();
                     await refetchSchedule();
+                    setRunning(false);
                     return;
                 }
                 await new Promise(r => setTimeout(r, 2000));
             }
-
+            setRunning(false);
             alert("엔진 실행은 성공했지만 데이터가 아직 저장되지 않았어요. 잠시 후 새로고침해보세요.");
         } catch (e: unknown) {
             console.error(e);
@@ -86,6 +88,7 @@ export default function Certificate() {
         }
     };
 
+    const delete_certdate = async (id:number) => { await axios.get(`/api/cert/delete/${id}`);}
 
     const loading = scheduleLoading || certLoading;
     const scheduleDone = !scheduleLoading;
@@ -96,6 +99,9 @@ export default function Certificate() {
             <button onClick={() => navigate(-1)} className={certificateStyles.backButton}>
                 ← 뒤로가기
             </button>
+            {role === "admin" ? (
+            <button onClick={() => {delete_certdate(certId).then(r => console.log(r)) }} className={certificateStyles.rightButton}> 삭제하기 (관리자) </button>
+            ):null}
         </div>
     );
 

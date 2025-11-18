@@ -15,8 +15,7 @@ import {
 import { SubmitConfirmModal } from "@/features/cbt-exam";
 import { Calculator } from "@/features/cbt-exam";
 import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/app/store";
+import {useDispatch} from "react-redux";
 import {setCbtHistory} from "@/shared/slice";
 
 export interface ExamViewProps {
@@ -55,7 +54,6 @@ export function ExamView({
     const { isMobile, effectivePageSize } = useExamViewMobile(pageSize);
 
     const dispatch = useDispatch();
-    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
 
     const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
         useUnanswered(answers);
@@ -89,7 +87,7 @@ export function ExamView({
 
     const handleSubmitConfirm = () => {
         // 남은 시간 redux에 저장
-        dispatch(setCbtHistory({...cbtHistory, left_time: leftSec || 0,}))
+        dispatch(setCbtHistory( { left_time: leftSec || 0, answers: answers, questions: questions } ) );
         setShowConfirm(false);
         navigate('/cbt/exam/result', {
             replace: true,

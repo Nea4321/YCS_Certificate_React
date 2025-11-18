@@ -72,7 +72,7 @@ export const DepartmentListSection_edit = ({ department, onAdd, refetch }: Depar
                       ) : (
                           <div>
                               <span className={departmentEditStyles.departmentItem_edit}>
-                                {child.child_name}
+                                {child.child_name} ({child.child_type})
                               </span>
                                   <button
                                       className={departmentEditStyles.iconButton}

@@ -53,6 +53,7 @@
     margin: 0;
 }
 
+
 /* =================================
    PROFILE SECTION
    - 프로필 카드 (아바타, 이름, 이메일, 관리자 뱃지)
@@ -202,6 +203,34 @@
 .suspendButton { background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); }
 .activateButton { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); }
 
+.favoriteName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 6px 0;
+}
+
+.favoriteCategory {
+    font-size: 14px;
+    color: #777;
+    margin: 0;
+}
+
+.viewButton {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.viewButton:hover {
+    background-color: #45a049;
+}
+
 .saveButton, .cancelButton, .deleteButton, .suspendButton, .activateButton {
     color: white;
     border: none;
@@ -289,6 +318,7 @@
     border: 1px solid #e5e7eb;
     border-radius: 10px;
     padding: 12px 16px;
+    margin-bottom: 9px;
     background-color: #f9fafb;
     transition: background 0.2s ease;
 }
@@ -297,15 +327,21 @@
     background-color: #f3f4f6;
 }
 
+.cbtRecordTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .cbtRecordInfo {
     display: flex;
     flex-direction: column;
 }
 
 .cbtCertName {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin: 0;
 }
 
 .cbtMeta {
@@ -313,20 +349,39 @@
     color: #6b7280;
 }
 
+.cbtDetailBox {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+}
+
 /* CBT 버튼 */
 .cbtActions {
+    margin-top: 12px;
     display: flex;
     gap: 10px;
 }
 
-.solveButton,
-.reviewButton {
-    font-size: 13px;
-    padding: 6px 10px;
-    border: none;
+/* 문제 풀러가기 버튼 */
+.solveButton {
+    padding: 8px 12px;
     border-radius: 6px;
+    border: none;
     cursor: pointer;
-    transition: background 0.2s ease;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 13px;
+}
+
+/* 오답노트 보기 버튼 (다른 색) */
+.reviewButton {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #d67b7b 0%, #cf4242 100%);
+    color: white;
+    font-size: 13px;
 }
 
 .solveButton {
@@ -345,6 +400,42 @@
 
 .reviewButton:hover {
     background-color: #d97706;
+}
+
+
+.toggleButton {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+.collapseWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    margin-top: 8px;
+}
+/* 접기 버튼 (↑) */
+.collapseButton {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.collapseButton:hover {
+    background-color: #eaeaea;
+}
+
+/* 펼쳐진 상태의 각 기록 상세 줄 */
+.cbtRecordItem .cbtRecordInfoRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 /* =================================
