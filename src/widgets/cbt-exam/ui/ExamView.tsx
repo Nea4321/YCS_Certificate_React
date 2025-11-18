@@ -15,8 +15,6 @@ import {
 import { SubmitConfirmModal } from "@/features/cbt-exam";
 import { Calculator } from "@/features/cbt-exam";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {setCbtHistory} from "@/shared/slice";
 
 export interface ExamViewProps {
     certName: string;
@@ -43,7 +41,7 @@ export function ExamView({
                              fontZoom,
                              setFontZoom,
                          }: ExamViewProps) {
-    const { leftTime, limitMin, leftSec } = timer;
+    const { leftTime, limitMin } = timer;
     type LayoutMode = "twoCol" | "narrowSheet" | "oneCol";
     const [layout, setLayout] = useState<LayoutMode>("twoCol");
     const [showUnanswered, setShowUnanswered] = useState(false);
@@ -53,7 +51,7 @@ export function ExamView({
     const { bodyRef, headerRef, footerRef, toolbarRef } = useStickyHeights();
     const { isMobile, effectivePageSize } = useExamViewMobile(pageSize);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const { unanswered, numbers: unansweredNumbers, hasUnanswered } =
         useUnanswered(answers);
@@ -87,7 +85,7 @@ export function ExamView({
 
     const handleSubmitConfirm = () => {
         // 남은 시간 redux에 저장
-        dispatch(setCbtHistory( { left_time: leftSec || 0, answers: answers, questions: questions } ) );
+        // dispatch(setCbtHistory( { left_time: leftSec || 0, answers: answers, questions: questions } ) );
         setShowConfirm(false);
         navigate('/cbt/exam/result', {
             replace: true,

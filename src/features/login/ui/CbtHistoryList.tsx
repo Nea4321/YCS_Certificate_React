@@ -2,21 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { myPageStyles } from "@/pages/dashboard/styles";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/store";
 import {ChevronUp} from "lucide-react";
 
-export interface UserCbtHistory {
-    certificate_id: number;
-    certificate_name: string;
+export interface UserCbtHistoryList {
+    previous_id: number;
     score: number;
-    correct_Count: number;
+    correct_count: number;
     created_at: string;
     left_time: number;
 }
 
+export interface UserCbtHistoryCert {
+    certificate_id: number;
+    certificate_name: string;
+    list: UserCbtHistoryList[];
+}
+
 // API 호출
-export const UserGetCbtHistory = async (): Promise<UserCbtHistory[]> => {
+export const UserGetCbtHistory = async (): Promise<UserCbtHistoryCert[]> => {
     const response = await axios.get("/api/user/cbt", { withCredentials: true });
     return response.data;
 };
@@ -36,13 +39,13 @@ const formatDate = (iso: string) => {
 
 // 컴포넌트
 export const CbtHistoryList: React.FC = () => {
-    const [cbtRecords, setCbtRecords] = useState<UserCbtHistory[]>([]);
+    const [cbtRecords, setCbtRecords] = useState<UserCbtHistoryCert[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<string[]>([]);
 
     const navigate = useNavigate();
-    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
+    // const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
 
     useEffect(() => {
         const fetchCbtHistory = async () => {
@@ -65,11 +68,11 @@ export const CbtHistoryList: React.FC = () => {
 
     // 그룹화 -> 자격증 이름이 키, 시험 기록이 데이터 로 맵? 배열을 만듬
     // A 자격증 -> {...},{...} / B자격증 -> {...}
-    const grouped = cbtRecords.reduce((acc: Record<string, UserCbtHistory[]>, r) => {
-        if (!acc[r.certificate_name]) acc[r.certificate_name] = [];
-        acc[r.certificate_name].push(r);
-        return acc;
-    }, {});
+    // const grouped = cbtRecords.reduce((acc: Record<string, UserCbtHistory[]>, r) => {
+    //     if (!acc[r.certificate_name]) acc[r.certificate_name] = [];
+    //     acc[r.certificate_name].push(r);
+    //     return acc;
+    // }, {});
 
     // 문제 보기 버튼을 누르면 실행되는 함수
     // 눌렀을 때 expande(자격증 이름 들어가는 배열) 이 비어있으면 이름을 추가하고 펼침
@@ -89,18 +92,18 @@ export const CbtHistoryList: React.FC = () => {
             </div>
 
             <div className={myPageStyles.cbtRecordList}>
-                {Object.entries(grouped).map(([certName, records]) => {
-                    const isOpen = expanded.includes(certName);
+                {cbtRecords.map( cert => {
+                    const isOpen = expanded.includes(cert.certificate_name);
 
                     return (
-                        <div key={certName}>
+                        <div key={cert.certificate_id}>
                             {!isOpen && (
                                 <div className={myPageStyles.cbtRecordItem}>
-                                    <h4 className={myPageStyles.cbtCertName}>{certName}</h4>
+                                    <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
 
                                     <button
                                         className={myPageStyles.toggleButton}
-                                        onClick={() => toggle(certName)}
+                                        onClick={() => toggle(cert.certificate_name)}
                                     >
                                         문제 기록 확인
                                     </button>
@@ -109,20 +112,20 @@ export const CbtHistoryList: React.FC = () => {
 
                             {/* --- 펼친 상태: 레코드별로 한 줄씩 렌더링 --- */}
                             {isOpen &&
-                                records.map((record) => (
+                                cert.list.map((record) => (
                                     <div
-                                        key={`${record.certificate_id}-${record.created_at}`}
+                                        key={`${record.previous_id}-${record.created_at}`}
                                         className={myPageStyles.cbtRecordItem}
                                     >
                                         {/* 왼쪽: 자격증 이름(모든 줄 동일하게 표시) */}
-                                        <h4 className={myPageStyles.cbtCertName}>{certName}</h4>
+                                        <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
 
                                         {/* 가운데: 기록 정보 */}
                                         <p className={myPageStyles.cbtMeta}>
                                             <span>🕒 {formatDate(record.created_at)}</span>
                                             <span> | 시간 : {formatDuration(record.left_time)}</span>
                                             <span> | 점수: {record.score}점</span>
-                                            <span> | 맞힌 문제: {record.correct_Count}</span>
+                                            <span> | 맞힌 문제: {record.correct_count}개</span>
                                         </p>
 
                                         {/* 오른쪽: 버튼 2개 */}
@@ -131,8 +134,8 @@ export const CbtHistoryList: React.FC = () => {
                                                 className={myPageStyles.solveButton}
                                                 onClick={() =>
                                                     navigate(
-                                                        `/cbt/start?certificateId=${record.certificate_id}&certName=${encodeURIComponent(
-                                                            record.certificate_name
+                                                        `/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(
+                                                            cert.certificate_name
                                                         )}`
                                                     )
                                                 }
@@ -142,15 +145,15 @@ export const CbtHistoryList: React.FC = () => {
 
                                             <button
                                                 className={myPageStyles.reviewButton}
-                                                onClick={() =>
-                                                    navigate("/cbt/review", {
-                                                        state: {
-                                                            certName: record.certificate_name,
-                                                            questions: cbtHistory.questions,
-                                                            userAnswers: cbtHistory.answers,
-                                                        },
-                                                    })
-                                                }
+                                                // onClick={() =>
+                                                //     navigate("/cbt/review", {
+                                                //         state: {
+                                                //             certName: cert.certificate_name,
+                                                //             questions: cbtHistory.questions,
+                                                //             userAnswers: cbtHistory.answers,
+                                                //         },
+                                                //     })
+                                                // }
                                             >
                                                 오답노트 보기
                                             </button>
@@ -161,7 +164,7 @@ export const CbtHistoryList: React.FC = () => {
                             {/* 펼친 상태일 때 맨 위에 접기 버튼 */}
                             {isOpen && (
                                 <div className={myPageStyles.collapseWrapper}>
-                                    <button className={myPageStyles.collapseButton} onClick={() => toggle(certName)}>
+                                    <button className={myPageStyles.collapseButton} onClick={() => toggle(cert.certificate_name)}>
                                         <ChevronUp size={24} />
                                     </button>
                                 </div>

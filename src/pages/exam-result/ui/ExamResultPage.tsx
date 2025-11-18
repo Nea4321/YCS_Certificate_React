@@ -2,10 +2,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { ExamResultStyles } from "../styles";
 import {useMemo} from "react";
 import {Question} from "@/entities/cbt";
-import {SaveUserCbt} from "@/features/login";
-import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "@/app/store";
-import {setCbtHistory} from "@/shared/slice";
+
 
 interface ScoreResult {
     totalScore: number;
@@ -16,9 +13,9 @@ interface ScoreResult {
 export function ExamResultPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const dispatch = useDispatch();
-    const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
-    const user = useSelector((state: RootState) => state.user);
+    // const dispatch = useDispatch();
+    // const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
+    // const user = useSelector((state: RootState) => state.user);
 
     const { certName, userAnswers, questions } = location.state || {
         certName: "정보를 불러올 수 없습니다.",
@@ -53,7 +50,7 @@ export function ExamResultPage() {
         });
 
         // 맞힌 정답 갯수 redux에 저장
-        dispatch(setCbtHistory({ correct_count: totalCorrect || 0,}))
+        // dispatch(setCbtHistory({ correct_count: totalCorrect || 0,}))
 
         const subjectScores: { [key: number]: number } = {};
         Object.keys(subjectTotalCounts).forEach(id => {
@@ -75,20 +72,13 @@ export function ExamResultPage() {
     const candidateName = "수험자 (00000000)";
 
     const handleDone = async () => {
-        if (!user || !user.userEmail) {
-            navigate("/cbt")
-        }
-
-        await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
-
+        // await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
         navigate("/cbt")
     }
     // 오답노트로 가는 버튼
     const handleDone_Review = async () => {
-        if (!user || !user.userEmail) {
-            navigate("/cbt/review", { state: { certName, questions, userAnswers } })
-        }
-            await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
+
+            // await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();
         navigate("/cbt/review", { state: { certName, questions, userAnswers } })
     }
 

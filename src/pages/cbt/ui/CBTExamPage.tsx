@@ -5,11 +5,10 @@ import { CBTExamStyles } from '../styles';
 import { CategoryFilter } from '@/features/cbt/category-filter/ui/CategoryFilter';
 import { Pagination } from '@/features/cbt/pagination/ui/Pagination';
 import { useNavigate } from 'react-router-dom';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import type { RootState } from '@/app/store/store';
 import { certificateTags, loadCertTagMap } from '@/entities/certificate';
 import { questions as mockQuestions } from "@/entities/cbt/lib/mockQuestions";
-import {setCbtHistory} from "@/shared/slice";
 
 /**certificate 모델에 tag 필드를 덧붙임*/
 type UICertificate = Certificate & { tags: string[] };
@@ -38,7 +37,7 @@ export const CBTExamPage: React.FC = () => {
         () => new Set(mockQuestions.map(q => q.certificate_id)),
         []
     );
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     /**자격증 목록을 가져와 certificate_id을 기반으로 태그를 부여함
      * 만약 certificate_id가 없는 자격증은 빈 배열
      */
@@ -88,7 +87,7 @@ export const CBTExamPage: React.FC = () => {
      */
     const handleStartClick = (cert: Certificate) => {
         // cbt 시작하기 눌렀을 때 redux에 자격증 아이디 저장
-        dispatch(setCbtHistory({certificate_id: cert.certificate_id || 0,}))
+        // dispatch(setCbtHistory({certificate_id: cert.certificate_id || 0,}))
         const query = new URLSearchParams({
             certificateId: cert.certificate_id.toString(),
             certName: cert.certificate_name

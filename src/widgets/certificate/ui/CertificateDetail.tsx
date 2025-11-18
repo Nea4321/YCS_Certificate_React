@@ -16,12 +16,14 @@ import { Tabs } from '@/shared/components/Tabs';
 import { ExamInfoBlocks } from '@/widgets/schedule/ui/ExamInfoBlocks';
 import { BasicInfoPanel, ExamStatsPanel } from '@/widgets/basic-info';
 import { pickExamInfo, pickExamStats, pickBasicHtml, pickBenefitHtml } from '@/entities/certificate/model/selectors';
-import { PreferencePanel } from '@/widgets/preference/ui/PreferencePanel';
+
 import {FavoriteButton} from "@/features/favorite";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import CBTAnim from '@/pages/cbt/styles/CBTExamPage.module.css';
-import { adaptPreference } from '@/widgets/preference/ui/adaptPreference';
+
 import { toRawItems } from '@/entities/certificate/lib/asRawItems';
+import {PreferencePanel} from "@/widgets";
+import {adaptPreference} from "@/widgets/preference/ui/adaptPreference.ts";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 2) 본 컴포넌트

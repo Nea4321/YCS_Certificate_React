@@ -88,7 +88,11 @@ export default function Certificate() {
         }
     };
 
-    const delete_certdate = async (id:number) => { await axios.get(`/api/cert/delete/${id}`);}
+    const delete_certdate = async (id:number) => {
+        await axios.get(`/api/cert/delete/${id}`, {
+            params: { id }})
+        refetchCertificate()
+    }
 
     const loading = scheduleLoading || certLoading;
     const scheduleDone = !scheduleLoading;
