@@ -63,8 +63,7 @@ export function ExamResultPage() {
 
         const totalScore = Math.round((totalCorrect / questions.length) * 100);
 
-        const hasFailedSubject = Object.values(subjectScores).some(score => score < 40);
-        const isPassed = totalScore >= 60 && !hasFailedSubject;
+        const isPassed = totalScore >= 60;
 
         return { totalScore, subjectScores, isPassed };
 
