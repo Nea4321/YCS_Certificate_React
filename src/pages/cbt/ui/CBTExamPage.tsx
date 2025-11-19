@@ -46,7 +46,7 @@ export const CBTExamPage: React.FC = () => {
     useEffect(() => {
         if (isGuest) {
             alert('로그인이 필요합니다. 로그인 후 CBT 시험을 이용할 수 있습니다.');
-            navigate('/auth');
+            navigate('/auth', { replace: true });
         }
     }, [isGuest, navigate]);
 
@@ -148,7 +148,7 @@ export const CBTExamPage: React.FC = () => {
                 <div className={CBTExamStyles.examContainer}>
                     <div className={CBTExamStyles.cbtCountInfo}>
                         {selectedTag === '전체'
-                            ? '전체 자격증 수 '
+                            ? '문제가 있는 자격증 수 '
                             : `${selectedTag} 태그에서 `}
                         <strong>{filteredCertificates.length}</strong>
                         개의 자격증이 있습니다

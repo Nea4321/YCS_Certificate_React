@@ -113,7 +113,8 @@ export function ExamView({
         });
 
         const score = Math.round((correctCount / totalQuestions) * 100);
-        const left_time = leftSec ?? 0;
+        const totalDurationSec = limitMin * 60;
+        const left_time = totalDurationSec - (leftSec ?? 0);
 
         if (previousId != null) {
             const payload: UserCbtHistoryDTO = {
@@ -190,6 +191,7 @@ export function ExamView({
                         answers={answers}
                         setAnswer={setAnswer}
                         fontZoom={fontZoom}
+                        allQuestions={questions}
                     />
                 </div>
 

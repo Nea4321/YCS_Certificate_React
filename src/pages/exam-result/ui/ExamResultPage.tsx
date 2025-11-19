@@ -2,7 +2,8 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { ExamResultStyles } from "../styles";
 import {useMemo} from "react";
 import {QuestionDTO} from "@/entities/cbt";
-
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/app/store/store';
 
 interface ScoreResult {
     totalScore: number;
@@ -13,6 +14,7 @@ interface ScoreResult {
 export function ExamResultPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const userName = useSelector((state: RootState) => state.user.userName);
     // const dispatch = useDispatch();
     // const cbtHistory = useSelector((state: RootState) => state.userCbtHistory);
     // const user = useSelector((state: RootState) => state.user);
@@ -69,7 +71,7 @@ export function ExamResultPage() {
     }, [questions, userAnswers]);
 
 
-    const candidateName = "수험자 (00000000)";
+    const candidateName = userName ? `${userName}` : "수험자 (00000000)";
 
     const handleDone = async () => {
         // await SaveUserCbt(cbtHistory.certificate_id, result.totalScore, cbtHistory.correct_count, cbtHistory.left_time)();

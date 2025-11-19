@@ -124,7 +124,7 @@ export const CBTStartPage: React.FC = () => {
 
                 {/* 🔹 시험 회차(QuestionInfo 선택) 드롭다운 */}
                 <div className={CBTStartStyles.optionRow} style={{ marginTop: 8 }}>
-                    <label>시험 회차</label>
+                    <label>시험 유형</label>
                     <div>
                         {loading ? (
                             <span>회차 정보를 불러오는 중입니다...</span>

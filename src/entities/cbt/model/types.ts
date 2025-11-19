@@ -14,6 +14,9 @@ export type QuestionDTO = {
     content: string;
     img: string | null;
     answers: AnswerDTO[];
+
+    question_type_id?: number;
+    question_type_name?: string;
 };
 
 export type QuestionTypeDTO = {

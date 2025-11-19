@@ -204,6 +204,50 @@
     justify-content: center;
 }
 
+.solutionArea {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.solutionBtn {
+    align-self: flex-start;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.solutionBtn:hover {
+    background: #eef2ff;
+}
+
+.solutionBox {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+.solutionTitle {
+    font-weight: 700;
+    font-size: 13px;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+.solutionBody {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
 /* 반응형(모바일 여백 조금 여유 있게) */
 @media (max-width: 768px) {
     .wrap { padding: 16px 12px; }

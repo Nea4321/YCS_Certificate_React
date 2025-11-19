@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { PracticeStyles } from "@/widgets/cbt-practice/styles";
 import { usePracticePaging } from "@/features/cbt-exam/model/usePracticePaging";
 import { Header } from "@/shared/ui/header/Header";
@@ -42,6 +42,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     const [sp] = useSearchParams();
     const certificateIdStr = sp.get("certificateId");
     const navigate = useNavigate();
+    const [elapsedSec, setElapsedSec] = useState(0);
 
     const certIdNum =
         typeof certificateId === "number"
@@ -54,8 +55,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     const { totalPages, currentQuestionNumbers, goToQuestion } =
         usePracticePaging(pageSize, currentPage, setCurrentPage, total);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setElapsedSec(prev => prev + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     const handleSubmit = async () => {
         const unansweredCount = answers.filter((a) => a == null).length;
+        const left_time = elapsedSec;
         const ok = window.confirm(
             unansweredCount > 0
                 ? `미응답 ${unansweredCount}문항이 있습니다.\n채점하시겠습니까?`
@@ -87,8 +96,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         const score = Math.round(
             (correctCount / totalQuestionsCount) * 100
         );
-
-        const left_time = 0;
 
         if (previousId != null && Number.isFinite(certIdNum)) {
             const payload: UserCbtHistoryDTO = {
@@ -178,12 +185,23 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                                     a.content.trim()
                                 );
 
+                                const prevGlobal = qi > 0 ? questions[qi - 1] : null;
+                                const showSubjectHeader =
+                                    q.question_type_name &&
+                                    (!prevGlobal ||
+                                        prevGlobal.question_type_id !== q.question_type_id);
+
                                 return (
                                     <li
                                         key={q.question_id}
                                         id={`question-${qi + 1}`}
                                         className={PracticeStyles.questionItem}
                                     >
+                                        {showSubjectHeader && (
+                                            <div className={PracticeStyles.subjectHeader}>
+                                                {q.question_type_name}
+                                            </div>
+                                        )}
                                         <QuestionCard
                                             number={qi + 1}
                                             text={q.text}
