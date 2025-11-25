@@ -26,7 +26,7 @@ export const UserGetCbtHistory = async (): Promise<UserCbtHistoryCert[]> => {
 
 // 시간을 "mm분 ss초" 포맷으로
 const formatDuration = (sec: number) => {
-    const left_time = 5400 - sec;
+    const left_time = sec;
     const m = Math.floor(left_time / 60);
     const s = left_time % 60;
     return `${m}분 ${s}초`;
@@ -94,57 +94,60 @@ export const CbtHistoryList: React.FC = () => {
             </div>
 
             <div className={myPageStyles.cbtRecordList}>
-                {cbtRecords.map( cert => {
+                {cbtRecords.map(cert => {
                     const isOpen = expanded.includes(cert.certificate_name);
 
                     return (
                         <div key={cert.certificate_id}>
-                            {!isOpen && (
-                                <div className={myPageStyles.cbtRecordItem}>
-                                    <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
-                                    <div className={myPageStyles.buttonGroup}>
-                                        <button
-                                            className={myPageStyles.toggleButton}
-                                            onClick={() => toggle(cert.certificate_name)}
-                                        >
-                                            문제 기록 확인
-                                        </button>
+                            <div className={`${myPageStyles.cbtRecordItem} ${myPageStyles.click}`} onClick={() => toggle(cert.certificate_name)} >
+                                <h4 className={myPageStyles.cbtCertName}
+                                    onClick={() => navigate(`/certificate/${cert.certificate_id}`)}>
+                                    {cert.certificate_name}
+                                </h4>
+
+                                <div className={myPageStyles.buttonGroup}>
+                                    <button
+                                        className={myPageStyles.toggleButton}
+                                        onClick={(e) => {
+                                        e.stopPropagation(); // 부모 div로 클릭 이벤트 전파 막기
+                                        toggle(cert.certificate_name);}}
+                                    >
+                                        {isOpen ? "접기" : "문제 기록 확인"}
+                                    </button>
+
                                     <button
                                         className={myPageStyles.solveButton}
-                                        onClick={() => navigate(`/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(cert.certificate_name)}`)}
+                                        onClick={() =>
+                                            navigate(
+                                                `/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(
+                                                    cert.certificate_name
+                                                )}`
+                                            )
+                                        }
                                     >
                                         문제 풀기
                                     </button>
 
-                                    <button
-                                        className={myPageStyles.wrongReviewButton}
-                                        // onClick={() =>
-                                        //     navigate(
-                                        //         `/cbt/incorrect?certId=${cert.certificate_id}&certName=${encodeURIComponent(
-                                        //             cert.certificate_name
-                                        //         )}`
-                                        //     )
-                                        // }
-                                    >
+                                    <button className={myPageStyles.wrongReviewButton}>
                                         오답노트
                                     </button>
-
-
-                                    </div>
                                 </div>
-                            )}
+                            </div>
 
-                            {/* --- 펼친 상태: 레코드별로 한 줄씩 렌더링 --- */}
+                            {/* 펼쳤을 때 기록 */}
                             {isOpen &&
-                                cert.list.map((record) => (
+                                [...cert.list]
+                                    // 앞 뒤 시간 비교해서 정렬함
+                                    // .sort(a,b => c) -> c 가 음수면 a 먼저오고 b 나중에 / c 가 양수면 b 먼저 a 가 나중
+                                    // 리스트 전부 앞뒤 계산해서 정렬함.
+                                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                    .map(record =>(
                                     <div
                                         key={`${record.previous_id}-${record.created_at}`}
                                         className={myPageStyles.cbtRecordItem}
                                     >
-                                        {/* 왼쪽: 자격증 이름(모든 줄 동일하게 표시) */}
                                         <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
 
-                                        {/* 가운데: 기록 정보 */}
                                         <p className={myPageStyles.cbtMeta}>
                                             <span>🕒 {formatDate(record.created_at)}</span>
                                             <span> | 걸린 시간 : {formatDuration(record.left_time)}</span>
@@ -152,14 +155,13 @@ export const CbtHistoryList: React.FC = () => {
                                             <span> | 맞힌 문제: {record.correct_count}개</span>
                                         </p>
 
-                                        {/* 오른쪽: 버튼 2개 */}
                                         <div className={myPageStyles.cbtActions}>
                                             <button
                                                 className={myPageStyles.retryButton}
-                                                onClick={() =>  {
-                                                    params.set('previousId', record.previous_id.toString());
-                                                    navigate(`/cbt/test?${params.toString()}`);}
-                                            }
+                                                onClick={() => {
+                                                    params.set("previousId", record.previous_id.toString());
+                                                    navigate(`/cbt/test?${params.toString()}`);
+                                                }}
                                             >
                                                 문제 다시 풀기
                                             </button>
@@ -178,10 +180,13 @@ export const CbtHistoryList: React.FC = () => {
                                     </div>
                                 ))}
 
-                            {/* 펼친 상태일 때 맨 위에 접기 버튼 */}
+                            {/*  접기 버튼 */}
                             {isOpen && (
                                 <div className={myPageStyles.collapseWrapper}>
-                                    <button className={myPageStyles.collapseButton} onClick={() => toggle(cert.certificate_name)}>
+                                    <button
+                                        className={myPageStyles.collapseButton}
+                                        onClick={() => toggle(cert.certificate_name)}
+                                    >
                                         <ChevronUp size={24} />
                                     </button>
                                 </div>
@@ -192,4 +197,4 @@ export const CbtHistoryList: React.FC = () => {
             </div>
         </div>
     );
-};
+}

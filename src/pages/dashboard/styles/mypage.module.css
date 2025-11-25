@@ -323,6 +323,7 @@
     transition: background 0.2s ease;
 }
 
+
 .cbtRecordItem:hover {
     background-color: #f3f4f6;
 }
@@ -465,6 +466,10 @@
 .memberItem:hover {
     border-color: #cbd5e0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.click {
+    cursor: pointer;
 }
 
 /* =================================
