@@ -10,6 +10,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
+import {CheckDuplicate} from "@/features/login";
 
 interface FavoriteButtonProps {
     exist?:string
@@ -24,6 +25,7 @@ interface FavoriteButtonProps {
  * */
 export const FavoriteButton = ({exist,id,type}: FavoriteButtonProps)=>{
     const [isFavorite, setIsFavorite] = useState(false);
+    const {check}=CheckDuplicate()
     // 로그인 되어 있을 때 저장되게 -> 월래는 액세스 토큰으로 비교할려 했는데 주옷 버그 떄문에 임시로 redux 유저 이름으로 대체
     // -> 물론 보안은 최악인 방법. -> redux값만 해킹해서 넣으면 즐찾 db요청을 허락하게 되는 거니까
     const name = useSelector((state: RootState) => state.user.userName)
@@ -32,6 +34,7 @@ export const FavoriteButton = ({exist,id,type}: FavoriteButtonProps)=>{
     const toggleFavorite = async () => {
         if(name) {
         try {
+            await check();
                 if (!isFavorite) {
                     await FavoriteAddRequest(type, Number(id));
                     const favorite_data = await FavoriteInfoRequest();

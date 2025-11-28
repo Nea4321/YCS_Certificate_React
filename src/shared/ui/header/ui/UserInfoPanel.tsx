@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
 import {CalendarWidget} from "@/widgets/calendar";
 import {UiEvent, UiEventType} from "@/features/calendar";
+import {CheckDuplicate} from "@/features/login";
 
 interface UserInfoPanelProps {
     isOpen: boolean
@@ -24,6 +25,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     const dispatch = useDispatch();
     const userEmail = useSelector((state: RootState) => state.user.userEmail)
     const userName = useSelector((state: RootState) => state.user.userName)
+    const {check}=CheckDuplicate()
 
     const [showFavoriteModal, setShowFavoriteModal] = useState(false);
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
@@ -101,9 +103,10 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
-                if(userName) {
+                if(userName != "") {
                     const favorite_data = await FavoriteInfoRequest();
                     const favorite_schedule = await FavoriteScheduleRequest();
+                    await check()
                     // Redux에 저장
                     dispatch(setFavoriteInfo(favorite_data));
                     dispatch(setFavoriteSchedule(favorite_schedule));
