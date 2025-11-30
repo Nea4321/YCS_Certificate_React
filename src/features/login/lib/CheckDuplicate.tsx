@@ -17,7 +17,7 @@ export const CheckDuplicate = () => {
                 if (err.response?.status === 409) {
                     alert("다른 기기에서 로그인되어 세션이 만료되었습니다.");
                     await logout();
-                    navigate("/login");
+                    navigate("/auth");
                     throw new Error("중복 토큰 발생")
                 }
             }

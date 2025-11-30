@@ -33,11 +33,14 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
 
     // 즐찾 삭제 버튼 -> 삭제한 후 즐찾 목록 들고와서 redux에 저장.
     const handleDelete = async (type: "department" | "certificate", id: number) => {
-        await FavoriteDeleteRequest(type, id);
-        const favorite_data = await FavoriteInfoRequest();
-        const favorite_schedule = await FavoriteScheduleRequest();
-        dispatch(setFavoriteInfo(favorite_data))
-        dispatch(setFavoriteSchedule(favorite_schedule))
+        try {
+            await FavoriteDeleteRequest(type, id);
+            await check()
+            const favorite_data = await FavoriteInfoRequest();
+            const favorite_schedule = await FavoriteScheduleRequest();
+            dispatch(setFavoriteInfo(favorite_data))
+            dispatch(setFavoriteSchedule(favorite_schedule))
+        }catch(err) {console.log(err)}
     }
 
     /**
@@ -106,7 +109,6 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
                 if(userName != "") {
                     const favorite_data = await FavoriteInfoRequest();
                     const favorite_schedule = await FavoriteScheduleRequest();
-                    await check()
                     // Redux에 저장
                     dispatch(setFavoriteInfo(favorite_data));
                     dispatch(setFavoriteSchedule(favorite_schedule));

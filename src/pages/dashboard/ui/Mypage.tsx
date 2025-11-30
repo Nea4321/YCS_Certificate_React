@@ -1,5 +1,5 @@
 import { myPageStyles } from "../styles"
-import {CbtHistoryList, MyPageForm} from "@/features/login"
+import {CbtHistoryList, CheckDuplicate, MyPageForm} from "@/features/login"
 import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom";
 import {FavoriteDeleteRequest, FavoriteInfoRequest, FavoriteModal, FavoriteScheduleRequest} from "@/features/favorite";
@@ -12,6 +12,7 @@ export const MyPage = () => {
     const [showFavoriteModal, setShowFavoriteModal] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const {check} = CheckDuplicate()
     const isAdmin =  useSelector((state: RootState) => state.user.userRole);
 
     useEffect(() => {
@@ -23,11 +24,14 @@ export const MyPage = () => {
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
 
     const handleDelete = async (type: "department" | "certificate", id: number) => {
-        await FavoriteDeleteRequest(type, id);
-        const favorite_data = await FavoriteInfoRequest();
-        const favorite_schedule = await FavoriteScheduleRequest();
-        dispatch(setFavoriteInfo(favorite_data))
-        dispatch(setFavoriteSchedule(favorite_schedule))
+        try {
+            await check();
+            await FavoriteDeleteRequest(type, id);
+            const favorite_data = await FavoriteInfoRequest();
+            const favorite_schedule = await FavoriteScheduleRequest();
+            dispatch(setFavoriteInfo(favorite_data))
+            dispatch(setFavoriteSchedule(favorite_schedule))
+        }catch(err) {console.log(err)}
     }
 
 
