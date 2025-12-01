@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { myPageStyles } from "@/pages/dashboard/styles";
 import {ChevronUp} from "lucide-react";
+import {CheckDuplicate} from "@/features/login";
 
 export interface UserCbtHistoryList {
     previous_id: number;
@@ -43,6 +44,7 @@ export const CbtHistoryList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<string[]>([]);
+    const {check} = CheckDuplicate()
     const params = new URLSearchParams(location.search);
 
 
@@ -52,6 +54,7 @@ export const CbtHistoryList: React.FC = () => {
     useEffect(() => {
         const fetchCbtHistory = async () => {
             try {
+                await check();
                 const data = await UserGetCbtHistory();
                 setCbtRecords(data);
             } catch (err) {

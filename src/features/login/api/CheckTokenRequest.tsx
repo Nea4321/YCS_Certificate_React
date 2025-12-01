@@ -23,7 +23,8 @@ interface MyJwtPayload extends JwtPayload {
  * */
 export const CheckTokenRequest = () => {
     const dispatch = useDispatch();         //redux 사용되는 액션.
-    const { logout } = useLogout();
+    const logout = useLogout();
+
     const timeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     /**
