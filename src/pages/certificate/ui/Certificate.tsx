@@ -15,11 +15,26 @@ import axios from "axios";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/app/store";
 
+// 🔹 민간 자격증 ID 목록 (백엔드랑 맞춰서 사용)
+const PRIVATE_CERT_IDS = new Set<number>([
+    665, // 리눅스마스터
+    666, // 디지털정보활용능력
+    669, // 코딩능력
+    672, // 바리스타
+    673, // 전산세무/전산회계
+    674, // CS Leaders
+    675, // ERP 정보관리사
+    676, // GTQ
+    677, // ITQ
+]);
+
 export default function Certificate() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const certId = Number(id);
     const role = useSelector((state: RootState) => state.user.userRole);
+
+    const isPrivate = PRIVATE_CERT_IDS.has(certId);
 
     const [running, setRunning] = useState(false); // ← 엔진 동작중 표시
 
@@ -109,7 +124,7 @@ export default function Certificate() {
         </div>
     );
 
-    // 🔥 엔진 실행 중일 때: 스페셜 로딩 화면
+    // 🔥 엔진 실행 중일 때: 공공/민간 분기된 로딩 화면
     if (running) {
         return (
             <div className={certificateStyles.certificateContainer}>
@@ -117,27 +132,49 @@ export default function Certificate() {
                 <div className={certificateStyles.engineLoadingWrapper}>
                     <div className={certificateStyles.engineLoadingSpinner} />
                     <h2>자격증 정보를 불러오는 중입니다</h2>
-                    <p>개요 · 시험일정 · 시험정보 · 종목별 검정현황 · 우대현황을 준비하고 있어요…
+
+                    <p>
+                        {isPrivate
+                            ? "시험일정 · 시험시간 · 시험정보를 준비하고 있어요…"
+                            : "개요 · 시험일정 · 시험정보 · 종목별 검정현황 · 우대현황을 준비하고 있어요…"}
                         <br />
                         <span className={certificateStyles.engineLoadingNote}>
-                        평균 약 10초 정도 소요될 수 있습니다.
-                    </span>
+              평균 약 10초 정도 소요될 수 있습니다.
+            </span>
                     </p>
 
-
                     <ul className={certificateStyles.engineLoadingSteps}>
-                        <li className={certificateStyles.engineLoadingStep}>
-                            <span className={certificateStyles.engineStepBullet}>1</span>
-                            <span>기본 정보 가져오는 중…</span>
-                        </li>
-                        <li className={certificateStyles.engineLoadingStep}>
-                            <span className={certificateStyles.engineStepBullet}>2</span>
-                            <span>시험일정 · 시험정보 정리 중…</span>
-                        </li>
-                        <li className={certificateStyles.engineLoadingStep}>
-                            <span className={certificateStyles.engineStepBullet}>3</span>
-                            <span>우대현황 · 종목별 검정현황 불러오는 중…</span>
-                        </li>
+                        {isPrivate ? (
+                            <>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>1</span>
+                                    <span>시험 일정 데이터 수집 중…</span>
+                                </li>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>2</span>
+                                    <span>시험 시간 · 회차 정보 정리 중…</span>
+                                </li>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>3</span>
+                                    <span>등급/과목별 시험정보를 정리하는 중…</span>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>1</span>
+                                    <span>기본 정보 가져오는 중…</span>
+                                </li>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>2</span>
+                                    <span>시험일정 · 시험정보 정리 중…</span>
+                                </li>
+                                <li className={certificateStyles.engineLoadingStep}>
+                                    <span className={certificateStyles.engineStepBullet}>3</span>
+                                    <span>우대현황 · 종목별 검정현황 불러오는 중…</span>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </div>
@@ -178,9 +215,10 @@ export default function Certificate() {
         );
     }
 
-    // ✅ NotFound는 "두 요청이 끝난 뒤"에만 표시
+    // ✅ NotFound: 두 요청이 끝났는데도 아무 데이터가 없을 때
     const noEvents = !uiEvents || uiEvents.length === 0;
     const noCert = !certData;
+
     if (scheduleDone && certDone && noEvents && noCert) {
         return (
             <div className={certificateStyles.certificateContainer}>
@@ -193,7 +231,11 @@ export default function Certificate() {
                         onClick={handleRunEngine}
                         disabled={running}
                     >
-                        {running ? "가져오는 중…" : "자격증 불러오기"}
+                        {running
+                            ? "가져오는 중…"
+                            : isPrivate
+                                ? "민간 자격증 불러오기"
+                                : "자격증 불러오기"}
                     </button>
                 </div>
             </div>
@@ -208,6 +250,7 @@ export default function Certificate() {
                 certificate={certData ?? null}
                 calendarEvents={uiEvents}
                 calendarLoading={false}
+                isPrivate={isPrivate}        // 🔥 이 줄 추가
             />
         </div>
     );

@@ -12,19 +12,17 @@ import {persistor} from "@/app/store";
 export const useLogout = () => {
     const dispatch = useDispatch();
 
-    const logout = async () =>
-    {
+    return async () => {
         try {
-            await axios.post("/api/auth/logout", {}, {withCredentials: true});
+            await axios.post("/api/auth/logout", {}, { withCredentials: true });
         } catch (error) {
             console.log("리프레시 토큰 삭제 실패", error);
         } finally {
-            dispatch(clearUser());   // redux 저장소 초기화
+            dispatch(clearUser());
             dispatch(clearCbtHistory());
             dispatch(clearFavoriteInfo());
             dispatch(clearFavoriteSchedule());
-            await persistor.purge(); // redux-persist  초기화
+            await persistor.purge();
         }
-    }
-    return {logout}
-}
+    };
+};

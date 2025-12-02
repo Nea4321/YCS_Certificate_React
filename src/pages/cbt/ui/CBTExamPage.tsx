@@ -7,6 +7,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import type { RootState } from '@/app/store/store';
 import { certificateTags, loadCertTagMap } from '@/entities/certificate';
 import { Certificate } from '@/entities/certificate/model/types';
+import {CheckDuplicate} from "@/features/login";
 
 /** certificate 모델에 tag 필드를 덧붙임 */
 type UICertificate = Certificate & { tags: string[] };
@@ -18,6 +19,7 @@ type UICertificate = Certificate & { tags: string[] };
  */
 export const CBTExamPage: React.FC = () => {
     const userName = useSelector((state: RootState) => state.user.userName);
+    const {check}=CheckDuplicate()
     const isGuest = !userName;
 
     /** 태그가 부여된 자격증 리스트 (이미 CBT 문제 있는 자격증만) */
@@ -45,7 +47,14 @@ export const CBTExamPage: React.FC = () => {
     useEffect(() => {
         if (isGuest) {
             alert('로그인이 필요합니다. 로그인 후 CBT 시험을 이용할 수 있습니다.');
-            navigate('/auth', { replace: true });
+            navigate('/auth', {replace: true});
+            }
+        else {
+            const checkLogin = async () => {
+            try {await check();}
+            catch (err) {console.log(err)}
+        }
+            checkLogin();
         }
     }, [isGuest, navigate]);
 

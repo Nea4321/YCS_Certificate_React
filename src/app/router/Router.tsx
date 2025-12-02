@@ -21,6 +21,7 @@ import {ProtecteRouteDepartment_edit} from "@/app/router/ProtecteRouteDepartment
 import {PracticeResult} from "@/pages/practice-result";
 import {PreviousReviewPage, ReviewPage} from "@/features/cbt-review";
 import {IncorrectPracticePage} from "@/widgets/cbt-exam/ui";
+import {ProtectRouteAuth} from "@/app/router/ProtectRouteAuth.tsx";
 
 
 export const Router = () => {
@@ -46,7 +47,7 @@ export const Router = () => {
                             <Route path="/cbt/review/previous/:previousId" element={<PreviousReviewPage />}/>
                             <Route path="/cbt/incorrect" element={<IncorrectPracticePage />} />
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    ///소셜 로그인 확인
-                            <Route path="/auth" element={<Auth />} />               {/* 로그인 */}
+                        <Route path="/auth" element={<ProtectRouteAuth><Auth/></ProtectRouteAuth>} />               {/* 로그인 */}
                             <Route path="/logout" element={<Logout/>} />            {/* 로그아웃 */}
                             <Route path="/social_login/:socialType" element={<SocialLogin />} />    {/* 소셜 로그인 확인 */}
                             <Route path="/dashboard" element={<ProtecteRouteMypage><DashBoard /></ProtecteRouteMypage>} />     {/* 마이 페이지 */}

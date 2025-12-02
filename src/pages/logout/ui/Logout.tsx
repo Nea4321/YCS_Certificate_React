@@ -10,7 +10,7 @@ import {useLogout} from "@/features/login";
  * 성공하면 메인페이지로 이동.
  * */
 export const Logout = () => {
-    const { logout } = useLogout();
+    const logout = useLogout();
     const navigate = useNavigate();
 
     useEffect(() => {

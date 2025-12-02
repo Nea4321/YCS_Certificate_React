@@ -51,9 +51,15 @@ export const certificateApi = {
 
     async runPublic(certId: number) {
         // BE 컨트롤러에 이미 @PostMapping("/run-public/{certId}") 있음
-        const res = await axiosApi.post<string>(`/api/cert/run-public/${certId}`);
+        const res = await axiosApi.post(`/api/cert/run/${certId}`);
         return res.data; // "✅ run_public 완료 (certId=..)" 같은 메시지
     },
+
+    /** 자격증 데이터 크롤링+저장 실행 */
+    // async runCertificate(id: number): Promise<void> {
+    //     await axiosApi.post(`/api/cert/run/${id}`);
+    //     // 반환 값이 없어도 되니까 그냥 await만
+    // },
 
     // ===== 아직 백엔드 미구현/미확정이면 주석 처리 =====
     // async getCertPublicView(id: number, signal?: AbortSignal) {

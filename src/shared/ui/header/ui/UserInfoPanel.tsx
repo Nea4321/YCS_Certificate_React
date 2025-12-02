@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {setFavoriteInfo, setFavoriteSchedule} from "@/shared/slice";
 import {CalendarWidget} from "@/widgets/calendar";
 import {UiEvent, UiEventType} from "@/features/calendar";
+import {CheckDuplicate} from "@/features/login";
 
 interface UserInfoPanelProps {
     isOpen: boolean
@@ -24,6 +25,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     const dispatch = useDispatch();
     const userEmail = useSelector((state: RootState) => state.user.userEmail)
     const userName = useSelector((state: RootState) => state.user.userName)
+    const {check}=CheckDuplicate()
 
     const [showFavoriteModal, setShowFavoriteModal] = useState(false);
     const favoriteInfo = useSelector((state: RootState) => state.favorite.list);
@@ -31,11 +33,14 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
 
     // 즐찾 삭제 버튼 -> 삭제한 후 즐찾 목록 들고와서 redux에 저장.
     const handleDelete = async (type: "department" | "certificate", id: number) => {
-        await FavoriteDeleteRequest(type, id);
-        const favorite_data = await FavoriteInfoRequest();
-        const favorite_schedule = await FavoriteScheduleRequest();
-        dispatch(setFavoriteInfo(favorite_data))
-        dispatch(setFavoriteSchedule(favorite_schedule))
+        try {
+            await FavoriteDeleteRequest(type, id);
+            await check()
+            const favorite_data = await FavoriteInfoRequest();
+            const favorite_schedule = await FavoriteScheduleRequest();
+            dispatch(setFavoriteInfo(favorite_data))
+            dispatch(setFavoriteSchedule(favorite_schedule))
+        }catch(err) {console.log(err)}
     }
 
     /**
@@ -101,7 +106,7 @@ export const UserInfoPanel = ({ isOpen, onToggle }: UserInfoPanelProps) => {
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
-                if(userName) {
+                if(userName != "") {
                     const favorite_data = await FavoriteInfoRequest();
                     const favorite_schedule = await FavoriteScheduleRequest();
                     // Redux에 저장

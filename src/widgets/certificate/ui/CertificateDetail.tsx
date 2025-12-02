@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/app/store/store";
 import { CalendarWidget } from '@/widgets/calendar/ui/CalendarWidget';
 import { loadCertTagMap, certificateTags, certificateNames } from '@/entities/certificate';
-import type { UiEvent } from '@/features/calendar/model/adapters';
-import { fromRegularSchedule, toUiEvents, ADAPTER_BANNER }
+import { fromRegularSchedule, fromPrivateSchedule, toUiEvents, ADAPTER_BANNER, UiEvent,
+    PrivateScheduleLike, }
     from '@/features/calendar/model/adapters';
 import { QnetScheduleTable } from '@/widgets/schedule/ui/QnetScheduleTable';
 import type { RawItem } from '@/entities/certificate/model';
@@ -24,16 +24,24 @@ import CBTAnim from '@/pages/cbt/styles/CBTExamPage.module.css';
 import { toRawItems } from '@/entities/certificate/lib/asRawItems';
 import {PreferencePanel} from "@/widgets";
 import {adaptPreference} from "@/widgets/preference/ui/adaptPreference.ts";
+import {
+    PrivateScheduleTab,
+    PrivateTimeRow,
+    PrivateScheduleRow,
+} from "@/widgets/schedule/ui/PrivateScheduleTab";
+import {
+    PrivateCoverageRow,
+    PrivateInfoTab,
+    PrivateSyllabusRow,
+} from "@/widgets/schedule/ui/PrivateInfoTab";
 
-// ──────────────────────────────────────────────────────────────────────────────
-// 2) 본 컴포넌트
-// ──────────────────────────────────────────────────────────────────────────────
 
 interface CertificateDetailProps {
     certificate?: CertificateData | null;
     calendarEvents: UiEvent[];
     calendarLoading?: boolean;
     scheduleRows?: RawItem[];
+    isPrivate?: boolean;           // 🔹 민간 여부
 }
 
 const TAB_EXAM = 'exam';
@@ -69,11 +77,11 @@ const pickPreferenceSource = (v: unknown): unknown => {
     return v;
 };
 
-
 export const CertificateDetail = memo(function CertificateDetail({
                                                                      certificate: initialCertificate,
                                                                      calendarEvents,
                                                                      calendarLoading,
+                                                                     isPrivate = false,              // 🔹 기본 false
                                                                  }: CertificateDetailProps) {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -81,6 +89,7 @@ export const CertificateDetail = memo(function CertificateDetail({
     const [tagVersion, setTagVersion] = useState(0);
     const certId = Number(id);
     const [open, setOpen] = useState(false); // 기본: 접힘. 펼쳐서 시작하려면 true
+
     useEffect(() => {
         if (!certId) return;
         if (!Array.isArray(certificateTags[certId]) || certificateTags[certId].length === 0) {
@@ -107,7 +116,13 @@ export const CertificateDetail = memo(function CertificateDetail({
         if (!sp.get('tab')) setSp({tab: TAB_EXAM}, {replace: true});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    const active = sp.get('tab') ?? TAB_EXAM;
+    const activeRaw = sp.get('tab') ?? TAB_EXAM;
+
+    // 🔹 민간일 때는 exam / info 두 개만 인정
+    const active = isPrivate
+        ? (activeRaw === 'exam' ? 'exam' : 'info')
+        : activeRaw;
+
     const changeTab = (k: string) => setSp({ tab: k }, { replace: true });
 
     // 상세(캐시) 로드
@@ -128,6 +143,46 @@ export const CertificateDetail = memo(function CertificateDetail({
     );
 
     const base = certificate ?? initialCertificate ?? null;
+
+    // 🔹 민간 자격증일 때만 JSON에서 꺼내기 (cert_data 기반)
+    type PrivateBase = {
+        schedule?: unknown;
+        other_info?: Record<string, unknown>;
+    };
+
+    const anyBase = (base ?? {}) as PrivateBase;
+
+// 1) 회차별 일정: cert_data.schedule 에 그대로 저장됨
+    const rawSchedule = isPrivate ? anyBase.schedule : undefined;
+
+// 2) 시험시간: (리눅스에는 없고, 디지털정보활용능력 같은 애들용)
+    const rawTimes = isPrivate
+        ? (anyBase.other_info?.["시험시간"] as unknown)
+        : undefined;
+
+// 3) 시험내용(등급/과목/응시교시/시험시간): other_info["시험내용"].syllabus / coverage
+    const rawSyllabus = isPrivate
+        ? ((anyBase.other_info?.["시험내용"] as { syllabus?: unknown })?.syllabus)
+        : undefined;
+
+    const rawCoverage = isPrivate
+        ? ((anyBase.other_info?.["시험내용"] as { coverage?: unknown })?.coverage)
+        : undefined;
+
+// 🔹 민간 탭에서 쓰는 타입 캐스팅
+    const privateSchedule: PrivateScheduleRow[] =
+        Array.isArray(rawSchedule) ? (rawSchedule as PrivateScheduleRow[]) : [];
+
+    const privateTimes: PrivateTimeRow[] =
+        Array.isArray(rawTimes) ? (rawTimes as PrivateTimeRow[]) : [];
+
+    const privateSyllabus: PrivateSyllabusRow[] =
+        Array.isArray(rawSyllabus) ? (rawSyllabus as PrivateSyllabusRow[]) : [];
+
+    const PrivateCoverage: PrivateCoverageRow[] =
+        Array.isArray(rawCoverage) ? (rawCoverage as PrivateCoverageRow[]) : [];
+
+
 
     useEffect(() => {
         if (!base?.certificate_id) return;
@@ -172,31 +227,46 @@ export const CertificateDetail = memo(function CertificateDetail({
     const basicHtml   = toHtmlString(basicHtml0);
     const benefitHtml = toHtmlString(benefit0);
 
-
     console.log('[CERT] prop.calendarEvents length =', calendarEvents?.length);
 
     const DEBUG = new URLSearchParams(window.location.search).has('debugCal');
-
     const forceAdapter = DEBUG || new URLSearchParams(location.search).has('forceAdapter');
 
-    const calendarEventsResolved = useMemo(() => {
-        const rows: RawItem[] = (base?.schedule as RawItem[] | undefined) ?? [];
+    // 🔹 BE 이벤트(공통 내부 표현 - 공공/민간 공통)
+    //   - 민간: privateSchedule → fromPrivateSchedule
+    //   - 공공: scheduleRaw     → fromRegularSchedule
+    const beEvents = useMemo(() => {
+        if (isPrivate) {
+            // 민간: cert_data.schedule -> fromPrivateSchedule
+            return fromPrivateSchedule(privateSchedule as PrivateScheduleLike[]);
+        }
+        // 공공(Q-net): scheduleRaw -> fromRegularSchedule
+        return fromRegularSchedule(scheduleRaw ?? []);
+    }, [isPrivate, privateSchedule, scheduleRaw]);
 
-        if (!forceAdapter && calendarEvents?.length) {
-            // 여기 내가 수정했음 박세호
+    // 🔹 달력에 실제로 넘길 UiEvent[]
+    const calendarEventsResolved = useMemo(() => {
+        // 1) 공공 + 서버에서 달력 이벤트를 이미 받은 경우 → 기존 동작 유지
+        if (!isPrivate && !forceAdapter && calendarEvents?.length) {
             return calendarEvents.map(e => ({
                 ...e,
                 certificate: e.certificate && e.certificate.trim()
                     ? e.certificate
-                    : certName
+                    : certName,
             }));
         }
 
-        console.log('[CERT] building via adapter:', ADAPTER_BANNER, 'rows=', rows.length);
-        const be = fromRegularSchedule(rows);
-        console.table(be.map(e => ({type: e.type, start: e.start, end: e.end})));
-        return toUiEvents(be, base?.certificate_name || '');
-    }, [calendarEvents, base, forceAdapter]);
+        // 2) 그 외(민간 전체 + 어댑터 강제 모드)는 항상 어댑터 결과 사용
+        console.log(
+            '[CERT] building via adapter:',
+            ADAPTER_BANNER,
+            'mode =', isPrivate ? 'PRIVATE' : 'QNET',
+            'beEvents =', beEvents.length,
+        );
+
+        return toUiEvents(beEvents, certName || '');
+    }, [isPrivate, forceAdapter, calendarEvents, beEvents, certName]);
+
 
     const benefitRef = useRef<HTMLDivElement | null>(null);
 
@@ -220,19 +290,15 @@ export const CertificateDetail = memo(function CertificateDetail({
         });
     }, [benefitHtml]); // ← 우리 표는 benefitHtml로 렌더되지 않으므로 영향 없음
 
-    // (우대현황 탭 JSX 바깥, return 위 어딘가)
     const prefData = useMemo<unknown>(() => pickPreferenceSource(base as unknown), [base]);
     const prefRows = useMemo(() => adaptPreference(prefData), [prefData]);
 
-// (필요하면 URL에 ?debugPref 붙였을 때만 찍게)
     if (new URLSearchParams(location.search).has('debugPref')) {
         console.table(prefRows.slice(0, 5));
     }
 
-
-
-    // 1) 플래그 정리
-    // 1) 플래그 정리
+    // 1) 플래그 정리 (공공용)
+    // 1) 공공용 플래그는 그대로 둔다
     const hasSchedule =
         (scheduleRaw?.length ?? 0) > 0 ||
         (Array.isArray(base?.schedule) && base!.schedule.length > 0);
@@ -240,9 +306,8 @@ export const CertificateDetail = memo(function CertificateDetail({
     const hasBasic =
         Boolean(base?.basic_info || base?.basic_info_html || (basicHtml && basicHtml.length > 0));
 
-    const hasBenefit  = prefRows.length > 0 || Boolean(benefitHtml && benefitHtml.length > 0);
-
-    const showTabs = hasSchedule || hasBasic || hasBenefit;
+    const hasBenefit =
+        prefRows.length > 0 || Boolean(benefitHtml && benefitHtml.length > 0);
 
     useEffect(() => {
         if (Array.isArray(base?.schedule)) {
@@ -250,6 +315,16 @@ export const CertificateDetail = memo(function CertificateDetail({
         }
     }, [base?.schedule]);
 
+    const hasPrivateTabs =
+        isPrivate &&
+        (privateSchedule.length > 0 ||
+            privateTimes.length > 0 ||
+            privateSyllabus.length > 0 ||
+            PrivateCoverage.length > 0 );
+
+    const showTabs = isPrivate
+        ? hasPrivateTabs
+        : (hasSchedule || hasBasic || hasBenefit);
 
 
     return (
@@ -269,7 +344,7 @@ export const CertificateDetail = memo(function CertificateDetail({
             {/* 헤더 */}
             <div className={certificateDetailStyles.header}>
                 <div className={certificateDetailStyles.titleBox}>
-                <h1 className={certificateDetailStyles.title}>{certName}</h1>
+                    <h1 className={certificateDetailStyles.title}>{certName}</h1>
                     {userName ? (<FavoriteButton exist={certName} id={id} type="certificate" />) : null}
                 </div>
                 <div className={certificateDetailStyles.tagBox}>
@@ -283,8 +358,8 @@ export const CertificateDetail = memo(function CertificateDetail({
                                 style={{ backgroundColor: meta.color ?? "#64748B" }}
                                 onClick={() => navigate(`/search?keyword=${encodeURIComponent("#" + meta.name)}`)}
                             >
-        #{meta.name}
-      </span>
+                                #{meta.name}
+                            </span>
                         );
                     })}
                 </div>
@@ -293,9 +368,7 @@ export const CertificateDetail = memo(function CertificateDetail({
             {/* ▼ 기본정보(개요/수행직무/진로및전망) */}
             {base?.basic_info && (
                 <section className={certificateDetailStyles.basicInfoSection}>
-                    {/* 바깥: 카드(그림자/라운드/배경) */}
                     <div className={certificateDetailStyles.basicInfoCard}>
-                        {/* 안쪽: 내용(접힘/펼침, 그라데이션) */}
                         <div
                             id="basic-info"
                             className={[
@@ -309,7 +382,6 @@ export const CertificateDetail = memo(function CertificateDetail({
                             <BasicInfoPanel data={base} />
                         </div>
 
-                        {/* 펼치기/접기 버튼은 카드 안쪽 하단에 */}
                         <div className={certificateDetailStyles.expandBar}>
                             <button
                                 className={CBTAnim.expandIconButton}
@@ -326,7 +398,7 @@ export const CertificateDetail = memo(function CertificateDetail({
                 </section>
             )}
 
-            {/* 달력 먼저 */}
+            {/* 달력 */}
             <section className={certificateDetailStyles.calendarSection} style={{ marginTop: 32 }}>
                 <h2>자격증 시험일정</h2>
                 <CalendarWidget
@@ -336,20 +408,41 @@ export const CertificateDetail = memo(function CertificateDetail({
                 />
             </section>
 
-            <>
-                {/* 그 다음 탭 */}
-                {showTabs && (
-                    <section style={{ marginTop: 24 }}>
+            {/* 시험 관련 탭 영역 */}
+            {showTabs && (
+                <section style={{ marginTop: 24 }}>
+                    {isPrivate ? (
                         <Tabs
                             tabs={[
-                                { key: 'exam',    label: '시험정보' },
-                                { key: 'basic',   label: '검정통계' },
-                                { key: 'benefit', label: '우대현황' },
+                                { key: "exam", label: "시험일정" },
+                                { key: "info", label: "시험정보" },
                             ]}
                             active={active}
                             onChange={changeTab}
                         >
-                            {active === 'exam' && (
+                            {active === "exam" && (
+                                <PrivateScheduleTab
+                                    schedule={privateSchedule}
+                                    times={privateTimes}
+                                />
+                            )}
+                            {active === "info" && (
+                                <PrivateInfoTab
+                                    syllabus={privateSyllabus}
+                                    coverage={PrivateCoverage}/>
+                            )}
+                        </Tabs>
+                    ) : (
+                        <Tabs
+                            tabs={[
+                                { key: "exam", label: "시험정보" },
+                                { key: "basic", label: "검정통계" },
+                                { key: "benefit", label: "우대현황" },
+                            ]}
+                            active={active}
+                            onChange={changeTab}
+                        >
+                            {active === "exam" && (
                                 <div>
                                     <h3 style={{ marginTop: 4 }}>시험일정</h3>
                                     <QnetScheduleTable data={scheduleRaw} />
@@ -358,32 +451,32 @@ export const CertificateDetail = memo(function CertificateDetail({
                                 </div>
                             )}
 
-                            {active === 'basic' && (
+                            {active === "basic" && (
                                 <div className="certificate-content">
                                     {base && <ExamStatsPanel data={examStats} />}
-                                    <div dangerouslySetInnerHTML={{ __html: base ? (basicHtml || '') : '' }} />
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: base ? basicHtml || "" : "",
+                                        }}
+                                    />
                                 </div>
                             )}
 
-                            {active === 'benefit' && (
+                            {active === "benefit" && (
                                 <div
                                     id="benefit-root"
                                     ref={benefitRef}
                                     className={certificateDetailStyles.benefitSection}
                                 >
                                     <h2>우대현황</h2>
-
-                                    {/* ✅ 항상 PreferencePanel에게 맡긴다 */}
                                     <PreferencePanel data={prefData} />
                                 </div>
                             )}
-
-
-
                         </Tabs>
-                    </section>
-                )}
-            </>
+                    )}
+                </section>
+            )}
+
 
             <footer
                 style={{

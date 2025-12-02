@@ -192,3 +192,48 @@ export function toUiEvents(be: BEEvent[] = [], certName = ''): UiEvent[] {
         certificate: certName,
     }));
 }
+
+// 민간 스케줄(row)은 실제로는 Record<string, unknown> 에 가깝다.
+export type PrivateScheduleLike = Record<string, unknown>;
+
+/** 민간 자격증용: cert_data.schedule -> BEEvent[] */
+export function fromPrivateSchedule(rows: PrivateScheduleLike[] = []): BEEvent[] {
+    // 1) 민간 schedule 1행 -> RegularRow 1행으로 정규화
+    const normalized: RegularRow[] = rows.map((row) => {
+        const r = row as Record<string, unknown>;
+
+        // phase: "구분" 또는 "phase" 에서 가져오기
+        const phase =
+            (r["phase"] as string | undefined) ??
+            (r["구분"] as string | undefined) ??
+            null;
+
+        const regStart   = r["registerStart"] as string | undefined;
+        const regEnd     = r["registerEnd"]   as string | undefined;
+        const examDate   = r["examDate"]      as string | undefined;
+        const resultDate = r["resultDate"]    as string | undefined;
+
+        // Q-net 어댑터가 보는 표준 필드 3종
+        const 접수기간 =
+            regStart && regEnd
+                ? `${regStart} ~ ${regEnd}`
+                : regStart ?? null;
+
+        const 시험일 = examDate   ?? null;
+        const 발표   = resultDate ?? null;
+
+        const regularRow: RegularRow = {
+            phase,
+            접수기간,
+            시험일,
+            발표,
+            // 민간 쪽은 지금은 "추가접수기간" 개념이 없으니 비움
+            추가접수기간: null,
+        };
+
+        return regularRow;
+    });
+
+    // 2) 나머지는 Q-net 이랑 똑같이 처리 (접수/시험/발표 -> BEEvent[])
+    return fromRegularSchedule(normalized);
+}

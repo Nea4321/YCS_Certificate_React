@@ -28,6 +28,7 @@ export const VerifyEmail = ({ email, onClose, onVerified }: VerifyEmailModalProp
             onVerified(); // 인증 성공 시 호출
             onClose();
         } catch (err) {
+            console.log(err)
             setError("인증 코드가 올바르지 않습니다.");
         }
     };

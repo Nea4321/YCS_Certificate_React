@@ -255,3 +255,111 @@
 .tag:hover {
     opacity: 0.8;
 }
+
+
+/* ─────────────────────────────────────────────
+   민간 시험일정 / 시험시간 / 시험정보 공통 래퍼
+   (공공 QnetScheduleTable 과 동일한 느낌)
+   ─────────────────────────────────────────── */
+
+.privateTableWrap {
+    width: 100%;
+    overflow-x: auto;                 /* 폭 모자라면 가로 스크롤 */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ─────────────────────────────────────────────
+   기본 테이블 스타일
+   ─────────────────────────────────────────── */
+
+.privateScheduleTable,
+.privateTimeTable,
+.privateInfoTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.95rem;
+}
+
+/* 헤더 스타일 */
+.privateScheduleTable thead th,
+.privateTimeTable thead th,
+.privateInfoTable thead th {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;              /* PC에서는 한 줄 유지 */
+    word-break: keep-all;
+}
+
+/* 본문 셀 */
+.privateScheduleTable tbody td,
+.privateTimeTable tbody td,
+.privateInfoTable tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+/* 줄무늬 효과 (가독성) */
+.privateScheduleTable tbody tr:nth-child(odd),
+.privateTimeTable tbody tr:nth-child(odd),
+.privateInfoTable tbody tr:nth-child(odd) {
+    background-color: #fcfcff;
+}
+
+/* 회차/등급 컬럼은 살짝 굵게 */
+.privateScheduleTable tbody td:first-child,
+.privateInfoTable tbody td:first-child {
+    font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────
+   모바일 대응
+   - 글자 크기/패딩 살짝 줄이기
+   - 헤더 줄바꿈 허용
+   - 테이블 최소 너비를 주고, 부족하면 가로 스크롤
+   ─────────────────────────────────────────── */
+/* 기존 공통 스타일은 그대로 두고, 모바일에서만 추가 옵션 */
+@media (max-width: 768px) {
+    .privateScheduleTable,
+    .privateTimeTable,
+    .privateInfoTable {
+        font-size: 0.9rem;
+        table-layout: auto;          /* 칸 조금 더 유연하게 */
+    }
+
+    /* 표가 너무 눌리지 않게 최소 너비 설정(필요하면 숫자 조정) */
+    .privateScheduleTable {
+        min-width: 620px;
+    }
+
+    .privateTimeTable {
+        min-width: 420px;
+    }
+
+    .privateInfoTable {
+        min-width: 640px;
+    }
+
+    .privateScheduleTable thead th,
+    .privateTimeTable thead th,
+    .privateInfoTable thead th,
+    .privateScheduleTable tbody td,
+    .privateTimeTable tbody td,
+    .privateInfoTable tbody td {
+        padding: 6px 8px;
+    }
+
+    /* 헤더 줄바꿈 허용 → 겹침 방지 */
+    .privateScheduleTable thead th,
+    .privateTimeTable thead th,
+    .privateInfoTable thead th {
+        white-space: normal;
+    }
+}
+
+
