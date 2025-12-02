@@ -15,33 +15,46 @@ export const AnswerSheet: React.FC<AnswerSheetProps> = ({
                                                             onJump,
                                                         }) => (
     <div className={PracticeStyles.answerSheet}>
-        {Array.from({ length: totalQuestions }, (_, i) => i + 1).map((num) => (
-            <div
-                key={num}
-                className={PracticeStyles.answerRowClassic}
-                onClick={() => onJump(num)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onJump(num)}
-            >
-                <div className={PracticeStyles.answerNo}>{num}</div>
-                <div className={PracticeStyles.answerDots}>
-                    {[1, 2, 3, 4].map((opt) => (
-                        <label key={opt} onClick={(e) => e.stopPropagation()} className={PracticeStyles.dotLabel}>
-                            <input
-                                type="radio"
-                                name={`a${num}`}
-                                checked={answers[num - 1] === opt}
-                                onChange={() => {
+        {Array.from({ length: totalQuestions }, (_, i) => i + 1).map((num) => {
+            const a = answers[num - 1];
+
+            return (
+                <div key={num} className={PracticeStyles.answerRowClassic}>
+                    <button
+                        type="button"
+                        className={PracticeStyles.answerNo}
+                        onClick={() => onJump(num)}
+                    >
+                        {num}
+                    </button>
+
+                    <div className={PracticeStyles.answerDots}>
+                        {[1, 2, 3, 4].map((opt) => (
+                            <label
+                                key={opt}
+                                className={PracticeStyles.dotLabel}
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     setAnswer(num - 1, opt);
-                                    onJump(num);
                                 }}
-                            />
-                            <span className={PracticeStyles.dotCircle}>{opt}</span>
-                        </label>
-                    ))}
+                            >
+                                <input
+                                    type="radio"
+                                    name={`a${num}`}
+                                    checked={a === opt}
+                                    readOnly
+                                    tabIndex={-1}
+                                    aria-hidden="true"
+                                    className={PracticeStyles.sheetRadioHidden}
+                                />
+                                <span className={PracticeStyles.dotCircle}>{opt}</span>
+                            </label>
+                        ))}
+                    </div>
                 </div>
-            </div>
-        ))}
+            );
+        })}
     </div>
 );

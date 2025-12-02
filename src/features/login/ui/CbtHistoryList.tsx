@@ -6,6 +6,7 @@ import {ChevronUp} from "lucide-react";
 
 export interface UserCbtHistoryList {
     previous_id: number;
+    previous_type: string;
     score: number;
     correct_count: number;
     created_at: string;
@@ -18,10 +19,25 @@ export interface UserCbtHistoryCert {
     list: UserCbtHistoryList[];
 }
 
+type PreviousDTO = {
+    previous_id: number;
+    type?: string;
+    type_id?: number;
+    list?: any;
+};
+
 // API 호출
 export const UserGetCbtHistory = async (): Promise<UserCbtHistoryCert[]> => {
     const response = await axios.get("/api/user/cbt", { withCredentials: true });
     return response.data;
+};
+
+export const createWrongNotePrevious = async (certId: number) => {
+    const res = await axios.get<PreviousDTO>("/api/user/cbt", {
+        params: { cert_id: certId },
+        withCredentials: true,
+    });
+    return res.data;
 };
 
 // 시간을 "mm분 ss초" 포맷으로
@@ -43,6 +59,7 @@ export const CbtHistoryList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<string[]>([]);
+    const [wrongLoadingCertId, setWrongLoadingCertId] = useState<number | null>(null);
     const params = new URLSearchParams(location.search);
 
 
@@ -87,6 +104,51 @@ export const CbtHistoryList: React.FC = () => {
         );
     };
 
+    const handleWrongNote = async (
+        certId: number,
+        certName: string,
+        e?: React.MouseEvent
+    ) => {
+        e?.stopPropagation();
+
+        try {
+            setWrongLoadingCertId(certId);
+
+            const data = await createWrongNotePrevious(certId);
+
+            const prevId = data?.previous_id;
+            if (!prevId) {
+                alert("오답노트 생성 실패");
+                return;
+            }
+
+            const qp = new URLSearchParams(location.search);
+            qp.set("previousId", String(prevId));
+            qp.set("certificateId", String(certId));
+            qp.set("certName", certName);
+            qp.set("ui", "practice");
+            qp.set("prevType", "incorrect");
+
+            navigate(`/cbt/test?${qp.toString()}`);
+        } catch (err: any) {
+            console.error("오답노트 생성 실패", err);
+
+            const status = err?.response?.status;
+            const data = err?.response?.data;
+
+            const msg =
+                typeof data === "string"
+                    ? data
+                    : data?.message
+                        ? data.message
+                        : `오답노트 생성 중 오류가 발생했습니다. (${status ?? "?"})`;
+
+            alert(msg);
+        } finally {
+            setWrongLoadingCertId(null);
+        }
+    };
+
     return (
         <div className={myPageStyles.infoCard}>
             <div className={myPageStyles.cardHeader}>
@@ -99,37 +161,54 @@ export const CbtHistoryList: React.FC = () => {
 
                     return (
                         <div key={cert.certificate_id}>
-                            <div className={`${myPageStyles.cbtRecordItem} ${myPageStyles.click}`} onClick={() => toggle(cert.certificate_name)} >
-                                <h4 className={myPageStyles.cbtCertName}
-                                    onClick={() => navigate(`/certificate/${cert.certificate_id}`)}>
-                                    {cert.certificate_name}
-                                </h4>
+                            <div
+                                className={`${myPageStyles.cbtRecordItem} ${myPageStyles.click}`}
+                                onClick={() => toggle(cert.certificate_name)}
+                            >
+                                <div className={myPageStyles.cbtCardTop}>
+                                    <h4
+                                        className={myPageStyles.cbtCertName}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/certificate/${cert.certificate_id}`);
+                                        }}
+                                        title={cert.certificate_name}
+                                    >
+                                        {cert.certificate_name}
+                                    </h4>
+                                </div>
 
                                 <div className={myPageStyles.buttonGroup}>
                                     <button
                                         className={myPageStyles.toggleButton}
                                         onClick={(e) => {
-                                        e.stopPropagation(); // 부모 div로 클릭 이벤트 전파 막기
-                                        toggle(cert.certificate_name);}}
+                                            e.stopPropagation();
+                                            toggle(cert.certificate_name);
+                                        }}
                                     >
                                         {isOpen ? "접기" : "문제 기록 확인"}
                                     </button>
 
                                     <button
                                         className={myPageStyles.solveButton}
-                                        onClick={() =>
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             navigate(
                                                 `/cbt/start?certificateId=${cert.certificate_id}&certName=${encodeURIComponent(
                                                     cert.certificate_name
                                                 )}`
-                                            )
-                                        }
+                                            );
+                                        }}
                                     >
                                         문제 풀기
                                     </button>
 
-                                    <button className={myPageStyles.wrongReviewButton}>
-                                        오답노트
+                                    <button
+                                        className={myPageStyles.wrongReviewButton}
+                                        disabled={wrongLoadingCertId === cert.certificate_id}
+                                        onClick={(e) => handleWrongNote(cert.certificate_id, cert.certificate_name, e)}
+                                    >
+                                        {wrongLoadingCertId === cert.certificate_id ? "오답노트 생성중..." : "오답노트"}
                                     </button>
                                 </div>
                             </div>
@@ -146,13 +225,17 @@ export const CbtHistoryList: React.FC = () => {
                                         key={`${record.previous_id}-${record.created_at}`}
                                         className={myPageStyles.cbtRecordItem}
                                     >
-                                        <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}</h4>
+                                        <h4 className={myPageStyles.cbtCertName}>{cert.certificate_name}
+                                            {record.previous_type === "incorrect" && (
+                                            <span className={myPageStyles.wrongNoteBadge}>오답노트</span>
+                                        )}
+                                        </h4>
 
                                         <p className={myPageStyles.cbtMeta}>
                                             <span>🕒 {formatDate(record.created_at)}</span>
-                                            <span> | 걸린 시간 : {formatDuration(record.left_time)}</span>
-                                            <span> | 점수: {record.score}점</span>
-                                            <span> | 맞힌 문제: {record.correct_count}개</span>
+                                            <span>  걸린 시간 : {formatDuration(record.left_time)}</span>
+                                            <span>  점수: {record.score}점</span>
+                                            <span>  맞힌 문제: {record.correct_count}개</span>
                                         </p>
 
                                         <div className={myPageStyles.cbtActions}>
@@ -160,6 +243,9 @@ export const CbtHistoryList: React.FC = () => {
                                                 className={myPageStyles.retryButton}
                                                 onClick={() => {
                                                     params.set("previousId", record.previous_id.toString());
+                                                    params.set("certName", cert.certificate_name);
+                                                    params.set("certificateId", String(cert.certificate_id));
+                                                    params.set("prevType", record.previous_type);
                                                     navigate(`/cbt/test?${params.toString()}`);
                                                 }}
                                             >

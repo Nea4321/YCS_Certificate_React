@@ -22,11 +22,14 @@ export const CBTTestPage: React.FC = () => {
     const search = new URLSearchParams(location.search);
     const showCorrect = search.get("showCorrect") === "1";
     const questionInfoId = search.get("questionInfoId");
-    const certificateId = search.get("certificateId");
+    const certificateIdParam = search.get("certificateId");
+    const certificateIdNum = certificateIdParam ? Number(certificateIdParam) : null;
     const previous_id = search.get("previousId");
+    const prevTypeFromQuery = search.get("prevType");
 
     const [questions, setQuestions] = useState<UiQuestion[]>([]);
     const [previousId, setPreviousId] = useState<number | null>(null);
+    const [prevType, setPrevType] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -36,6 +39,7 @@ export const CBTTestPage: React.FC = () => {
     const [examPageSize, setExamPageSize] = useState(3);
     const PRACTICE_PAGE_SIZE = 4;
     const [currentPage, setCurrentPage] = useState(1);
+
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -55,12 +59,14 @@ export const CBTTestPage: React.FC = () => {
         if (previous_id) {
             // 기록 회차 재생
             const previousIdNum = parseInt(previous_id, 10);
+            setPreviousId(previousIdNum);
             fetch(`/api/user/cbt/previous/${previousIdNum}`)
                 .then(res => {
                     if (!res.ok) throw new Error(res.statusText);
                     return res.json();
                 })
                 .then((data: UserPreviousDTO) => {
+                    setPrevType(data.previous.type ?? null);
                     const qList: UiQuestion[] =
                         data.previous.list.question_types.flatMap(qt =>
                             qt.questions.map(q => ({
@@ -69,8 +75,17 @@ export const CBTTestPage: React.FC = () => {
                                 question_type_name: qt.question_type_name,
                             }))
                         );
+                    const hasNum = qList.every(() => true);
+                    if (hasNum) qList.sort((a, b) => (a.question_num! - b.question_num!));
 
                     setQuestions(qList);
+                    console.log(
+                        "[CBTTestPage retry] prevId",
+                        previousIdNum,
+                        qList
+                            .map(q => [q.question_num, q.question_id])
+                            .slice(0, 20)
+                    );
                 })
                 .catch(e => {
                     console.error(e);
@@ -87,6 +102,7 @@ export const CBTTestPage: React.FC = () => {
                 })
                 .then((data: PreviousDTO) => {
                     setPreviousId(data.previous_id);
+                    setPrevType(data.type ?? "user");
 
                     const qList: UiQuestion[] =
                         data.list?.question_types?.flatMap(qt =>
@@ -95,7 +111,10 @@ export const CBTTestPage: React.FC = () => {
                                 question_type_id: qt.question_type_id,
                                 question_type_name: qt.question_type_name,
                             }))
-                        ) ?? [];
+
+                        );
+                    const hasNum = qList.every(() => true);
+                    if (hasNum) qList.sort((a, b) => (a.question_num! - b.question_num!));
                     setQuestions(qList);
                 })
                 .catch(e => {
@@ -109,6 +128,7 @@ export const CBTTestPage: React.FC = () => {
             setLoading(false);
         }
     }, [questionInfoId, previous_id]);
+    const isIncorrectPrevious = (prevTypeFromQuery ?? prevType) === "incorrect";
 
     const calculatePageSize = () => {
         const windowHeight = window.innerHeight;
@@ -205,7 +225,8 @@ export const CBTTestPage: React.FC = () => {
                     ui={ui}
                     onToggleUi={toggleUi}
                     previousId={previousId}
-                    certificateId={Number(certificateId)}
+                    certificateId={certificateIdNum ?? 0}
+                    showSubjectPerQuestion={isIncorrectPrevious}
                 />
             ) : (
                 <PracticeView
@@ -220,7 +241,8 @@ export const CBTTestPage: React.FC = () => {
                     ui={ui}
                     onToggleUi={toggleUi}
                     previousId={previousId}
-                    certificateId={Number(certificateId)}
+                    certificateId={certificateIdNum ?? 0}
+                    showSubjectPerQuestion={isIncorrectPrevious}
                 />
             )}
         </>

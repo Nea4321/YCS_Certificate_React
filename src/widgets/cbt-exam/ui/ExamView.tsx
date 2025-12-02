@@ -32,6 +32,7 @@ export interface ExamViewProps {
     onToggleUi: () => void;
     previousId: number | null;
     certificateId: number;
+    showSubjectPerQuestion: boolean;
 }
 
 export function ExamView({
@@ -48,6 +49,7 @@ export function ExamView({
                              onToggleUi,
                              previousId,
                              certificateId,
+                             showSubjectPerQuestion,
                          }: ExamViewProps) {
     const { leftTime, limitMin, leftSec } = timer;
 
@@ -192,6 +194,7 @@ export function ExamView({
                         setAnswer={setAnswer}
                         fontZoom={fontZoom}
                         allQuestions={questions}
+                        showSubjectPerQuestion={showSubjectPerQuestion}
                     />
                 </div>
 

@@ -4,6 +4,7 @@ import { PracticeStyles } from "@/widgets/cbt-practice/styles";
 interface QuestionCardProps {
     number: number;
     text: string;
+    subject?: string;
     options: string[];
     selectedAnswer: number | null;
     onSelect: (opt: number) => void;
@@ -14,6 +15,7 @@ interface QuestionCardProps {
 export const QuestionCard: React.FC<QuestionCardProps> = ({
                                                               number,
                                                               text,
+                                                              subject,
                                                               options,
                                                               selectedAnswer,
                                                               onSelect,
@@ -21,6 +23,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                                                               img,
                                                           }) => (
     <div className={PracticeStyles.qBlock}>
+        {subject && <div className={PracticeStyles.subjectBadge}>{subject}</div>}
         <div className={PracticeStyles.qTitle}>
             <span className={PracticeStyles.qNumber}>{number}.</span>
             <span className={PracticeStyles.qText}>{text}</span>

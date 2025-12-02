@@ -35,6 +35,7 @@ export type PreviousDTO = {
     previous_id: number;
     previous_name: string | null;
     list: QuestionInfoDTO;
+    type?: string;
 };
 
 export type UserAnswerDTO = {

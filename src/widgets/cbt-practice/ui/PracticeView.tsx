@@ -24,6 +24,7 @@ export interface PracticeViewProps {
     onToggleUi: () => void;
     previousId: number | null;
     certificateId: number | string;
+    showSubjectPerQuestion: boolean;
 }
 
 export const PracticeView: React.FC<PracticeViewProps> = ({
@@ -37,7 +38,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                                                               setAnswer,
                                                               onToggleUi,
                                                               previousId,
-                                                              certificateId
+                                                              certificateId,
+                                                              showSubjectPerQuestion,
                                                           }) => {
     const [sp] = useSearchParams();
     const certificateIdStr = sp.get("certificateId");
@@ -49,7 +51,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             ? certificateId
             : Number(certificateIdStr ?? certificateId);
 
-    // 🔹 이제 questions는 이미 CBTTestPage에서 필터된 상태이므로 그대로 사용
     const total = totalQuestions ?? questions.length;
 
     const { totalPages, currentQuestionNumbers, goToQuestion } =
@@ -123,7 +124,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             state: {
                 certName,
                 userAnswers: answers,
-                questions: questions,   // 🔹 여기서도 props.questions 사용
+                questions: questions,
                 from: "practice",
             },
             replace: true,
@@ -178,18 +179,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                             }
                         >
                             {currentQuestionNumbers.map((qi) => {
-                                const q = questions[qi];   // 🔹 mock이 아니라 props.questions
+                                const q = questions[qi];
                                 if (!q) return null;
 
-                                const options = q.answers.map((a) =>
-                                    a.content.trim()
-                                );
+                                const options = q.answers.map((a) => a.content.trim());
 
                                 const prevGlobal = qi > 0 ? questions[qi - 1] : null;
                                 const showSubjectHeader =
+                                    !showSubjectPerQuestion &&
                                     q.question_type_name &&
-                                    (!prevGlobal ||
-                                        prevGlobal.question_type_id !== q.question_type_id);
+                                    (!prevGlobal || prevGlobal.question_type_id !== q.question_type_id);
 
                                 return (
                                     <li
@@ -204,6 +203,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                                         )}
                                         <QuestionCard
                                             number={qi + 1}
+                                            subject={showSubjectPerQuestion ? q.question_type_name : undefined}
                                             text={q.text}
                                             content={q.content ?? undefined}
                                             img={q.img ?? undefined}

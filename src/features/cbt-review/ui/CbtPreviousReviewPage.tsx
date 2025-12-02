@@ -1,37 +1,20 @@
-import {
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-import {
-    useLocation,
-    useNavigate,
-    useParams,
-} from "react-router-dom";
-import type { QuestionDTO } from "@/entities/cbt";
-import {
-    buildReviewList,
-    type ReviewItem,
-} from "../lib/buildReviewList";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import type { QuestionDTO, UserPreviousDTO } from "@/entities/cbt";
 import styles from "./styles/reviewStyles.module.css";
 
-type UserAnswerDTO = {
-    answer_id: number;
-    bool: boolean;
+type ReviewItem = {
+    index: number;
+    question: QuestionDTO;
+    user: number | null; // 1~4 or null
+    correct: number;     // 1~4 (없으면 0)
+    isCorrect: boolean;
 };
 
-// 백엔드 UserPreviousDTO 형태 맞춰줌
-type UserPreviousDTO = {
-    previous: {
-        list: {
-            question_types: {
-                question_type_id: number;
-                question_type_name: string;
-                questions: QuestionDTO[];
-            }[];
-        };
-    };
-    userAnswer: UserAnswerDTO[];
+const byQuestionNumSafe = (a: QuestionDTO, b: QuestionDTO) => {
+    const an = a.question_num;
+    const bn = b.question_num;
+    return an - bn;
 };
 
 export function PreviousReviewPage() {
@@ -41,22 +24,19 @@ export function PreviousReviewPage() {
     const certName = state?.certName ?? "CBT";
 
     const [questions, setQuestions] = useState<QuestionDTO[]>([]);
-    const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
+    // ✅ question_id 기반으로 userChoice 저장 (순서 꼬임 방지)
+    const [userChoiceByQid, setUserChoiceByQid] = useState<Map<number, number>>(() => new Map());
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 🔹 어떤 문항의 해설이 열려 있는지 (question_id 기준)
     const [openedSolutions, setOpenedSolutions] = useState<number[]>([]);
-
     const toggleSolution = (questionId: number) => {
-        setOpenedSolutions(prev =>
-            prev.includes(questionId)
-                ? prev.filter(id => id !== questionId)
-                : [...prev, questionId]
+        setOpenedSolutions((prev) =>
+            prev.includes(questionId) ? prev.filter((id) => id !== questionId) : [...prev, questionId]
         );
     };
 
-    // --- 1) previous/{id} 호출해서 데이터 가져오기 ---
     useEffect(() => {
         if (!previousId) return;
 
@@ -65,69 +45,58 @@ export function PreviousReviewPage() {
                 setLoading(true);
                 setError(null);
 
-                const res = await fetch(`/api/user/cbt/previous/${previousId}`, {
-                    credentials: "include",
-                });
-                if (!res.ok) {
-                    throw new Error(`previous 조회 실패: ${res.status}`);
-                }
+                const res = await fetch(`/api/user/cbt/previous/${previousId}`, { credentials: "include" });
+                if (!res.ok) throw new Error(`previous 조회 실패: ${res.status}`);
 
                 const data: UserPreviousDTO = await res.json();
 
-                // 1-1. 전체 문제 flat
+                // 1) question_types 평탄화
                 const flatQuestions: QuestionDTO[] =
                     data.previous.list.question_types.flatMap((qt) => qt.questions ?? []);
 
-                // 1-2. answer_id -> (보기 번호) 매핑
-                const answerIndexMap = new Map<number, number>(); // answer_id -> choice(1~4)
+                // 2) 백이 준 question_num 기준으로 확정 정렬
+                flatQuestions.sort(byQuestionNumSafe);
+
+                // 3) answer_id -> { questionId, choice(1~4) }
+                const answerIdToPick = new Map<number, { questionId: number; choice: number }>();
                 flatQuestions.forEach((q) => {
                     q.answers.forEach((a, idx) => {
-                        answerIndexMap.set(a.answer_id, idx + 1);
+                        answerIdToPick.set(a.answer_id, { questionId: q.question_id, choice: idx + 1 });
                     });
                 });
 
-                // question_id -> userChoice(1~4) 매핑
-                const userChoiceMap = new Map<number, number>();
+                // 4) userAnswer(answer_id) -> question_id -> choice
+                const qidToUserChoice = new Map<number, number>();
                 data.userAnswer.forEach((ua) => {
-                    const choice = answerIndexMap.get(ua.answer_id);
-                    if (choice != null) {
-                        const q = flatQuestions.find((q) =>
-                            q.answers.some((a) => a.answer_id === ua.answer_id)
-                        );
-                        if (q) userChoiceMap.set(q.question_id, choice);
-                    }
+                    const hit = answerIdToPick.get(ua.answer_id);
+                    if (hit) qidToUserChoice.set(hit.questionId, hit.choice);
                 });
 
-                const uaArray: (number | null)[] = flatQuestions.map((q) =>
-                    userChoiceMap.has(q.question_id)
-                        ? (userChoiceMap.get(q.question_id) as number)
-                        : null
-                );
-
                 setQuestions(flatQuestions);
-                setUserAnswers(uaArray);
-            } catch (e: any) {
+                setUserChoiceByQid(qidToUserChoice);
+            } catch (e: unknown) {
+                const msg = e instanceof Error ? e.message : "기록을 불러오지 못했습니다.";
                 console.error(e);
-                setError(e.message ?? "기록을 불러오지 못했습니다.");
+                setError(msg);
             } finally {
                 setLoading(false);
             }
         })();
     }, [previousId]);
 
-    // --- 2) 기존 ReviewPage 로직과 동일 ---
-
     const all: ReviewItem[] = useMemo(() => {
-        if (!questions.length || !userAnswers.length) return [];
-        return buildReviewList(questions, userAnswers);
-    }, [questions, userAnswers]);
+        if (!questions.length) return [];
+        return questions.map((q, idx) => {
+            const user = userChoiceByQid.get(q.question_id) ?? null;
+            const correctIdx = q.answers.findIndex((a) => a.bool);
+            const correct = correctIdx >= 0 ? correctIdx + 1 : 0;
+            const isCorrect = user !== null && user === correct;
+            return { index: idx, question: q, user, correct, isCorrect };
+        });
+    }, [questions, userChoiceByQid]);
 
     const [onlyWrong, setOnlyWrong] = useState(false);
-
-    const items = useMemo(
-        () => (onlyWrong ? all.filter((i) => !i.isCorrect) : all),
-        [all, onlyWrong]
-    );
+    const items = useMemo(() => (onlyWrong ? all.filter((i) => !i.isCorrect) : all), [all, onlyWrong]);
 
     const pageSize = window.matchMedia("(max-width:768px)").matches ? 1 : 5;
     const [page, setPage] = useState(1);
@@ -135,13 +104,7 @@ export function PreviousReviewPage() {
     const start = (page - 1) * pageSize;
     const slice = items.slice(start, start + pageSize);
 
-    if (loading) {
-        return (
-            <div className={styles.emptyWrap}>
-                기록을 불러오는 중입니다...
-            </div>
-        );
-    }
+    if (loading) return <div className={styles.emptyWrap}>기록을 불러오는 중입니다...</div>;
 
     if (error || !all.length) {
         return (
@@ -162,9 +125,7 @@ export function PreviousReviewPage() {
                 <h2 className={styles.title}>문제 검토 / 오답노트</h2>
                 <div className={styles.meta}>
                     {certName} · 총 {all.length}문항
-                    {onlyWrong && (
-                        <> (오답 {all.filter((i) => !i.isCorrect).length}문항)</>
-                    )}
+                    {onlyWrong && <> (오답 {all.filter((i) => !i.isCorrect).length}문항)</>}
                 </div>
                 <div className={styles.controls}>
                     <label className={styles.checkboxLabel}>
@@ -186,10 +147,7 @@ export function PreviousReviewPage() {
                     const q = it.question;
                     const got = it.isCorrect;
 
-                    // 🔹 정답 보기 중 solution 있는 것 하나 추출
-                    const correctAnswer = q.answers.find(
-                        (a) => a.bool && (a.solution ?? "").trim()
-                    );
+                    const correctAnswer = q.answers.find((a) => a.bool && (a.solution ?? "").trim().length > 0);
                     const solutionText = correctAnswer?.solution?.trim() ?? "";
                     const isSolutionOpen = openedSolutions.includes(q.question_id);
 
@@ -197,26 +155,23 @@ export function PreviousReviewPage() {
                         <li key={q.question_id} className={styles.card}>
                             <div className={styles.qhead}>
                                 <div className={styles.qtitle}>
-                                    <strong>{it.index + 1}.</strong>&nbsp;{q.text}
+                                    <strong>{q.question_num ?? it.index + 1}.</strong>&nbsp;{q.text}
                                 </div>
                                 <span
-                                    className={`${styles.resultChip} ${
-                                        got ? styles.resultChipOk : styles.resultChipNo
-                                    }`}
+                                    className={`${styles.resultChip} ${got ? styles.resultChipOk : styles.resultChipNo}`}
                                 >
-                                    {got ? "정답" : "오답"}
-                                </span>
+                  {got ? "정답" : "오답"}
+                </span>
                             </div>
 
-                            {q.content && (
-                                <pre className={styles.content}>{q.content}</pre>
-                            )}
+                            {q.content && <pre className={styles.content}>{q.content}</pre>}
 
                             <ul className={styles.optList}>
                                 {q.answers.map((a, idx) => {
                                     const v = idx + 1;
                                     const isC = v === it.correct;
                                     const isU = v === it.user;
+
                                     return (
                                         <li
                                             key={v}
@@ -230,29 +185,18 @@ export function PreviousReviewPage() {
                                                 .join(" ")}
                                         >
                                             <span className={styles.bullet}>{v}</span>
-                                            <span className={styles.optText}>
-                                                {(a.content ?? "").trim()}
-                                            </span>
+                                            <span className={styles.optText}>{(a.content ?? "").trim()}</span>
 
                                             <span className={styles.optTags}>
-                                                {isC && (
-                                                    <em className={styles.tagCorrect}>정답</em>
-                                                )}
-                                                {isU && !isC && (
-                                                    <em className={styles.tagWrong}>내 선택</em>
-                                                )}
-                                                {isU && isC && (
-                                                    <em className={styles.tagMyCorrect}>
-                                                        내 선택(정답)
-                                                    </em>
-                                                )}
-                                            </span>
+                        {isC && <em className={styles.tagCorrect}>정답</em>}
+                                                {isU && !isC && <em className={styles.tagWrong}>내 선택</em>}
+                                                {isU && isC && <em className={styles.tagMyCorrect}>내 선택(정답)</em>}
+                      </span>
                                         </li>
                                     );
                                 })}
                             </ul>
 
-                            {/* 🔹 해설 버튼 + 박스 */}
                             {solutionText && (
                                 <div className={styles.solutionArea}>
                                     <button
@@ -266,9 +210,7 @@ export function PreviousReviewPage() {
                                     {isSolutionOpen && (
                                         <div className={styles.solutionBox}>
                                             <div className={styles.solutionTitle}>해설</div>
-                                            <pre className={styles.solutionBody}>
-                                                {solutionText}
-                                            </pre>
+                                            <pre className={styles.solutionBody}>{solutionText}</pre>
                                         </div>
                                     )}
                                 </div>
@@ -287,12 +229,10 @@ export function PreviousReviewPage() {
                     이전
                 </button>
                 <span className={styles.pagerInfo}>
-                    {page}/{Math.ceil(total / pageSize)}
-                </span>
+          {page}/{Math.ceil(total / pageSize)}
+        </span>
                 <button
-                    onClick={() =>
-                        setPage((p) => Math.min(Math.ceil(total / pageSize), p + 1))
-                    }
+                    onClick={() => setPage((p) => Math.min(Math.ceil(total / pageSize), p + 1))}
                     disabled={start + pageSize >= total}
                     className={styles.btnGhost}
                 >

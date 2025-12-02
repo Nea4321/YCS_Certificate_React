@@ -1,5 +1,3 @@
-// src/pages/cbt-test/IncorrectPracticePage.tsx
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -29,13 +27,8 @@ export const IncorrectPracticePage: React.FC = () => {
     const [fontZoom, setFontZoom] = useState<0.75 | 1 | 1.25>(1);
     const [examPageSize, setExamPageSize] = useState(3);
     const [currentPage, setCurrentPage] = useState(1);
-
-    // ✨ CBT 크롬 잠그기(마우스 우클릭 방지 등) - 그냥 exam 모드처럼
     useExamChrome("exam");
 
-    // ───────────────────────────────────────────
-    // 1) 오답 기반 연습 세트 가져오기
-    // ───────────────────────────────────────────
     useEffect(() => {
         if (!certIdParam) {
             setError("certId가 없습니다. 마이페이지에서 다시 진입해 주세요.");
@@ -58,7 +51,6 @@ export const IncorrectPracticePage: React.FC = () => {
 
                 const json: UserIncorrectDTO = await res.json();
 
-                // 🔁 UserIncorrectDTO → QuestionDTO[] 로 매핑
                 const mapped: QuestionDTO[] =
                     json.userIncorrectQuestionDTOList.map((q,idx) => ({
                         question_id: q.question_id,
@@ -92,14 +84,8 @@ export const IncorrectPracticePage: React.FC = () => {
 
     const totalQuestions = questions.length;
 
-    // ───────────────────────────────────────────
-    // 2) 답안 상태 관리 (ExamView와 동일)
-    // ───────────────────────────────────────────
     const { answers, setAnswer } = useAnswers(totalQuestions);
 
-    // ───────────────────────────────────────────
-    // 3) 페이지 사이즈 동적 계산 (ExamView / CBTTestPage와 동일 로직)
-    // ───────────────────────────────────────────
     const calculatePageSize = () => {
         const windowHeight = window.innerHeight;
         const baseProblemHeight = 150;
@@ -113,16 +99,9 @@ export const IncorrectPracticePage: React.FC = () => {
         setExamPageSize(dynamicPageSize);
     }, [fontZoom]);
 
-    // ───────────────────────────────────────────
-    // 4) 타이머 – 연습 모드라 실제 제한은 없지만 모양 맞추기
-    //    isExamRunning=false로 주면 useExamTimer가 카운트다운 안 할 거라고 가정
-    // ───────────────────────────────────────────
     const { leftTime, limitMin, leftSec } = useExamTimer(false, 90 * 60);
     const timer = { leftTime, limitMin, leftSec };
 
-    // ───────────────────────────────────────────
-    // 5) 로딩/에러 화면
-    // ───────────────────────────────────────────
     if (loading) {
         return (
             <div className={CBTTestStyle.notFound}>
@@ -161,11 +140,6 @@ export const IncorrectPracticePage: React.FC = () => {
         );
     }
 
-    // ───────────────────────────────────────────
-    // 6) ExamView 재사용 (스타일 완전 동일)
-    //    - ui는 그냥 "exam" 고정
-    //    - previousId = null → /add 저장 안 된다
-    // ───────────────────────────────────────────
     return (
         <ExamView
             certName={certNameParam}
@@ -179,11 +153,10 @@ export const IncorrectPracticePage: React.FC = () => {
             fontZoom={fontZoom}
             setFontZoom={setFontZoom}
             ui="exam"
-            onToggleUi={() => {
-                /* 연습 세트는 모드 전환 없음 */
-            }}
+            onToggleUi={() => {}}
             previousId={null}
             certificateId={Number(certIdParam)}
+            showSubjectPerQuestion={false}
         />
     );
 };

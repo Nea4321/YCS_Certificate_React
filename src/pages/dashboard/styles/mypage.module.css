@@ -350,10 +350,28 @@
     color: #6b7280;
 }
 
+.cbtMeta span + span::before {
+    content: " | ";
+    color: #9ca3af;
+}
+
 .cbtDetailBox {
     margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid #e5e7eb;
+}
+
+.wrongNoteBadge{
+    display:inline-flex;
+    align-items:center;
+    margin-left:8px;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    border:1px solid #ff6b6b;
+    color:#ff6b6b;
+    background:#fff5f5;
 }
 
 /* CBT 버튼 */
@@ -484,4 +502,172 @@
     .infoGrid { grid-template-columns: 1fr; gap: 1rem; }
     .cardHeader { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .favoritesGrid { grid-template-columns: 1fr; }
+    /* =================================
+   CBT RECORD SECTION (Responsive)
+   ================================= */
+    /* 리스트 간격 */
+    .cbtRecordList {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    /* --- 접기 전: 자격증 카드 --- */
+    .cbtRecordItem {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px 14px;
+        background: #f9fafb;
+        transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .cbtRecordItem:hover {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* 자격증명: 줄바꿈 방지 + 말줄임 */
+    .cbtCardTop {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .cbtCertName {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        color: #111827;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    /* 버튼 3개: 가로로 예쁘게(동일 폭) */
+    .buttonGroup {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .buttonGroup button {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 10px;
+        font-size: 14px;
+        border-radius: 10px;
+        line-height: 1;
+    }
+
+    /* --- 펼친 후: 기록 row --- */
+    .cbtRecordRow {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px 14px;
+        background: #ffffff;
+    }
+
+    .cbtRecordLeft {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    /* 메타정보: 보기 좋게 줄바꿈 */
+    .cbtMeta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        margin: 0;
+        font-size: 13px;
+        color: #6b7280;
+        line-height: 1.3;
+    }
+
+    .cbtMeta span {
+        background: #f9fafb;
+        border: 1px solid #eef2f7;
+        padding: 6px 8px;
+        border-radius: 10px;
+    }
+
+    /* 펼친 상태 버튼 2개: 가로로 */
+    .cbtActions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .cbtActions button {
+        width: 100%;
+        padding: 10px 10px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    .cbtTitleArea{
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        padding-right: 70px; /* 뱃지 자리 미리 확보(오답노트 유무 상관없이 동일) */
+    }
+
+    /* 오답노트 뱃지 */
+    .wrongNoteBadge {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 8px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #ff6b6b;
+        color: #ff6b6b;
+        background: #fff5f5;
+    }
+
+    .cbtMeta span + span::before {
+        content: "";
+    }
+
+    .cbtActions {
+        margin: 0;
+    }
+    /* --- 모바일 최적화 --- */
+    @media (max-width: 480px) {
+        .cbtRecordItem,
+        .cbtRecordRow {
+            padding: 12px 12px;
+            border-radius: 12px;
+        }
+
+        .cbtCertName {
+            font-size: 16px;
+        }
+
+        .buttonGroup button,
+        .cbtActions button {
+            font-size: 13px;
+            padding: 10px 8px;
+        }
+
+        .cbtMeta span {
+            padding: 5px 7px;
+            border-radius: 9px;
+        }
+    }
+
 }
+

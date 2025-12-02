@@ -1,4 +1,21 @@
-/* ====== 컨테이너 ====== */
+:root{
+    --sky-50:  #f0f9ff;
+    --sky-100: #e0f2fe;
+    --sky-200: #bae6fd;
+
+    --blue-50:  #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+
+    --ink-900:  #0f172a;
+    --ink-700:  #334155;
+    --line:     #e2e8f0;
+}
+
 .testWrapperClassic {
     display: grid;
     grid-template-columns: 1fr 360px;
@@ -50,7 +67,7 @@
 
 /* ====== 문제 리스트 ====== */
 .questionList { list-style: none; padding-left: 10px; margin: 0; }
-.questionItem { padding: 18px 4px; }
+.questionItem { padding: 12px 4px; }
 
 .qBlock { display: grid; gap: 10px; }
 .qTitle { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; color: #2b2f2b; }
@@ -194,7 +211,14 @@
 
 /* 문제 리스트(시험지 느낌) */
 .questionList{ border:1px solid #cadac8;}
-.questionItem{ padding:18px 4px; }
+.questionItem{
+    scroll-margin-top: 90px;
+}
+.scrollRoot{
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
 /* 오른쪽 답안 표기란(초록 박스) */
 .paperRight{
@@ -273,7 +297,7 @@
     padding: 16px;
     margin: 16px 0;
     border: 1px solid #999;
-    width: 300px;
+    width: 330px;
     border-radius: 0;
     background-color: #fff;
     white-space: pre-wrap;
@@ -371,7 +395,7 @@
 
 /* 호버/포커스 */
 .headCta:hover{ background:#eef4ee; border-color:#b8c7b2; }
-.headCta:active{ transform: translateY(-60%) translateY(1px); }
+
 .headCta:focus-visible{
     outline:2px solid #88b388; outline-offset:2px; border-color:#88b388;
 }
@@ -544,7 +568,6 @@
 /* 시험지 상단 바 (날짜, 타이틀 등) */
 .examPaperHead {
     background: #f7f3e8; /* 배경보다 살짝 짙은 종이색 */
-    border-bottom: 1px solid #e0d9d5;
 }
 
 /* 상단 '자격증 보러가기' 버튼 */
@@ -685,4 +708,153 @@
 }
 .submitClassic:hover {
     filter: brightness(0.95);
+}
+
+.pageBg{
+    background: linear-gradient(180deg, var(--sky-50), #ffffff);
+}
+
+/* 상단 헤더 바/라인 (브라운 라인 제거) */
+.examPaperHead{
+    border-top: 2px solid var(--blue-500) !important;
+    background: transparent !important;
+}
+
+/* 중앙 타이틀/날짜 (브라운 -> 슬레이트/블루) */
+.centerTitle{ color: var(--blue-500) !important; }
+.centerDate{
+    background: var(--sky-100) !important;
+    border: 1px solid var(--sky-200) !important;
+    color: var(--ink-700) !important;
+}
+
+/* "자격증 보러가기" 캡슐 버튼(갈색 -> 하늘색) */
+.headCta{
+    background: var(--sky-100) !important;
+    border: 1px solid var(--sky-200) !important;
+    color: var(--blue-700) !important;
+}
+.headCta:hover{
+    background: var(--blue-100) !important;
+    border-color: var(--blue-200) !important;
+}
+
+/* 문제 리스트 테두리(갈색 -> 라이트 블루) */
+.questionList{
+    border: 1px solid var(--blue-200) !important;
+}
+
+/* 문제 텍스트 컬러(브라운 -> 잉크색) */
+.qNumber, .qTitle, .qText, .optText{
+    color: var(--ink-900) !important;
+}
+
+/* 보기(옵션) 불릿/체크(브라운/그린 -> 블루) */
+.optBullet{
+    border: 1px solid var(--blue-200) !important;
+    background: #fff !important;
+    color: var(--ink-700) !important;
+}
+.optLabel input[type="radio"]:checked + .optBullet{
+    background: var(--blue-600) !important;
+    border-color: var(--blue-700) !important;
+    color: #fff !important;
+}
+
+/* 우측 답안표기란 패널(브라운 박스 -> 블루 톤) */
+.paperRight{
+    background: var(--blue-100) !important;
+    border-left: 1px solid var(--blue-200) !important;
+}
+
+/* "답안 표기란" 헤더 */
+.answerPanelHead{
+    background: var(--blue-500) !important;
+    color: #fff !important;
+}
+
+/* 답안지(내부 종이) */
+.answerSheet{
+    background: #ffffff !important;
+    border: 1px solid var(--blue-200) !important;
+}
+
+/* 답안 행/번호 */
+.answerRowClassic{
+    background: #fff !important;
+    border-bottom: 1px solid var(--line) !important;
+}
+.answerRowClassic:hover{ background: var(--blue-50) !important; }
+.answerNo{
+    background: var(--blue-50) !important;
+    border: 1px solid var(--blue-200) !important;
+    color: var(--blue-700) !important;
+}
+
+/* 동그라미(답안 선택) */
+.dotCircle{
+    background: #fff !important;
+    border: 1px solid var(--blue-200) !important;
+    color: var(--ink-700) !important;
+}
+.dotLabel input:checked + .dotCircle{
+    background: var(--blue-600) !important;
+    border-color: var(--blue-200) !important;
+    color: #fff !important;
+}
+
+/* 페이지네이션 (브라운 -> 블루) */
+.paginationBar{
+    background: var(--blue-50) !important;
+    border: 1px solid var(--blue-200) !important;
+}
+.paginationBtn{
+    background: var(--blue-500) !important;
+    color: #fff !important;
+}
+.paginationBtn:disabled{
+    background: #cbd5e1 !important;
+    color: #64748b !important;
+}
+
+/* ✅ 채점하기 버튼: 더 진한 파란색 */
+.submitClassic,
+.mobileSubmitBtn{
+    background: var(--blue-500) !important; /* <- 더 진하게 */
+    color: #fff !important;
+}
+.submitClassic:hover,
+.mobileSubmitBtn:hover{
+    filter: brightness(0.95);
+}
+
+.sheetRadioHidden{
+    pointer-events: none;
+    position: absolute;
+    opacity: 0;
+}
+
+.dotLabel {
+    cursor: pointer;
+}
+
+.answerNo {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.subjectBadge{
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1;
+    padding: 6px 10px;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: #eef5ff;
+    color: #2b6ae6;
 }
